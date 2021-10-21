@@ -5,3 +5,12 @@ called “Device Authentication”. Secondly, we will set a strong password to s
 sure the database is safe. After that, if any device’s mac address is outside of our network and tried to 
 access our device. Our system will find that device’s mac address and compare it by using the registered mac 
 address list from the database. If the mac address is not on the list, then the system will notify us to remove the unknown device .
+
+Data Transferred Between Devices and Server and while in Storage
+1   Throttling :
+To prevent the server overload by handling legitimate requests from the client 
+and processing them which will cause the server crash. We will use throttling measures to
+ limit the number of requests sent by the user and drop the server when the user sent my 
+request at the same time. For example, if the user sends the first request, the server will 
+ignore the rest of the requests in these 30 minutes.
+ 
