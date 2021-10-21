@@ -33,3 +33,15 @@ Then, change the password per month with a different password than the previous 
 We will use the “POST” method instead of the “GET” method in getting the information that is input from the user. 
 It is because the “GET” method, will show the user’s information in the URL link but the “POST” method wouldn’t. 
 For example, we will use the “POST” method in the HTML file which requires the user to submit their information.
+
+5. IAM Role 
+IAM Role is an IAM identity that let us can create an account with specific permissions. 
+It is like an IAM user, in that it has an AWS identity with permissions policies that determine what the identity can and cannot do. 
+(AWS, 2020) The Ec2 and MySQL databases prevent the user can access the database and Ec2 without permission.
+
+
+ 6. SSL certificate
+Secure Sockets Layer (SSL) is a cryptographic protocol that is used to secure communications over the computer network.
+ For example, HTTPS. It is because HTTPS use a key called A to encrypt communication content by using symmetric encryption. 
+After that, HTTPS will use asymmetric encryption to encrypt key A and send it to another party. If the key does not fall into 
+another party, then the transmitted data will not be decrypted by another party
