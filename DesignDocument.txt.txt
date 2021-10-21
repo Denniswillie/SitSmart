@@ -13,4 +13,23 @@ and processing them which will cause the server crash. We will use throttling me
  limit the number of requests sent by the user and drop the server when the user sent my 
 request at the same time. For example, if the user sends the first request, the server will 
 ignore the rest of the requests in these 30 minutes.
+
+
+2.  Input Validation 
+We can use input validation in each blank that needs the user to type something.   
+The input validation will verify is the user input type is allowed or not. 
+It will also make sure the length, type, and format that the user types in are acceptable.
+ Only the validated value can be processed, it helps to counteract any commands inserted in the input string. 
+For example, we can use regular expressions to make sure the data input is valid.
  
+3.  Strong Password, Change Password Often 
+To prevent IoT attacks, we will set a strong password and change the password for every device and database in our network. 
+For example, the password must have at least 8 letters which include
+ 1 uppercase letter, 1 lowercase letter, 1 special character (! @#$%^&*) and a number. 
+Then, change the password per month with a different password than the previous one.
+ 
+               
+ 4.  Use the “POST” method
+We will use the “POST” method instead of the “GET” method in getting the information that is input from the user. 
+It is because the “GET” method, will show the user’s information in the URL link but the “POST” method wouldn’t. 
+For example, we will use the “POST” method in the HTML file which requires the user to submit their information.
