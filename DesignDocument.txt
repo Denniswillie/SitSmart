@@ -1,0 +1,127 @@
+The UI, User and Testing 
+
+UI Overview
+
+Sit Smart Website
+
+ 	 	 
+1: Start Screen	2: Booking Screen	3: Receipt Screen
+
+The Sit Smart website consists of 3 screens:
+
+1.	Start Screen 
+This screen of the UI is what the user arrives on when they first visit the website. Its UI features a dropdown menu of supported locations, as well as a two email fields. The second email field is included for validation, checking that the email address provided matches that which was provided in the previous field. This is done to increase the tolerance of error of the system, which is one of our core design principles.
+
+2.	Booking Screen
+This screen of the UI allows the user will use to place their booking. Its UI features a dropdown menu of dates, starting from the current date. This page receives live sensor stats from the Raspberry Pi and relays these readings to the user through the UI in icon format. Sensor readings are divided into brackets for each available desk, from which an appropriate icon can be assigned. This page also displays the times available for each desk. This aspect of the UI uses red and green to signify free and reserved slots accordingly
+
+3.	Receipt Screen
+This screen of the UI compiles a summary of the user’s booking. It details location, date, desk and time. The UI features a map of the location and a check-in code in large font, which will be used by the user to check in to their space. Blue text is used to highlight the email address provided by the user, to which they’ll receive a copy of their receipt.
+
+
+Smart Desk Kit
+
+ 
+4A: Planned Check-In Screen
+
+ 
+4B: Spontaneous Check-In Screen
+
+ 
+5: Session Screen
+The Sit Smart Desk Kit consists of 3 screens:
+
+4.	Check-In Screen
+a.	This screen (4A) of the UI facilitates desk check-in for a user with a booking. It features colour-coded buttons which are consistent with the overall design. Text is also included in the UI to explain the status of the text and actions required for those arriving with a reservation, as well as others.
+
+b.	This screen (4B) of the UI facilitates desk check-in for a user who has made no booking in advance. Its green colour signifies its availability, with the centre text describing when the desk will next be occupied with a booking. The element is made possible by communicating with our database for desk-specific booking information.
+
+5.	Session Screen
+This screen of the UI displays live stats gathered directly from the Pi. It displays these stats with their relevant icons, per the bracket they fit into. The screen also uses relays the time until the end of the booking through a live countdown. Should the user wish to check out early, they can click the “Check Out” button and this will free up the desk in our database.
+
+
+
+User Personas
+
+
+
+User Stories
+
+James Smith is an engineering student on his second year of study. He shares a noisy and busy household with his parents and three siblings. James had numerous assignments to work on but cannot focus in with the noisy distractions. He would like to reserve a quiet study space so that he can complete his projects in peace.
+
+Emma Johnson is a first year science student with asthma. She is conscious about her health and is high risk for airborne viruses. Emma has a big exam coming up and would like to reserve a study space with a history of good air quality so that she can revise in a comfortable and safe environment.
+
+Michael Brennan is a film student studying for his winter exams. His optimal study environment is one which is cosy and warm. Given the time of season, Michael would like to reserve a study space which best matches his ideal temperature.
+
+
+UI Interactions 
+
+A user such as James Smith would interact with our application as follows:
+
+Website
+1.	James visits the Sit Smart website on his internet-connected smartphone
+2.	He inputs his location from a set list of approved locations, such as DkIT Library or DCU Library
+3.	He inputs the date and time he would like to reserve a study space for
+4.	The website displays a list of available spaces and their corresponding data, including average temperate, average noise level and average CO2 level. Being conscious of noise levels specifically, James Smith picks the next available space with his preferred level of noise
+5.	James inputs his email address twice for validation, thereafter receiving an email with a pin code that he can user to check-in to the Desk Kit
+
+Desk Kit
+1.	James arrives at the Sit Smart desk assigned to him and taps his pin code into the Desk Kit touchscreen
+2.	He uses the desk for his assigned period and leaves when his time is up without any further interaction with the system
+3.	Should he wish to leave before his time is up instead, James taps the relevant button on the Desk Kit screen, freeing up the space for someone else
+
+User Data
+
+The following data is available to the user during their interactions with the system:
+
+Data	Description
+Desk Locations	•	Available on the first screen of the website
+•	The user selects a location which supports Sit Smart
+•	E.G. DkIT Library, DCU Library, TU Dublin Library
+Available Desks	•	Available during reservation screen of the website
+•	The desks available are retrieved depending on the day and time the user submits
+•	E.G. Desk 1, Desk 2, Desk 3
+Average Noise Level	•	Available during reservation screen of the website
+•	Respective value shown alongside each available desk
+•	E.G. 20db, 30db, 40db
+Average Temperature	•	Available during reservation screen of the website
+•	Respective value shown alongside each available desk
+•	E.G. 10°C, 20°C, 30°C
+Average CO2 Level	•	Available during reservation screen of the website
+•	Respective value shown alongside each available desk
+•	E.G 400ppm, 700ppm, 900ppm
+Pin Code	•	Generated on booking and emailed to the user’s email address
+•	This pin is specific to a particular desk
+•	E.G. 1445, 5052, 1034
+
+The following data is provided by the user during their interactions with the system:
+
+Data	Description
+Selected Location	•	Provided ahead of reservation on the website
+•	Selected from dropdown list of applicable locations
+•	E.G. DkIT Library, DCU Library, TU Dublin Library
+Selected Date	•	Provided during reservation on the website
+•	Selected from a dropdown list of applicable dates
+•	E.G. 1/10/2021, 25/11/2021,12/12/2021
+Selected Time	•	Provided during reservation on the website
+•	Selected from a dropdown list of applicable times
+•	E.G. 10AM-11AM, 1PM-2PM, 4PM-5PM
+Email Address	•	Provided during the confirmation of booking
+•	Inputted twice to provide increased tolerance of error
+•	E.G. joebloggs@gmail.com, janedoe@gmail.com 
+
+Reserved Desk	•	Recorded after confirmation of booking
+•	E.G. Desk 1, Desk 2, Desk 3
+
+
+Measures of Success
+
+We can measure whether the project has been successful or not as follows:
+
+Fulfilment of Functional Requirements – To confirm that the system meets all of our functional requirements, the team can step through the project under the persona of an end user and check off requirements as they are facilitated. If all functional requirements are met, we can say the project was successful in accomplishment in delivering on these requirements.
+
+User Feedback – The team can source test users to play relevant personas and observe them as they interact the system. During this observation process, the team can assess whether the users are using with the system as intended, make note of any frustrations and verify the completion of user goals via the necessary task actions.
+
+Scrum Backlog Completion – The team can review outstanding backlog items via our Scrumwise dashboard. If all mandatory items have been marked as completed, the team can deduce that we were successful in meeting our core backlog goals.
+
+Successful Tests – The success of the system’s code can be measured via the passing of relevant tests. This can include acceptance tests, integration tests and unit tests. If tests are comprehensive and pass successfully, the team can say that the code successfully fulfills its computational function. 
