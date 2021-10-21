@@ -1,2 +1,7 @@
 Ensuring Device Security
 
+To ensure our device security. First, we will get every device’s mac address and store it in the database 
+called “Device Authentication”. Secondly, we will set a strong password to secure the database to make 
+sure the database is safe. After that, if any device’s mac address is outside of our network and tried to 
+access our device. Our system will find that device’s mac address and compare it by using the registered mac 
+address list from the database. If the mac address is not on the list, then the system will notify us to remove the unknown device .
