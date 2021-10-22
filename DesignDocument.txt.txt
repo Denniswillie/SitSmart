@@ -23,7 +23,7 @@ ignore the rest of the requests in these 30 minutes.
 We can use input validation in each blank that needs the user to type something.   
 The input validation will verify is the user input type is allowed or not. 
 It will also make sure the length, type, and format that the user types in are acceptable.
- Only the validated value can be processed, it helps to counteract any commands inserted in the input string. 
+Only the validated value can be processed, it helps to counteract any commands inserted in the input string. 
 For example, we can use regular expressions to make sure the data input is valid.
  
 3.  Strong Password, Change Password Often 
@@ -37,7 +37,7 @@ Then, change the password per month with a different password than the previous 
 We will use the proper REST API method to get, create, update, modify and delete the data. The REST API methods are GET, POST, PUT, DELETE and PATCH. 
   
 a. GET Method 
- GET Method will only retrieve the information only which will not modify    
+GET Method will only retrieve the information only which will not modify    
 it and change the state of the resource. For example, if the resource is found   
  on the server, then it will return response code 200(OK), if not found         
 return code (404), and if not correct return code (400) bad request. (Tutorial, 2012)
@@ -61,7 +61,7 @@ we can use a strong ETag. (Tutorial, 2012)
 e. DELETE Method
 DELETE method will delete the data by using the URL link and hiding it  which mean you wouldn’t see what 
 resources have been deleted or not.It will just return code (200) ok, code(204) no content, or code(404) not found. 
-If  we use DELETE method to delete something, that resource be deleted, and if you call it again and again the result will be the same.   (Tutorial, 2012)               
+If  we use DELETE method to delete something, that resource will be deleted, and if you call it again and again the result will be the same.   (Tutorial, 2012)               
 
 
 5. IAM Role 
