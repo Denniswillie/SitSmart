@@ -14,7 +14,7 @@ Data Transferred Between Devices and Server and while in Storage
 1   Throttling :
 To prevent the server overload by handling legitimate requests from the client 
 and processing them which will cause the server crash. We will use throttling measures to
- limit the number of requests sent by the user and drop the server when the user sent my 
+ limit the number of requests sent by the user and drop the server when the user sent many 
 request at the same time. For example, if the user sends the first request, the server will 
 ignore the rest of the requests in these 30 minutes.
 
