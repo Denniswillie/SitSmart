@@ -33,10 +33,36 @@ For example, the password must have at least 8 letters which include
 Then, change the password per month with a different password than the previous one.
  
                
- 4.  Use the “POST” method
-We will use the “POST” method instead of the “GET” method in getting the information that is input from the user. 
-It is because the “GET” method, will show the user’s information in the URL link but the “POST” method wouldn’t. 
-For example, we will use the “POST” method in the HTML file which requires the user to submit their information.
+ 4.  Use Proper REST API method
+We will use the proper REST API method to get, create, update, modify and delete the data. The REST API methods are GET, POST, PUT, DELETE and PATCH. 
+  
+a. GET Method 
+ GET Method will only retrieve the information only which will not modify    
+it and change the state of the resource. For example, if the resource is found   
+ on the server, then it will return response code 200(OK), if not found         
+return code (404), and if not correct return code (400) bad request. (Tutorial, 2012)
+
+b. POST Method
+Post method will be used to create subordinate resources which will subordinate to some other resource. 
+For example, POST method will associate the new resource from parent and service when create the new resource. (Tutorial, 2012)
+
+c.  PUT Method
+Put Method is often be used to update information by putting it into a known resource link resource link with a request 
+body that has newly-updated representation of the original source. We will use PUT method as it is                         
+idempotent which mean if we create or update the resource by using PUT method and call it again, the resource is still 
+there and still having the same state as the first call.  (Tutorial, 2012)  
+
+d. PATCH Method     
+PATCH method in the request will only contain the changes that need to be change in the resource, 
+not the complete resource link. We will use the PATCH method in the idempotent way to prevent the collisions from
+multiple PATCH requests. For example, in the if-Match header on the PATCH request, 
+we can use a strong ETag. (Tutorial, 2012)
+
+e. DELETE Method
+DELETE method will delete the data by using the URL link and hiding it  which mean you wouldn’t see what 
+resources have been deleted or not.It will just return code (200) ok, code(204) no content, or code(404) not found. 
+If  we use DELETE method to delete something, that resource be deleted, and if you call it again and again the result will be the same.   (Tutorial, 2012)               
+
 
 5. IAM Role 
 IAM Role is an IAM identity that let us can create an account with specific permissions. 
