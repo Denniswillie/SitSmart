@@ -1,0 +1,140 @@
+  
+
+SIT SMART 
+
+by 
+
+Kevin McEnroe, Dennis Willie, 
+
+Jeremy Neo, Ethan Alexandro Yiik Hee Sia  
+
+  
+Team 
+
+Roles 
+
+ 
+
+Team roles were assigned as follows. Although each team member will have specific responsibilities, we intend to provide guidance and assistance where necessary between subject areas. 
+
+Team Member 
+
+Role 
+
+Kevin McEnroe 
+
+Team Lead, UX Design, Frontend 
+
+Dennis Willie 
+
+Infrastructure, Backend 
+
+Jeremy Neo  
+
+Frontend, Backend 
+
+Ethan Alexandro Yiik Hee Sia 
+
+IOT, Backend 
+
+ 
+
+Task Assignment 
+
+ 
+
+Tasks will be assigned according to each team member’s role on the project. An overview of tasks and responsibilities is detailed below. Where necessary, we will mentor and assist each other across topics. 
+
+Team Member 
+
+Tasks 
+
+Kevin McEnroe 
+
+ 
+
+Coordinate team and check in on progress 
+
+Oversee UX design documents and presentations 
+
+Direct team presentation preparations 
+
+Create UI mockup and paper prototype 
+
+Detail user-centric areas of the system 
+
+Coordinate with front-end to advise UX decisions 
+
+Develop Sit Smart website 
+
+Develop Desk Kit screen interface 
+
+Dennis Willie 
+
+ 
+
+Jeremy Neo 
+
+ 
+
+Ethan Alexandro Yiik Hee Sia 
+
+ 
+
+
+  
+
+  
+
+Submitted to 
+
+Internet of Things Development CA1 
+
+in completion of Year 3 of the 
+
+Bachelor of Science (Hons) in Computing in Software Development 
+
+  
+
+  
+
+  
+
+ 
+
+  
+
+Lecturer 
+
+John Loane 
+
+Date 
+
+October 2021 
+
+Class Group 
+
+SD3a  
+
+Page Break
+ 
+
+Introduction 
+
+ 
+
+Sit Smart is a smart study space reservation system using IOT technology. The system is being developed by Team Think and consists of a website and a smart “Desk Kit”, the latter of which consists of a Raspberry Pi and 3 GPIO sensors. The website facilitates booking and the Desk Kit enables check-in, while also accumulating data about the study environment specific to that desk via the sensors, which enables users to make better-informed decisions during the booking process. 
+
+The team members involved in this project include: 
+
+Kevin McEnroe 
+
+Dennis Willie 
+
+Jeremy Neo 
+
+Ethan Alexandro Yiik Hee Sia 
+
+ 
+
+= TABLE OF CONTENTS = 
