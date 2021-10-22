@@ -1,0 +1,189 @@
+[Overall Architecture Diagram]
+The architectural diagram above consists of the 3 main components of the project: 
+
+Hardware 
+
+Booking website 
+
+Table screen website 
+
+All of which are described in more detail below 
+
+Data, Storage and Processing 
+
+Sensor Data 
+
+Sensors Specs 
+
+From the hardware section above, this project uses 3 different sensors. Below is the detailed specs of each sensors: 
+
+Humidity and temperature sensor (components 101, 2021) 
+
+Operating Voltage: 3.5V to 5.5V 
+
+Operating current: 0.3mA (measuring) 60uA (standby) 
+
+Output: Serial data 
+
+Temperature Range: 0°C to 50°C 
+
+Humidity Range: 20% to 90% 
+
+Accuracy: ±1°C 
+
+Audio sensor equipped with LM386 (waveshare, 2021) 
+
+Mic sensitivity : 52dB 
+
+Power: 3.3V ~ 5.3V 
+
+Mounting holes size: 2.0mm 
+
+Max current: no specification listed 
+
+SGP30 CO2 sensor (https://cdn.shopify.com/s/files/1/0176/3274/files/Sensirion_Gas_Sensors_SGP30_Datasheet_EN-1148053.pdf?v=1603894740) 
+
+3.3V or 5V compatible 
+
+Measurement current: 48.2 mA 
+
+Sleep current: 2-10 picoAmpere 
+
+Measurement range: 400 to 60,000 ppm 
+
+Sensors Frequency 
+
+The amount of reads that can be done by a sensor every second. 
+
+
+Sensor 
+
+Frequency (Hz) 
+
+(also known as sampling rate) 
+
+Humidity and temperature sensor (DHT 11) 
+
+1 – 2 Hz (read  1 – 2 times every second) 
+
+Audio sensor (equipped with LM386) 
+
+20000Hz (read 20000 times every second) 
+
+CO2 sensor (SGP30) 
+
+1 Hz (read 1 time every second) 
+
+Sensor Data Gathered and Gathering the Data 
+
+In summary, the sensors, as a collection, collect CO2 level, audio level and temperature level in the table’s environment. The Raspberry Pi has a specific process that pings the sensors every hour for the data for all 3 parameters. After the data arrives at the Raspberry Pi, there are 2 intermediaries before the data reaches the database to be stored. The 2 intermediaries are PubNub and EC2 server. As a high level overview, PubNub is used to broadcast the message sent by the publisher (in this case the Raspberry Pi) to the subscriber (in this case EC2). EC2 will then be able to forward that data to the MySQL database instance to be stored. 
+
+Sensor Data Storage 
+
+Database 
+
+This project uses a MySQL database instance from AWS. 
+
+Relational Database Schema 
+
+ 
+
+As we can see in the schema above, the sensors data occupy the TableStats table and the StudyTable table. Basically, every hour, after the Raspberry Pi sends the hourly table stats information to the server, the server will add this information as a new entry to the TableStats table (which contains all 3 fields for the 3 parameters and including the time and tableId to note which table the stats belong to).  
+
+The StudyTable table also contains 3 fields for the 3 parameters, these fields are populated every midnight by the cron job (mentioned below in the Data Processing section). These 3 fields are the ones that will be used when getting all available tables in the booking website. 
+
+Sample Queries for Process Data 
+
+Store a new entry to the TableStats table 
+
+Insert into TableStats (tableId, time, temperatureLevel, soundLevel, co2Level) values 	(DkIT-1, NOW(), 25.0, 10.2, 100.3) 
+
+Find the average stats from the last 24 hours of a table given a tableId and store it in StudyTable table 
+
+select avg(temperatureLevel) as averageTemperature, avg(soundLevel) as averageSound, 	avg(co2Level) as averageCo2 from TableStats where tableId = givenTableId and time >= NOW() - INTERVAL 1 DAY 
+
+After getting the average stats from the table, update the average stats on the StudyTable 	table where tableId is equal to the table’s id 
+
+update StudyTable set averageTemperatureLevel = averageTemperature, 	                    	averageSoundLevel = averageSound, averageCo2Level = averageCo2 
+
+Sample Queries for Query Data 
+
+Getting the available tables in DkIT on 21st of October 2021 from 5pm to 7pm (including the table stats) - assuming that the entered start time will always be smaller than the entered end time (I.e., the time range is valid) 
+
+select  
+
+studytable.id as studyTableId,  
+
+studyTable.averageTemperatureLevel as averageTemperatureLevel,  
+
+studyTable.averageSoundLevel as averageSoundLevel,  
+
+studyTable.averageCo2Level as averageCo2Level  
+
+from studytable  
+
+join booking on studytable.id = booking.studyTableId  
+
+group by studyTableId having count(case when not ('2021-10-21 19:00:00' <= booking.startTime or '2021-10-21 17:00:00' >= booking.endTime) then 1 end) = 0; 
+
+Brief explanation of the query above: The query initially performs an inner join between StudyTable table and Booking table on the StudyTable id column from both tables. It then groups the table (the result of the inner join operation) by the studyTableId. After this, we iterate through each group and count the number of “violating booking” (explained below as a note) for a studyTableId. In the end, we just pick all the ids of the StudyTables that have no “violating booking”. 
+
+Note: to explain what “violating booking” means, it's easier to start by explaining what “non-violating booking” means.  A booking can be said non-violating if the wanted startTime is greater or equal to the booking’s endTime, or, If the wanted endTime is less or equal to the booking’s startTime. This is always the case since we are assuming that the entered time range will always be valid (I.e. in 1 day and the startTime < endTime). Hence, the important thing here is to always validate that the time range is valid. 
+
+Sensor Data Processing 
+
+Using Cron 
+
+This project uses cron to find the daily average stats for every tables and update the database entry for every tables. 
+
+List of Cron Jobs 
+
+This project uses 1 cron job as mentioned above. For every existing tables, the cron job finds the average stats over the last 24 hours and average all the 3 parameters (audio level, temperature level and the CO2 level). The cron job uses the SQL query detailed above (to average data from TableStats and store in StudyTable table) for every tables. 
+
+Data Gathered from Third Party APIs 
+
+This project does not use any data coming from third party APIs  
+
+Additional Data 
+
+Booking website 
+
+Data gathered and process of gathering the data until it reaches the server 
+
+Overall, the booking website collects the booking information entered by the user. This data is inputted when a user books a study session for a particular table. The data is then sent to the server (which is the same server used by the hardware components.  
+
+The server stores the id of the table (known as tableId), the start time and end time of the study session in the database (which will be covered in the Data Storage section below). It also collects user email (but not stored) just to be used to send back booking confirmation email to the user. The sending of the booking confirmation email uses Google SMTP server to forward the email to the user’s email address. 
+
+Data Storage 
+
+The booking website uses the same database as the hardware components, which is the MySQL database instance. For every new booking, the server creates a passcode that will be used by the user (who is the person who has booked the table) when the user comes to the table. The passcode is stored in the Booking table in the database UML diagram above.  
+
+Securing the passcode in the Booking table 
+
+The passcode is secured by using salt and hash function (it is feasible to use hash function since the passcode will not be retrieved in future operation, will just be used to verify the passcode that have been inputted by the user). First of all, a random string, called salt, will be added to the passcode and then a hash function will be applied to the combination. Salt is used to prevent same passcodes to be hashed into the same element.  
+
+
+Dennis Willie & Jeremy Neo 
+
+Develop back-end APIs to accommodate requests from booking website + unit tests 
+
+Develop back-end APIs to accommodate requests from table screen website + unit tests 
+
+Develop back-end PubNub handler to accommodate receiving sensors data  
+
+Create database tables and database APIs for all tables + unit tests 
+
+Provision AWS Cloud infrastructure (AWS EC2 for server, AWS RDS MySQL DB instance for database, AWS route 53 for DNS) including registering SSL certificate from AW using AWS CloudFormation and AWS CDK 
+
+Create cron job to update the daily average stats of every tables 
+
+ 
+
+Ethan Alexandro Yiik Hee Sia 
+
+Develop python script to ping the sensors every hour and forwards the data to the PubNub server + unit tests 
+
+Develop python script to allow table configuration by administrator (I.e., assigning the raspberry pi to a tableId and send the tableId together with the mac address to be stored in database) + unit tests 
+
+Implement proper wirings between the hardware components  
+
