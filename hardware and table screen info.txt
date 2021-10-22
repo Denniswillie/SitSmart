@@ -1,0 +1,72 @@
+Hardware 
+
+Hardware Required 
+
+The hardware components that are required for this project are the following: 
+
+Raspberry Pi 
+
+Bread Board 
+
+Temperature sensor (DHT 11) 
+
+Microphone 
+
+CO2 sensor (SGP30) 
+
+Jumper wires 
+
+ADC (Analog to Digital Converter) 
+
+HDMI cable 
+
+Monitor 
+
+Mouse 
+
+Hardware Connectivity 
+
+The table screen will be connected to the raspberry PI’s hdmi port to display out the screen. Other sensors will be connected via a breadboard as the heat sensor would need a resistor to allow the circuit to have very low amps within it. All of the wiring is connected to their right place eg: (ground wire will be connected to the ground pin in raspberry pi). Furthermore, Pi's onboard WiFi is what facilitates the internet connection. 
+
+Connection Diagrams 
+
+ 
+
+Hardware Power and Internet Connection 
+
+All the sensors are powered by the RaspberryPi, which is in turn powered by the sockets. The sensors use the Raspberry Pi as an “intermidiary” to communicate with the internet. The Raspberry Pi calls the Stats API to send the periodical stats data retrieved from the sensors.  
+
+
+
+
+
+
+Table screen 
+
+Power Supply 
+
+The table screen will be a monitor which is connected to our Raspberry PI through HDMI and it will be powered by the sockets.  
+
+Data to Gather  
+
+The table screen would gather the bookingId, tableId and also the bookingPassword when the user has arrived and claim that desk. It would then send the data to the server and check with the database if the password is correct and immediately update the availability of the table to the database. If the user claims the table without booking it first, it will gather bookingId, tableId, startTime only and send to server to create a booking and the endTime would be the next reservation time. 
+
+Data Storage 
+
+The table screen will be using the same database as the booking website (booking table) 
+
+Data Processing 
+
+The table screen would have a UI for it (website) and it would be responsible for updating the availability of their current desk. They will call a post request from Booking API every 15 minutes to update the current table availability  
+
+User booked the table 
+
+The table screen website will send a post request to update the availability of the current table and update straight away and the website will start to count down for 15 minutes from booked hour 
+
+User did not arrive in time (more than 15 minutes) 
+
+The device will call a delete request to cancel the booking but the availability of the table will still need to follow the update cycle of the website eg.(user should arrive on 10 but it’s 10:15 so next update of availability will be 10:30) 
+
+After booking confirmed 
+
+After the user has entered the correct bookingPasscode, the website will send a post request to verify the code and after accessed, there will be a check-out button on the website for the user when checking out. 
