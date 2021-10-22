@@ -84,5 +84,9 @@ Available at: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
 Infosys, 2021. Infocyte. [Online] 
 Available at: https://www.infocyte.com/blog/2019/05/01/cybersecurity-101-intro-to-the-top-10-common-types-of-cyber-security-attacks/
 [Accessed 17 October 2021].
+Tutorial, R. A., 2012. REST API Tutorial. [Online] 
+Available at: https://www.restapitutorial.com/lessons/httpmethods.html
+[Accessed 22 October 2021].
+
 
 
