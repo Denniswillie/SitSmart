@@ -1,10 +1,14 @@
 Ensuring Device Security
 
-To ensure our device security. First, we will get every device’s mac address and store it in the database 
-called “Device Authentication”. Secondly, we will set a strong password to secure the database to make 
-sure the database is safe. After that, if any device’s mac address is outside of our network and tried to 
-access our device. Our system will find that device’s mac address and compare it by using the registered mac 
-address list from the database. If the mac address is not on the list, then the system will notify us to remove the unknown device .
+To ensure our device security. First, after we set up the Raspberry pi device, 
+the Raspberry pi will initially send the table id and mac address to the database. 
+And the database will record it and store it. Hence, when the Raspberry pi of any table at a time send a request at a time, 
+it will contain the table id and mac address. It will allow the server to check is that raspberry pi’s table id and 
+mac address is one of the registered table id and mac address in the database. 
+Secondly, we will set a strong password for the database to make sure only the person who has the password to access the database. 
+It is because a strong password will be difficult for attackers who tried to access the database. 
+The reason that we want to set the strong password for the database is to make sure only the authorized user can access the database 
+and let the attacker cannot add their raspberry pi’s mac address into the database.  
 
 Data Transferred Between Devices and Server and while in Storage
 1   Throttling :
