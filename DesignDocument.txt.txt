@@ -45,3 +45,14 @@ Secure Sockets Layer (SSL) is a cryptographic protocol that is used to secure co
  For example, HTTPS. It is because HTTPS use a key called A to encrypt communication content by using symmetric encryption. 
 After that, HTTPS will use asymmetric encryption to encrypt key A and send it to another party. If the key does not fall into 
 another party, then the transmitted data will not be decrypted by another party
+
+
+References
+AWS, A., 2020. https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html. [Online] 
+Available at: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles.html
+[Accessed 2021 October 2021].
+Infosys, 2021. Infocyte. [Online] 
+Available at: https://www.infocyte.com/blog/2019/05/01/cybersecurity-101-intro-to-the-top-10-common-types-of-cyber-security-attacks/
+[Accessed 17 October 2021].
+
+
