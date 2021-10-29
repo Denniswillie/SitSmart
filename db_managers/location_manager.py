@@ -7,6 +7,10 @@ class LocationManager:
         self._mysql = mysql
 
     def create_location(self, location: Location) -> int:
+        """
+
+        :rtype: object
+        """
         cur = self._mysql.connection.cursor()
         cur.execute("INSERT INTO location(name) VALUES (%s);", [location.name])
         cur.execute("SELECT LAST_INSERT_ID();")
