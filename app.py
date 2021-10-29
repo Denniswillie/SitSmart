@@ -14,6 +14,9 @@ app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'sit_smart'
 
 mail = Mail(app)
+internal_err_code = 500
+ok_status_code = 200
+successful_creation_status_code = 201
 
 
 @app.route("/")
@@ -41,14 +44,14 @@ def location():
     try:
         return_id = location_manager.create_location(location)
         return json.dumps({
-            "statusCode": 201,
-            "description": "Your new table ID is " + str(return_id)
+            "statusCode": successful_creation_status_code,
+            "message": "Your new table ID is " + str(return_id)
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": 500,
-            "description": err_msg
+            "statusCode": internal_err_code,
+            "message": err_msg
         })
 
 
@@ -61,14 +64,14 @@ def editLocation():
     try:
         location_manager.edit_location(location)
         return json.dumps({
-            "statusCode": 200,
-            "description": "Successfully edited"
+            "statusCode": ok_status_code,
+            "message": "Successfully edited"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": 500,
-            "description": err_msg
+            "statusCode": internal_err_code,
+            "message": err_msg
         })
 
 
@@ -79,14 +82,14 @@ def removeLocation():
         location_manager = LocationManager(mysql)
         location_manager.remove_location(id)
         return json.dumps({
-            "statusCode": 200,
-            "description": "Successfully removed"
+            "statusCode": ok_status_code,
+            "message": "Successfully removed"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": 500,
-            "description": err_msg
+            "statusCode": internal_err_code,
+            "message": err_msg
         })
 
 
@@ -101,14 +104,14 @@ def createTable():
     try:
         studyTable_manager.create_study_table(studyTable)
         return json.dumps({
-            "statusCode": 201,
-            "description": "Successfully created a new table"
+            "statusCode": successful_creation_status_code,
+            "message": "Successfully created a new table"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": 500,
-            "description": err_msg
+            "statusCode": internal_err_code,
+            "message": err_msg
         })
 
 
@@ -119,14 +122,14 @@ def tableInfo():
     try:
         res = studyTable_manager.get_table_info(macAddress)
         return json.dumps({
-            "statusCode": 200,
-            "info": res
+            "statusCode": ok_status_code,
+            "result": res
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": 500,
-            "description": err_msg
+            "statusCode": internal_err_code,
+            "message": err_msg
         })
 
 
@@ -137,14 +140,14 @@ def removeTable():
     try:
         studyTable_manager.remove_study_table(id)
         return json.dumps({
-            "statusCode": 200,
-            "description": "Successfully removed a table"
+            "statusCode": ok_status_code,
+            "message": "Successfully removed a table"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": 500,
-            "description": err_msg
+            "statusCode": internal_err_code,
+            "message": err_msg
         })
 
 
