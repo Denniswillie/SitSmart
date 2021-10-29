@@ -1,15 +1,10 @@
+import json
+
 from flask import Flask, render_template, request, redirect
 from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
 from entities import Location, StudyTable
 from db_managers import LocationManager, StudyTableManager
-
-# from db_managers import StudyTableManager
-#
-# #down in ur function
-# study_table_manager = StudyTableManager(cur)
-# study_table_manager.createTable()
-
 
 app = Flask(__name__)
 mysql = MySQL(app)
@@ -45,9 +40,16 @@ def location():
     location_manager = LocationManager(mysql)
     try:
         return_id = location_manager.create_location(location)
-        return str(return_id)
-    except:
-        return False
+        return json.dumps({
+            "statusCode": 201,
+            "description": "Your new table ID is " + str(return_id)
+        })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": 500,
+            "description": err_msg
+        })
 
 
 @app.route("/editLocation", methods=["POST"])
@@ -58,9 +60,16 @@ def editLocation():
     location_manager = LocationManager(mysql)
     try:
         location_manager.edit_location(location)
-        return True
-    except:
-        return False
+        return json.dumps({
+            "statusCode": 200,
+            "description": "Successfully edited"
+        })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": 500,
+            "description": err_msg
+        })
 
 
 @app.route("/removeLocation", methods=["DELETE"])
@@ -69,9 +78,16 @@ def removeLocation():
     try:
         location_manager = LocationManager(mysql)
         location_manager.remove_location(id)
-        return True
-    except:
-        return False
+        return json.dumps({
+            "statusCode": 200,
+            "description": "Successfully removed"
+        })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": 500,
+            "description": err_msg
+        })
 
 
 # ---------------------StudyTable APIs----------------------#
@@ -84,9 +100,16 @@ def createTable():
     studyTable_manager = StudyTableManager(mysql)
     try:
         studyTable_manager.create_study_table(studyTable)
-        return True
-    except:
-        return False
+        return json.dumps({
+            "statusCode": 201,
+            "description": "Successfully created a new table"
+        })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": 500,
+            "description": err_msg
+        })
 
 
 @app.route("/getTableInfo", methods=["POST"])
@@ -95,9 +118,16 @@ def tableInfo():
     studyTable_manager = StudyTableManager(mysql)
     try:
         res = studyTable_manager.get_table_info(macAddress)
-        return res
-    except:
-        return False
+        return json.dumps({
+            "statusCode": 200,
+            "info": res
+        })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": 500,
+            "description": err_msg
+        })
 
 
 @app.route("/removeTable", methods=["DELETE"])
@@ -106,9 +136,16 @@ def removeTable():
     studyTable_manager = StudyTableManager(mysql)
     try:
         studyTable_manager.remove_study_table(id)
-        return True
-    except:
-        return False
+        return json.dumps({
+            "statusCode": 200,
+            "description": "Successfully removed a table"
+        })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": 500,
+            "description": err_msg
+        })
 
 
 app.run(debug=True)
