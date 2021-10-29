@@ -28,3 +28,9 @@ class BookingManager:
         result = cur.fetchone()
         cur.close()
         return result[0] == 1
+
+    def remove_booking(self, booking_id: int):
+        cur = self._mysql.connection.cursor()
+        cur.execute("DELETE from booking where bookingId = %s", [booking_id])
+        self._mysql.connection.commit()
+        cur.close()
