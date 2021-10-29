@@ -33,8 +33,8 @@ create table TableStats (
 
 create table Booking (
     bookingId int not null AUTO_INCREMENT,
-    bookingPasswordHash binary(64) not null,
-    salt varchar(20) not null,
+    bookingPasswordHash varchar(128) SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    salt varchar(40) not null,
     studyTableId varchar(30) not null,
     startTime DATETIME,
     endTime DATETIME,
