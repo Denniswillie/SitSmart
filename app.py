@@ -38,30 +38,33 @@ def index():
 
 
 @app.route("/startScreen")
-def startScreen():
+def startScreen_function():
+    if session.get('email'):
+        return redirect("/bookingScreen")
     return render_template("startScreen.html")
 
 
 @app.route("/register", methods=["POST"])
-def register():
-    email = request.form.get("email")
-    session["email"] = email
+def register_function():
+    if not session.get('email'):
+        email = request.form.get("email")
+        session["email"] = email
     return redirect("/bookingScreen")
 
 
 @app.route("/bookingScreen")
-def bookingScreen():
+def bookingScreen_function():
     return render_template("booking_screen.html")
 
 
 @app.route("/receiptScreen")
-def receiptScreen():
+def receiptScreen_function():
     return render_template("receipt_screen.html")
 
 
 # ---------------------Location APIs----------------------#
 @app.route("/location", methods=["POST"])
-def location():
+def location_function():
     name = request.form.get("location")
     location = Location(name)
     location_manager = LocationManager(mysql)
@@ -80,7 +83,7 @@ def location():
 
 
 @app.route("/editLocation", methods=["POST"])
-def editLocation():
+def editLocation_function():
     name = request.form.get("location")
     id = request.form.get("location_id")
     location = Location(name, id)
@@ -100,7 +103,7 @@ def editLocation():
 
 
 @app.route("/removeLocation", methods=["DELETE"])
-def removeLocation():
+def removeLocation_function():
     id = request.form.get("location_id")
     try:
         location_manager = LocationManager(mysql)
@@ -119,7 +122,7 @@ def removeLocation():
 
 # ---------------------StudyTable APIs----------------------#
 @app.route("/studyTable", methods=["POST"])
-def createTable():
+def createTable_function():
     locationId = request.form.get("locationId")
     tableId = request.form.get("tableId")
     macAddress = request.form.get("macAddress")
@@ -140,7 +143,7 @@ def createTable():
 
 
 @app.route("/getTableInfo", methods=["POST"])
-def tableInfo():
+def tableInfo_function():
     macAddress = request.form.get("macAddress")
     studyTable_manager = StudyTableManager(mysql)
     try:
@@ -158,7 +161,7 @@ def tableInfo():
 
 
 @app.route("/removeTable", methods=["DELETE"])
-def removeTable():
+def removeTable_function():
     id = request.form.get("table_id")
     studyTable_manager = StudyTableManager(mysql)
     try:
