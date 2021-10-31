@@ -1,8 +1,10 @@
 import json
+import os
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect,session
 from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
+from flask_session import Session
 from entities import Location, StudyTable
 from db_managers import LocationManager, StudyTableManager
 
@@ -12,6 +14,15 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'sit_smart'
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_POST'] = 587
+app.config['MAIL_SERVER'] = "smtp.gmail.com"
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_TYPE'] = "filesystem"
+Session(app)
 
 mail = Mail(app)
 internal_err_code = 500
@@ -21,16 +32,29 @@ successful_creation_status_code = 201
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if not session.get('email'):
+        return redirect("/startScreen")
+    return render_template("bookingScreen.html")
+
+
+@app.route("/startScreen")
+def startScreen():
+    return render_template("startScreen.html")
+
+
+@app.route("/register", methods=["POST"])
+def register():
+    email = request.form.get("email")
+    session["email"] = email
+    return redirect("/bookingScreen")
 
 
 @app.route("/bookingScreen")
 def bookingScreen():
-    email = request.form.get("email")
     return render_template("booking_screen.html")
 
 
-@app.route("/receipt")
+@app.route("/receiptScreen")
 def receiptScreen():
     return render_template("receipt_screen.html")
 
