@@ -10,19 +10,21 @@ create table Location (
 );
 
 create table StudyTable (
-    studyTableId varchar(30) not null,
+    studyTableId int not null AUTO_INCREMENT,
+    studyTableName varchar(30) not null,
     locationId int not null,
     piMacAddress varchar(60) not null,
     averageTemperatureLevel float,
     averageSoundLevel float,
     averageCo2Level float,
     PRIMARY KEY (studyTableId, locationId),
-    FOREIGN KEY (locationId) REFERENCES Location(locationId)
+    FOREIGN KEY (locationId) REFERENCES Location(locationId),
+    CONSTRAINT UC_StudyTable UNIQUE (studyTableName, locationId)
 );
 
 create table TableStats (
     tableStatsId int not null AUTO_INCREMENT,
-    studyTableId varchar(30) not null,
+    studyTableId int not null,
     recordedTime DATETIME,
     temperatureLevel float,
     soundLevel float,
@@ -33,11 +35,13 @@ create table TableStats (
 
 create table Booking (
     bookingId int not null AUTO_INCREMENT,
-    bookingPasswordHash varchar(128) SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
+    bookingPasswordHash varchar(128) NOT NULL,
     salt varchar(40) not null,
-    studyTableId varchar(30) not null,
+    studyTableId int not null,
     startTime DATETIME,
     endTime DATETIME,
     PRIMARY KEY (bookingId),
     FOREIGN KEY (studyTableId) REFERENCES StudyTable(studyTableId)
 );
+
+alter table Booking modify bookingPasswordHash varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

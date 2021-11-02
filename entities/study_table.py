@@ -1,11 +1,23 @@
 class StudyTable:
-    def __init__(self, study_table_id, location_id, pi_mac_address, avg_temperature_lvl, avg_sound_lvl, avg_co2_lvl):
+    def __init__(self,
+                 study_table_name,
+                 location_id,
+                 pi_mac_address,
+                 avg_temperature_lvl=None,
+                 avg_sound_lvl=None,
+                 avg_co2_lvl=None,
+                 study_table_id=None):
+        self._study_table_name = study_table_name
         self._study_table_id = study_table_id
         self._location_id = location_id
         self._pi_mac_address = pi_mac_address
         self._avg_temperature_lvl = avg_temperature_lvl
         self._avg_sound_lvl = avg_sound_lvl
         self._avg_co2_lvl = avg_co2_lvl
+
+    @property
+    def study_table_name(self):
+        return self._study_table_name
 
     @property
     def study_table_id(self):
