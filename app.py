@@ -25,9 +25,9 @@ app.config['SESSION_TYPE'] = "filesystem"
 Session(app)
 
 mail = Mail(app)
-internal_err_code = 500
-ok_status_code = 200
-successful_creation_status_code = 201
+INTERNAL_ERR_CODE = 500
+OK_STATUS_CODE = 200
+SUCCESSFUL_CREATION_STATUS_CODE = 201
 
 
 @app.route("/")
@@ -58,57 +58,57 @@ def receipt_screen():
 # ---------------------Location APIs----------------------#
 @app.route("/location", methods=["POST"])
 def create_location():
-    name = request.form.get("location")
+    name = request.form.get("location_name")
     location = Location(name)
     location_manager = LocationManager(mysql)
     try:
-        return_id = location_manager.create_location(location)
+        location_id = location_manager.create_location(location)
         return json.dumps({
-            "statusCode": successful_creation_status_code,
-            "message": "Your new table ID is " + str(return_id)
+            "statusCode": SUCCESSFUL_CREATION_STATUS_CODE,
+            "message": "Your new table ID is " + str(location_id)
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": internal_err_code,
+            "statusCode": INTERNAL_ERR_CODE,
             "message": err_msg
         })
 
 
 @app.route("/editLocation", methods=["POST"])
 def edit_location():
-    name = request.form.get("location")
-    id = request.form.get("location_id")
-    location = Location(name, id)
-    location_manager = LocationManager(mysql)
     try:
+        location_name = request.form.get("location_name")
+        location_id = int(request.form.get("location_id"))
+        location = Location(location_name, location_id)
+        location_manager = LocationManager(mysql)
         location_manager.edit_location(location)
         return json.dumps({
-            "statusCode": ok_status_code,
+            "statusCode": OK_STATUS_CODE,
             "message": "Successfully edited"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": internal_err_code,
+            "statusCode": INTERNAL_ERR_CODE,
             "message": err_msg
         })
 
 
 @app.route("/removeLocation", methods=["DELETE"])
 def remove_location():
-    id = request.form.get("location_id")
     try:
+        location_id = int(request.form.get("location_id"))
         location_manager = LocationManager(mysql)
-        location_manager.remove_location(id)
+        location_manager.remove_location(location_id)
         return json.dumps({
-            "statusCode": ok_status_code,
+            "statusCode": OK_STATUS_CODE,
             "message": "Successfully removed"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": internal_err_code,
+            "statusCode": INTERNAL_ERR_CODE,
             "message": err_msg
         })
 
@@ -116,57 +116,57 @@ def remove_location():
 # ---------------------StudyTable APIs----------------------#
 @app.route("/studyTable", methods=["POST"])
 def create_table():
-    locationId = request.form.get("locationId")
-    tableId = request.form.get("tableId")
-    macAddress = request.form.get("macAddress")
-    studyTable = StudyTable(tableId, locationId, macAddress)
-    studyTable_manager = StudyTableManager(mysql)
+    location_id = request.form.get("location_id")
+    study_table_name = request.form.get("study_table_name")
+    mac_address = request.form.get("mac_address")
+    study_table = StudyTable(study_table_name, location_id, mac_address)
+    study_table_manager = StudyTableManager(mysql)
     try:
-        studyTable_manager.create_study_table(studyTable)
+        study_table_manager.create_study_table(study_table)
         return json.dumps({
-            "statusCode": successful_creation_status_code,
+            "statusCode": SUCCESSFUL_CREATION_STATUS_CODE,
             "message": "Successfully created a new table"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": internal_err_code,
+            "statusCode": INTERNAL_ERR_CODE,
             "message": err_msg
         })
 
 
 @app.route("/getTableInfo", methods=["POST"])
 def table_info():
-    macAddress = request.form.get("macAddress")
-    studyTable_manager = StudyTableManager(mysql)
+    mac_address = request.form.get("mac_address")
+    study_table_manager = StudyTableManager(mysql)
     try:
-        res = studyTable_manager.get_table_info(macAddress)
+        res = study_table_manager.get_table_info(mac_address)
         return json.dumps({
-            "statusCode": ok_status_code,
+            "statusCode": OK_STATUS_CODE,
             "result": res
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": internal_err_code,
+            "statusCode": INTERNAL_ERR_CODE,
             "message": err_msg
         })
 
 
 @app.route("/removeTable", methods=["DELETE"])
 def remove_table():
-    id = request.form.get("table_id")
-    studyTable_manager = StudyTableManager(mysql)
+    study_table_id = request.form.get("study_table_id")
+    study_table_manager = StudyTableManager(mysql)
     try:
-        studyTable_manager.remove_study_table(id)
+        study_table_manager.remove_study_table(study_table_id)
         return json.dumps({
-            "statusCode": ok_status_code,
+            "statusCode": OK_STATUS_CODE,
             "message": "Successfully removed a table"
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
-            "statusCode": internal_err_code,
+            "statusCode": INTERNAL_ERR_CODE,
             "message": err_msg
         })
 
