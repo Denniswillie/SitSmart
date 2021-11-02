@@ -67,7 +67,7 @@ def receipt_screen():
         return redirect("/register")
 
 
-@app.route("/booking")
+@app.route("/booking", methods=["POST", "GET", "DELETE"])
 def handle_booking():
     booking_manager = BookingManager(mysql)
 
