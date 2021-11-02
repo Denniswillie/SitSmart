@@ -1,5 +1,5 @@
 class Booking:
-    def __init__(self, booking_id, booking_password, table_id, start_time, end_time):
+    def __init__(self, booking_password, table_id, start_time, end_time, booking_id=None):
         self._booking_id = booking_id
         self._booking_password = booking_password
         self._table_id = table_id
