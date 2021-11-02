@@ -1,8 +1,10 @@
 import json
+import os
 
-from flask import Flask, render_template, request, redirect
+from flask import Flask, render_template, request, redirect, session
 from flask_mysqldb import MySQL
 from flask_mail import Mail, Message
+from flask_session import Session
 from entities import Location, StudyTable
 from db_managers import LocationManager, StudyTableManager
 
@@ -12,6 +14,15 @@ app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
 app.config['MYSQL_DB'] = 'sit_smart'
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_POST'] = 587
+app.config['MAIL_SERVER'] = "smtp.gmail.com"
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['SESSION_PERMANENT'] = False
+app.config['SESSION_TYPE'] = "filesystem"
+Session(app)
 
 mail = Mail(app)
 internal_err_code = 500
@@ -21,23 +32,32 @@ successful_creation_status_code = 201
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    if not session.get('email'):
+        return redirect("/register")
+    return render_template("booking.html")
 
 
-@app.route("/bookingScreen")
-def bookingScreen():
-    email = request.form.get("email")
-    return render_template("booking_screen.html")
+@app.route("/register", methods=["POST", "GET"])
+def register():
+    if request.method == "POST":
+        email = request.form.get("email")
+        session["email"] = email
+        return redirect("/booking")
+    # handle GET request
+    else:
+        if session.get('email'):
+            return redirect("/booking")
+        return render_template("register.html")
 
 
 @app.route("/receipt")
-def receiptScreen():
-    return render_template("receipt_screen.html")
+def receipt_screen():
+    return render_template("receipt.html")
 
 
 # ---------------------Location APIs----------------------#
 @app.route("/location", methods=["POST"])
-def location():
+def create_location():
     name = request.form.get("location")
     location = Location(name)
     location_manager = LocationManager(mysql)
@@ -56,7 +76,7 @@ def location():
 
 
 @app.route("/editLocation", methods=["POST"])
-def editLocation():
+def edit_location():
     name = request.form.get("location")
     id = request.form.get("location_id")
     location = Location(name, id)
@@ -76,7 +96,7 @@ def editLocation():
 
 
 @app.route("/removeLocation", methods=["DELETE"])
-def removeLocation():
+def remove_location():
     id = request.form.get("location_id")
     try:
         location_manager = LocationManager(mysql)
@@ -95,7 +115,7 @@ def removeLocation():
 
 # ---------------------StudyTable APIs----------------------#
 @app.route("/studyTable", methods=["POST"])
-def createTable():
+def create_table():
     locationId = request.form.get("locationId")
     tableId = request.form.get("tableId")
     macAddress = request.form.get("macAddress")
@@ -116,7 +136,7 @@ def createTable():
 
 
 @app.route("/getTableInfo", methods=["POST"])
-def tableInfo():
+def table_info():
     macAddress = request.form.get("macAddress")
     studyTable_manager = StudyTableManager(mysql)
     try:
@@ -134,7 +154,7 @@ def tableInfo():
 
 
 @app.route("/removeTable", methods=["DELETE"])
-def removeTable():
+def remove_table():
     id = request.form.get("table_id")
     studyTable_manager = StudyTableManager(mysql)
     try:
