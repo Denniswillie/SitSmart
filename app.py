@@ -130,7 +130,8 @@ def handle_booking():
         location_id = int(request.form.get("location_id"))
         start_time = request.form.get("start_time")
         end_time = request.form.get("end_time")
-        return render_template("booking_screen.html", available_tables=booking_manager.get_available_tables(
+        study_table_manager = StudyTableManager(mysql)
+        return render_template("booking_screen.html", available_tables=study_table_manager.get_available_tables(
             location_id,
             start_time,
             end_time
