@@ -1,5 +1,3 @@
-from typing import List
-
 from flask_mysqldb import MySQL
 from entities import Booking, StudyTable
 import uuid

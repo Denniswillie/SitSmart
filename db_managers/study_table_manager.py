@@ -1,6 +1,7 @@
 from flask_mysqldb import MySQL
 from entities import StudyTable
 from entities import StudyTableInfo
+from typing import List
 
 
 class StudyTableManager:
