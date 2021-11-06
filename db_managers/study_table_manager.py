@@ -34,7 +34,11 @@ class StudyTableManager:
                     "location ON studyTable.locationId = location.locationId WHERE piMacAddress = %s;", [pi_mac_address]
         )
         self._mysql.connection.commit()
-        study_table_id, study_table_name, location_name = cur.fetchone()
+        result = cur.fetchone()
+        if len(result) > 0:
+            study_table_id, study_table_name, location_name = result
+        else:
+            study_table_id = study_table_name = location_name = None
         cur.close()
         return StudyTableInfo(study_table_id, study_table_name, location_name)
 
