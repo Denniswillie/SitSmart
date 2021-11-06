@@ -60,7 +60,7 @@ def register():
     else:
         if session.get('email'):
             return redirect("/booking")
-        return render_template("register.html")
+        return render_template("index.html")
 
 
 @app.route("/receipt")
