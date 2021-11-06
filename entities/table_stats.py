@@ -1,5 +1,5 @@
 class TableStats:
-    def __init__(self, table_stats_id, table_id, time, temperature_lvl, sound_lvl, co2_lvl):
+    def __init__(self, table_id, time, temperature_lvl, sound_lvl, co2_lvl, table_stats_id=None):
         self._table_stats_id = table_stats_id
         self._table_id = table_id
         self._time = time

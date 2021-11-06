@@ -2,6 +2,8 @@ import json
 import os
 import secrets
 import string
+import uuid
+import threading
 
 from flask import Flask, render_template, request, redirect, session, url_for
 from flask_mysqldb import MySQL
@@ -9,6 +11,8 @@ from flask_mail import Mail, Message
 from flask_session import Session
 from entities import Location, StudyTable, Booking
 from db_managers import LocationManager, StudyTableManager, BookingManager
+from pubnub.pnconfiguration import PNConfiguration
+from pubnub_handler import PubnubHandler
 
 app = Flask(__name__)
 mysql = MySQL(app)
@@ -30,6 +34,13 @@ mail = Mail(app)
 INTERNAL_ERR_CODE = 500
 OK_STATUS_CODE = 200
 SUCCESSFUL_CREATION_STATUS_CODE = 201
+
+CHANNEL = "sitsmart_sensors_data_channel"
+pubnub_config = PNConfiguration()
+pubnub_config.publish_key = "pub-c-94051755-9540-4114-bbc2-58edb0260e91"
+pubnub_config.subscribe_key = "sub-c-fe5caef8-3a61-11ec-b2c1-a25c7fcd9558"
+pubnub_config.uuid = str(uuid.uuid4())
+pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 
 @app.route("/")
@@ -259,4 +270,8 @@ def remove_table():
         })
 
 
-app.run(debug=True)
+if __name__ == "__main__":
+    # Subscribe pubnub handler to channel
+    pubnub_handler_subscribe_thread = threading.Thread(target=pubnub_handler.subscribe(CHANNEL))
+    pubnub_handler_subscribe_thread.start()
+    app.run(debug=True, use_reloader=False)
