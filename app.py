@@ -259,4 +259,4 @@ def remove_table():
         })
 
 
-app.run(debug=True)
+app.run(debug=True, use_reloader=False)
