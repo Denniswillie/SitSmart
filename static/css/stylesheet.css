@@ -1,0 +1,49 @@
+body {
+  background-color: black;
+}
+
+h1 {
+  color: white;
+  margin-left: auto;
+  font-family: Arial;
+}
+
+h3 {
+  color: lightblue;
+  margin-left: 20px;
+}
+
+.centered-block {
+  margin: auto;
+
+  display: block;
+}
+
+.center {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+td {
+  color: lightblue;
+  margin-left: 20px;
+  font-family: Arial;
+}
+
+select{
+  width:100%;
+}
+
+button {
+  padding: 10px 50px;
+  border: none;
+  color: white;
+  background-color: green;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 25px;
+  margin: 20px auto;
+  display: block;
+}
