@@ -14,9 +14,6 @@ create table StudyTable (
     studyTableName varchar(30) not null,
     locationId int not null,
     piMacAddress varchar(60) not null,
-    averageTemperatureLevel float,
-    averageSoundLevel float,
-    averageCo2Level float,
     PRIMARY KEY (studyTableId, locationId),
     FOREIGN KEY (locationId) REFERENCES Location(locationId),
     CONSTRAINT UC_StudyTable UNIQUE (studyTableName, locationId)

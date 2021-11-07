@@ -1,6 +1,5 @@
 from flask_mysqldb import MySQL
-from entities import StudyTable
-from entities import StudyTableInfo
+from entities import StudyTable, StudyTableInfo, AvailableStudyTableData, TableStats
 from typing import List
 
 
@@ -11,11 +10,11 @@ class StudyTableManager:
     def create_study_table(self, study_table: StudyTable) -> int:
         cur = self._mysql.connection.cursor()
         cur.execute("INSERT INTO studyTable(studyTableName, locationId, piMacAddress) values (%s, %s, %s)", [
-                study_table.study_table_name,
-                study_table.location_id,
-                study_table.pi_mac_address
-            ]
-        )
+            study_table.study_table_name,
+            study_table.location_id,
+            study_table.pi_mac_address
+        ]
+                    )
         cur.execute("SELECT LAST_INSERT_ID();")
         self._mysql.connection.commit()
         last_inserted_id = cur.fetchone()[0]
@@ -32,7 +31,7 @@ class StudyTableManager:
         cur = self._mysql.connection.cursor()
         cur.execute("SELECT studyTable.studyTableId, studyTable.studyTableName, location.name from studyTable JOIN "
                     "location ON studyTable.locationId = location.locationId WHERE piMacAddress = %s;", [pi_mac_address]
-        )
+                    )
         self._mysql.connection.commit()
         result = cur.fetchone()
         if len(result) > 0:
@@ -42,24 +41,39 @@ class StudyTableManager:
         cur.close()
         return StudyTableInfo(study_table_id, study_table_name, location_name)
 
-    def get_available_tables(self, location_id: int, start_time: str, end_time: str) -> List[StudyTable]:
+    def get_available_tables(self, location_id: int, start_time: str, end_time: str) -> List[AvailableStudyTableData]:
         cur = self._mysql.connection.cursor()
-        cur.execute("select studyTable.studyTableId, studyTable.studyTableName, studyTable.averageTemperatureLevel, "
-                    "studyTable.averageSoundLevel, studyTable.averageCo2Level from studyTable LEFT JOIN booking on "
+        cur.execute("select availableStudyTablesInfo.studyTableId, availableStudyTablesInfo.studyTableName, "
+                    "availableStudyTablesInfo.maxRecordedTime, tableStats.temperatureLevel, tableStats.soundLevel, "
+                    "tableStats.co2Level from (select availableStudyTables.studyTableId, "
+                    "availableStudyTables.studyTableName, availableStudyTables.locationId, max(recordedTime) as "
+                    "maxRecordedTime from tableStats right join (select studyTable.studyTableId, "
+                    "studyTable.studyTableName, studyTable.locationId from studyTable LEFT JOIN booking on "
                     "studyTable.studyTableId = booking.studyTableId WHERE studyTable.locationId = %s group by "
-                    "studyTableId having count(case when not (%s <= booking.startTime or "
-                    "booking.endTime <= %s) then 1 end) = 0;", [location_id, end_time, start_time])
+                    "studyTable.studyTableId having count(case when not (%s <= booking.startTime or booking.endTime "
+                    "<= %s) then 1 end) = 0) as availableStudyTables on tableStats.studyTableId = "
+                    "availableStudyTables.studyTableId group by availableStudyTables.studyTableId) as "
+                    "availableStudyTablesInfo join tableStats on availableStudyTablesInfo.studyTableId = "
+                    "tableStats.studyTableId and availableStudyTablesInfo.maxRecordedTime = tableStats.recordedTime;",
+                    [location_id, end_time, start_time]
+                    )
         self._mysql.connection.commit()
         available_study_tables = []
-        for study_table_id, study_table_name, avg_temperature_lvl, avg_sound_lvl, avg_co2_lvl in cur.fetchall():
-            available_study_tables.append(StudyTable(
-                study_table_name,
-                location_id,
-                None,
-                avg_temperature_lvl,
-                avg_sound_lvl,
-                avg_co2_lvl,
-                study_table_id
+        for study_table_id, study_table_name, recorded_time, temperature_lvl, sound_lvl, co2_level in cur.fetchall():
+            available_study_tables.append(AvailableStudyTableData(
+                StudyTable(
+                    study_table_name,
+                    location_id,
+                    None,
+                    study_table_id
+                ),
+                TableStats(
+                    study_table_id,
+                    recorded_time,
+                    temperature_lvl,
+                    sound_lvl,
+                    co2_level
+                )
             ))
         cur.close()
         return available_study_tables
