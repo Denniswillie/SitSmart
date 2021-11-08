@@ -8,7 +8,7 @@ from entities import StudyTable
 studyTable_api = Blueprint('studyTable_api', __name__)
 
 
-@studyTable_api.route("/studyTable", methods=["POST"])
+@studyTable_api.route("/", methods=["POST"])
 def create_table():
     location_id = request.form.get("location_id")
     study_table_name = request.form.get("study_table_name")
@@ -29,7 +29,7 @@ def create_table():
         })
 
 
-@studyTable_api.route("/getTableInfo", methods=["POST"])
+@studyTable_api.route("/getInfo", methods=["POST"])
 def table_info():
     mac_address = request.form.get("mac_address")
     study_table_manager = StudyTableManager(mysql)
@@ -47,7 +47,7 @@ def table_info():
         })
 
 
-@studyTable_api.route("/removeTable", methods=["DELETE"])
+@studyTable_api.route("/remove", methods=["DELETE"])
 def remove_table():
     study_table_id = request.form.get("study_table_id")
     study_table_manager = StudyTableManager(mysql)

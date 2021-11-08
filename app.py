@@ -3,12 +3,14 @@ import uuid
 import threading
 
 from flask import Flask, render_template, request, redirect, session
+from flask_session import Session
 from routes import location_api, booking_api, studyTable_api
-from global_init import mysql, mail, session
+from global_init import mysql, mail
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub_handler import PubnubHandler
 
 app = Flask(__name__)
+
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
@@ -24,7 +26,7 @@ app.config['SESSION_TYPE'] = "filesystem"
 
 mail.init_app(app)
 mysql.init_app(app)
-session.init_app(app)
+Session(app)
 
 CHANNEL = "sitsmart_sensors_data_channel"
 pubnub_config = PNConfiguration()

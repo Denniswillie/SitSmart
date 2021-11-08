@@ -12,10 +12,9 @@ from flask_mail import Message
 booking_api = Blueprint('booking_api', __name__)
 
 
-@booking_api.route("/booking", methods=["POST", "GET", "DELETE"])
+@booking_api.route("/", methods=["POST", "GET", "DELETE"])
 def handle_booking():
     booking_manager = BookingManager(mysql)
-
     # handle create booking
     if request.method == "POST":
         email_address = request.form.get("email_address")

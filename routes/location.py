@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request,Flask
 from .enums import StatusCode
 import json
 from global_init import mysql
@@ -8,7 +8,7 @@ from entities import Location
 location_api = Blueprint('location', __name__)
 
 
-@location_api.route("/location", methods=["POST"])
+@location_api.route("/", methods=["POST"])
 def create_location():
     name = request.form.get("location_name")
     location = Location(name)
@@ -27,7 +27,7 @@ def create_location():
         })
 
 
-@location_api.route("/editLocation", methods=["POST"])
+@location_api.route("/edit", methods=["POST"])
 def edit_location():
     try:
         location_name = request.form.get("location_name")
@@ -47,7 +47,7 @@ def edit_location():
         })
 
 
-@location_api.route("/removeLocation", methods=["DELETE"])
+@location_api.route("/remove", methods=["DELETE"])
 def remove_location():
     try:
         location_id = int(request.form.get("location_id"))
