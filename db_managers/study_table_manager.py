@@ -34,7 +34,7 @@ class StudyTableManager:
                     )
         self._mysql.connection.commit()
         result = cur.fetchone()
-        if len(result) > 0:
+        if result is not None:
             study_table_id, study_table_name, location_name = result
         else:
             study_table_id = study_table_name = location_name = None
