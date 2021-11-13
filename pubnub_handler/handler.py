@@ -3,7 +3,6 @@ from pubnub.pubnub import PubNub
 from pubnub_handler.enums import MessageType
 from pubnub_handler.utils import get_table_info, create_table, remove_table, save_table_stats, create_location, verify_location_id
 from flask import Flask
-from entities import StudyTableInfo
 
 
 # pubnub client wrapper
