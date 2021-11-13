@@ -1,6 +1,19 @@
-from db_managers import TableStatsManager, StudyTableManager
-from entities import TableStats, StudyTableInfo, StudyTable
+from db_managers import TableStatsManager, StudyTableManager, LocationManager
+from entities import TableStats, StudyTableInfo, StudyTable, Location
 from flask_mysqldb import MySQL
+
+
+def create_location(message: dict, mysql: MySQL) -> int:
+    location_name = str(message["location_name"])
+    location_manager = LocationManager(mysql)
+    location = Location(location_name)
+    return location_manager.create_location(location)
+
+
+def verify_location_id(message: dict, mysql: MySQL) -> bool:
+    location_id = str(message["location_id"])
+    location_manager = LocationManager(mysql)
+    return location_manager.verify_location_id(location_id)
 
 
 def get_table_info(message: dict, mysql: MySQL) -> StudyTableInfo:
