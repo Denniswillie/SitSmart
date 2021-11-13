@@ -24,11 +24,15 @@ class StudyTableManager:
         except:
             return -1
 
-    def remove_study_table(self, study_table_id: str):
+    def remove_study_table(self, study_table_id: int, pi_mac_address: str) -> bool:
         cur = self._mysql.connection.cursor()
-        cur.execute("DELETE from studyTable WHERE studyTableId = %s", [study_table_id])
+        rows_affected = cur.execute(
+            "DELETE from studyTable WHERE studyTableId = %s and piMacAddress = %s;",
+            [study_table_id, pi_mac_address]
+        )
         self._mysql.connection.commit()
         cur.close()
+        return rows_affected > 0
 
     def get_table_info(self, pi_mac_address: str) -> StudyTableInfo:
         cur = self._mysql.connection.cursor()
