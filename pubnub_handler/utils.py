@@ -33,16 +33,17 @@ def create_table(message: dict, mysql: MySQL):
 
 def remove_table(message: dict, mysql: MySQL):
     study_table_manager = StudyTableManager(mysql)
-    table_id = str(message["table_id"])
-    study_table_manager.remove_study_table(table_id)
+    study_table_id = int(message["study_table_id"])
+    pi_mac_address = message["pi_mac_address"]
+    return study_table_manager.remove_study_table(study_table_id, pi_mac_address)
 
 
 def save_table_stats(message: dict, mysql: MySQL):
-    table_id = message["table_id"]
+    study_table_id = message["study_table_id"]
     recorded_time = message["recorded_time"]
     temperature_level = message["temperature_level"]
     co2_level = message["co2_level"]
     sound_level = message["sound_level"]
-    table_states = TableStats(table_id, recorded_time, temperature_level, sound_level, co2_level)
+    table_states = TableStats(study_table_id, recorded_time, temperature_level, sound_level, co2_level)
     table_states_manager = TableStatsManager(mysql)
     table_states_manager.save_table_stats(table_states)
