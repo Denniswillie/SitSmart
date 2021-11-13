@@ -8,18 +8,21 @@ class StudyTableManager:
         self._mysql = mysql
 
     def create_study_table(self, study_table: StudyTable) -> int:
-        cur = self._mysql.connection.cursor()
-        cur.execute("INSERT INTO studyTable(studyTableName, locationId, piMacAddress) values (%s, %s, %s)", [
-            study_table.study_table_name,
-            study_table.location_id,
-            study_table.pi_mac_address
-        ]
-                    )
-        cur.execute("SELECT LAST_INSERT_ID();")
-        self._mysql.connection.commit()
-        last_inserted_id = cur.fetchone()[0]
-        cur.close()
-        return last_inserted_id
+        try:
+            cur = self._mysql.connection.cursor()
+            cur.execute("INSERT INTO studyTable(studyTableName, locationId, piMacAddress) values (%s, %s, %s)", [
+                study_table.study_table_name,
+                study_table.location_id,
+                study_table.pi_mac_address
+            ]
+                        )
+            cur.execute("SELECT LAST_INSERT_ID();")
+            self._mysql.connection.commit()
+            last_inserted_id = cur.fetchone()[0]
+            cur.close()
+            return last_inserted_id
+        except:
+            return -1
 
     def remove_study_table(self, study_table_id: str):
         cur = self._mysql.connection.cursor()
