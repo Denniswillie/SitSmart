@@ -39,14 +39,14 @@ class PubnubHandler:
                                     "type": MessageType.CREATE_LOCATION.name,
                                     "sender": pubnub.uuid,
                                     "location_id": create_location(event.message, self._mysql)
-                                })
+                                }).sync()
                             elif event.message["type"] == MessageType.VERIFY_LOCATION_ID.name:
                                 pubnub.publish().channel(channel).message({
                                     "type": MessageType.VERIFY_LOCATION_ID.name,
                                     "sender": pubnub.uuid,
                                     "verified": verify_location_id(event.message, self._mysql),
                                     "location_id": event.message["location_id"]
-                                })
+                                }).sync()
                             elif event.message["type"] == MessageType.GET_TABLE_INFO.name:
                                 study_table_info = get_table_info(event.message, self._mysql)
                                 pubnub.publish().channel(channel).message({
