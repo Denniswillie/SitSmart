@@ -49,14 +49,20 @@ def table_info():
 
 @studyTable_api.route("/remove", methods=["DELETE"])
 def remove_table():
-    study_table_id = request.form.get("study_table_id")
+    study_table_id = int(request.form.get("study_table_id"))
+    pi_mac_address = request.form.get("pi_mac_address")
     study_table_manager = StudyTableManager(mysql)
     try:
-        study_table_manager.remove_study_table(study_table_id)
-        return json.dumps({
-            "statusCode": StatusCode.OK_STATUS_CODE,
-            "message": "Successfully removed a table"
-        })
+        if study_table_manager.remove_study_table(study_table_id, pi_mac_address):
+            return json.dumps({
+                "statusCode": StatusCode.OK_STATUS_CODE,
+                "message": "Successfully removed a table"
+            })
+        else:
+            return json.dumps({
+                "statusCode": StatusCode.INTERNAL_ERR_CODE,
+                "message": "The table doesn't exist. Can't remove a non-existing table."
+            })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({

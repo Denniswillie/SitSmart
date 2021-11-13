@@ -8,24 +8,31 @@ class StudyTableManager:
         self._mysql = mysql
 
     def create_study_table(self, study_table: StudyTable) -> int:
-        cur = self._mysql.connection.cursor()
-        cur.execute("INSERT INTO studyTable(studyTableName, locationId, piMacAddress) values (%s, %s, %s)", [
-            study_table.study_table_name,
-            study_table.location_id,
-            study_table.pi_mac_address
-        ]
-                    )
-        cur.execute("SELECT LAST_INSERT_ID();")
-        self._mysql.connection.commit()
-        last_inserted_id = cur.fetchone()[0]
-        cur.close()
-        return last_inserted_id
+        try:
+            cur = self._mysql.connection.cursor()
+            cur.execute("INSERT INTO studyTable(studyTableName, locationId, piMacAddress) values (%s, %s, %s)", [
+                study_table.study_table_name,
+                study_table.location_id,
+                study_table.pi_mac_address
+            ]
+                        )
+            cur.execute("SELECT LAST_INSERT_ID();")
+            self._mysql.connection.commit()
+            last_inserted_id = cur.fetchone()[0]
+            cur.close()
+            return last_inserted_id
+        except:
+            return -1
 
-    def remove_study_table(self, study_table_id: str):
+    def remove_study_table(self, study_table_id: int, pi_mac_address: str) -> bool:
         cur = self._mysql.connection.cursor()
-        cur.execute("DELETE from studyTable WHERE studyTableId = %s", [study_table_id])
+        rows_affected = cur.execute(
+            "DELETE from studyTable WHERE studyTableId = %s and piMacAddress = %s;",
+            [study_table_id, pi_mac_address]
+        )
         self._mysql.connection.commit()
         cur.close()
+        return rows_affected > 0
 
     def get_table_info(self, pi_mac_address: str) -> StudyTableInfo:
         cur = self._mysql.connection.cursor()
