@@ -15,9 +15,18 @@ class LocationManager:
         cur.close()
         return last_inserted_id
 
+    def verify_location_id(self, location_id) -> bool:
+        cur = self._mysql.connection.cursor()
+        cur.execute("SELECT locationId from location WHERE locationId = %s;", [location_id])
+        self._mysql.connection.commit()
+        location_id = cur.fetchone()
+        if not location_id:
+            return False
+        else:
+            return True
+
     def edit_location(self, location: Location):
         cur = self._mysql.connection.cursor()
-        print(location.location_id)
         cur.execute("UPDATE location SET name = %s WHERE locationId = %s;", [location.name, location.location_id])
         self._mysql.connection.commit()
         cur.close()
