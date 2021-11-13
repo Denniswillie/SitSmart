@@ -1,5 +1,6 @@
 from entities import Location
 from flask_mysqldb import MySQL
+from typing import List
 
 
 class LocationManager:
@@ -36,3 +37,11 @@ class LocationManager:
         cur.execute("DELETE from location WHERE locationId = %s", [location_id])
         self._mysql.connection.commit()
         cur.close()
+
+    def get_available_locations(self) -> List[Location]:
+        cur = self._mysql.connection.cursor()
+        cur.execute("SELECT locationId, name from location;")
+        self._mysql.connection.commit()
+        locations = [Location(location_id=location_id, name=name) for location_id, name in cur.fetchall()]
+        cur.close()
+        return locations
