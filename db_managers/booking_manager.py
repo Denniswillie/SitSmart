@@ -1,5 +1,5 @@
 from flask_mysqldb import MySQL
-from entities import Booking, StudyTable
+from entities import Booking
 import uuid
 
 
