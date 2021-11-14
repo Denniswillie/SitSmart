@@ -48,39 +48,51 @@ class StudyTableManager:
         cur.close()
         return StudyTableInfo(study_table_id, study_table_name, location_name)
 
-    def get_available_tables(self, location_id: int, start_time: str, end_time: str) -> List[AvailableStudyTableData]:
+    def get_available_tables(self, location_id: int, start_time: str, end_time: str) -> List[StudyTable]:
         cur = self._mysql.connection.cursor()
-        cur.execute("select availableStudyTablesInfo.studyTableId, availableStudyTablesInfo.studyTableName, "
-                    "availableStudyTablesInfo.maxRecordedTime, tableStats.temperatureLevel, tableStats.soundLevel, "
-                    "tableStats.co2Level from (select availableStudyTables.studyTableId, "
-                    "availableStudyTables.studyTableName, availableStudyTables.locationId, max(recordedTime) as "
-                    "maxRecordedTime from tableStats right join (select studyTable.studyTableId, "
-                    "studyTable.studyTableName, studyTable.locationId from studyTable LEFT JOIN booking on "
-                    "studyTable.studyTableId = booking.studyTableId WHERE studyTable.locationId = %s group by "
-                    "studyTable.studyTableId having count(case when not (%s <= booking.startTime or booking.endTime "
-                    "<= %s) then 1 end) = 0) as availableStudyTables on tableStats.studyTableId = "
-                    "availableStudyTables.studyTableId group by availableStudyTables.studyTableId) as "
-                    "availableStudyTablesInfo join tableStats on availableStudyTablesInfo.studyTableId = "
-                    "tableStats.studyTableId and availableStudyTablesInfo.maxRecordedTime = tableStats.recordedTime;",
+        cur.execute("select studyTable.studyTableId, studyTable.studyTableName, studyTable.locationId, "
+                    "studyTable.piMacAddress from studyTable LEFT JOIN booking on studyTable.studyTableId = "
+                    "booking.studyTableId WHERE studyTable.locationId = %s group by studyTable.studyTableId having "
+                    "count(case when not (%s <= booking.startTime or booking.endTime <= %s) then 1 end) = 0;",
                     [location_id, end_time, start_time]
                     )
         self._mysql.connection.commit()
         available_study_tables = []
-        for study_table_id, study_table_name, recorded_time, temperature_lvl, sound_lvl, co2_level in cur.fetchall():
-            available_study_tables.append(AvailableStudyTableData(
-                StudyTable(
-                    study_table_name,
-                    location_id,
-                    None,
-                    study_table_id
-                ),
-                TableStats(
-                    study_table_id,
-                    recorded_time,
-                    temperature_lvl,
-                    sound_lvl,
-                    co2_level
-                )
+        for study_table_id, study_table_name, study_table_location_id, mac_address in cur.fetchall():
+            available_study_tables.append(StudyTable(
+                study_table_name=study_table_name,
+                study_table_id=study_table_id,
+                location_id=study_table_location_id,
+                pi_mac_address=mac_address
             ))
         cur.close()
         return available_study_tables
+
+    def get_study_tables_in_location(self, location_id) -> List[AvailableStudyTableData]:
+        cur = self._mysql.connection.cursor()
+        cur.execute("select x.studyTableId, x.studyTableName, x.locationId, x.piMacAddress, temperatureLevel, "
+                    "soundLevel, co2Level from (select studyTable.studyTableId, studyTable.studyTableName, "
+                    "studyTable.locationId, studyTable.piMacAddress, max(recordedTime) as maxRecordedTime, "
+                    "count(tableStats.tableStatsId) as tableStatsAmount from studyTable left join tableStats on "
+                    "studyTable.studyTableId = tableStats.studyTableId where locationId = %s group by "
+                    "studyTable.studyTableId) as x left join tableStats on x.studyTableId = tableStats.studyTableId "
+                    "where (x.maxRecordedTime = tableStats.recordedTime) or x.tableStatsAmount = 0", [location_id])
+        study_tables = []
+        self._mysql.connection.commit()
+        for study_table_id, study_table_name, study_table_location_id, mac_address, temp, sound, co2 in cur.fetchall():
+            study_tables.append(AvailableStudyTableData(
+                study_table=StudyTable(
+                    study_table_name=study_table_name,
+                    location_id=study_table_location_id,
+                    pi_mac_address=mac_address,
+                    study_table_id=study_table_id
+                ),
+                latest_table_stats=TableStats(
+                    table_id=study_table_id,
+                    sound_lvl=sound,
+                    co2_lvl=co2,
+                    temperature_lvl=temp,
+                    time=None
+                )
+            ))
+        return study_tables
