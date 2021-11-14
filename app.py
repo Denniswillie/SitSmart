@@ -14,7 +14,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'sit_smart'
+app.config['MYSQL_DB'] = 'test'
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_POST'] = 587
@@ -47,7 +47,9 @@ def index():
 def register():
     if request.method == "POST":
         email_address = request.form.get("email")
+        location_id = request.form.get("location_id")
         session["email"] = email_address
+        session["location_id"] = location_id
         return redirect("/booking")
     # handle GET request
     else:
