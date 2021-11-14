@@ -1,14 +1,8 @@
-async function getLocation(){
-    const location = await axios.get("/location/get")
-    select = document.getElementById("locations")
-
-    for(var i=0;i<location.length;i++)
-    {
-        var add = document.createElement('option')
-        add.value = location[i]
-        add.innerHTML = location[i]
-        select.appendChild(add)
-    }
+function checkEmail(){
+    var email = document.getElementById("email").value
+    var confirmEmail = document.getElementById("confirmEmail").value
+    if(confirmEmail!==email)
+        document.getElementById("confirmEmail").style.color = "red"
+    else
+        document.getElementById("confirmEmail").style.color = "black"
 }
-
-getLocation();

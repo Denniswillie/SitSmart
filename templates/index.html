@@ -1,32 +1,34 @@
 {% extends "layout.html" %}
 {% block body %}
-    <h1 style="text-align:center">SIT 💡 SMART</h1>
 
+
+<form method="POST" action="/register">
     <table class="center">
       <tr>
           <td><b>Location</b></td>
       </tr>
       <tr>
           <td><select name="locations" id="locations" width="100">
-              <option value="DkIT">DkIT</option>
-              <option value="TUD">TUD</option>
-              <option value="DCU">DCU</option>
+              {% for location in locations %}
+              <option value={{location.location_id}} id="location_id">{{location.name}}</option>
+              {% endfor %}
           </select></td>
       </tr>
       <tr>
           <td><b>Email</b></td>
       </tr>
       <tr>
-          <td><input type="text" style="text-align:center" id="emailText" name="emailText"></td>
+          <td><input type="text" style="text-align:left" id="email" name="email"></td>
       </tr>
       <tr>
           <td><b>Confirm Email</b></td>
       </tr>
       <tr>
-          <td><input type="text" style="text-align:center" id="confirmEmailText" name="confirmEmailText"></td>
+          <td><input type="text" style="text-align:left" id="confirmEmail" oninput="checkEmail()"></td>
       </tr>
       <tr>
           <td><button text-align="center" type="submit">GO</button></td>
       </tr>
     </table>
+</form>
 {% endblock %}
