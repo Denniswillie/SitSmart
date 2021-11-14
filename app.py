@@ -39,7 +39,7 @@ pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 @app.route("/")
 def index():
-    session.clear()
+    #session.clear()
     if not session.get('email'):
         return redirect("/register")
     return render_template("booking_screen.html")
