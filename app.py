@@ -5,6 +5,7 @@ import threading
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
 from routes import location_api, booking_api, studyTable_api
+from db_managers import LocationManager
 from global_init import mysql, mail
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub_handler import PubnubHandler
@@ -14,7 +15,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test'
+app.config['MYSQL_DB'] = 'sit_smart'
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_POST'] = 587
@@ -38,16 +39,17 @@ pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 @app.route("/")
 def index():
+    #session.clear()
     if not session.get('email'):
         return redirect("/register")
-    return render_template("booking.html")
+    return render_template("booking_screen.html")
 
 
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
         email_address = request.form.get("email")
-        location_id = request.form.get("location_id")
+        location_id = request.form.get("locations")
         session["email"] = email_address
         session["location_id"] = location_id
         return redirect("/booking")
@@ -55,7 +57,8 @@ def register():
     else:
         if session.get('email'):
             return redirect("/booking")
-        return render_template("index.html")
+        location_manager = LocationManager(mysql)
+        return render_template("index.html", locations=location_manager.get_available_locations())
 
 
 @app.route("/receipt")
