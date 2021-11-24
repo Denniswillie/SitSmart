@@ -112,4 +112,4 @@ def get_available_tables():
                 result[study_table_name]["availability"].append(True)
             else:
                 result[study_table_name]["availability"].append(False)
-    return result
+    return json.dumps(result)

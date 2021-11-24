@@ -51,7 +51,7 @@ class PubnubHandler:
                             elif event.message["type"] == MessageType.GET_TABLE_INFO.name:
                                 study_table_info = get_table_info(event.message, self._mysql)
                                 pubnub.publish().channel(channel).message({
-                                    "study_table_info": study_table_info.__dict__,
+                                    "study_table_info": study_table_info.to_dict(),
                                     "type": MessageType.GET_TABLE_INFO.name,
                                     "sender": pubnub.uuid,
                                     "receiver": event.message["sender"]

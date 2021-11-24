@@ -28,7 +28,10 @@ def create_table(message: dict, mysql: MySQL):
     location_id = message["location_id"]
     pi_mac_address = message["pi_mac_address"]
     study_table = StudyTable(study_table_name, location_id, pi_mac_address)
-    return study_table_manager.create_study_table(study_table)
+    try:
+        return study_table_manager.create_study_table(study_table)
+    except:
+        return -1
 
 
 def remove_table(message: dict, mysql: MySQL):
