@@ -70,13 +70,7 @@ class StudyTableManager:
 
     def get_study_tables_in_location(self, location_id) -> List[AvailableStudyTableData]:
         cur = self._mysql.connection.cursor()
-        cur.execute("select x.studyTableId, x.studyTableName, x.locationId, x.piMacAddress, temperatureLevel, "
-                    "soundLevel, co2Level from (select studyTable.studyTableId, studyTable.studyTableName, "
-                    "studyTable.locationId, studyTable.piMacAddress, max(recordedTime) as maxRecordedTime, "
-                    "count(tableStats.tableStatsId) as tableStatsAmount from studyTable left join tableStats on "
-                    "studyTable.studyTableId = tableStats.studyTableId where locationId = %s group by "
-                    "studyTable.studyTableId) as x left join tableStats on x.studyTableId = tableStats.studyTableId "
-                    "where (x.maxRecordedTime = tableStats.recordedTime) or x.tableStatsAmount = 0", [location_id])
+        cur.execute("select * from studyTable where locationId = %s;", [location_id])
         study_tables = []
         self._mysql.connection.commit()
         for study_table_id, study_table_name, study_table_location_id, mac_address, temp, sound, co2 in cur.fetchall():
