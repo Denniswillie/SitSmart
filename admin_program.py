@@ -185,4 +185,4 @@ try:
     # the table. If the admin wants to remove the table, the admin will need to input study table id and also the mac
     # address. The mac address is needed to verify that the remover is the appropriate table admin.
 except:
-    sys.exit()
+    os._exit(0)
