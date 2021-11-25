@@ -64,11 +64,33 @@ def register():
 @app.route("/receipt")
 def receipt_screen():
     if "is_redirect" in request.args and request.args["is_redirect"] is True:
+        booking_times = []
+        booking_date = request.args.get("times0").split("until")[0].split(" ")[0]
+        for key, value in request.args.items():
+            if key.startswith("times"):
+                start_time, end_time = value.split("until")
+                start_time = int(start_time.split(" ")[1].split(":")[0])
+                if start_time > 12:
+                    str_start_time = str(start_time - 12) + "pm"
+                elif start_time == 12:
+                    str_start_time = "12pm"
+                else:
+                    str_start_time = str(start_time) + "am"
+                end_time = int(end_time.split(" ")[1].split(":")[0])
+                if end_time > 12:
+                    str_end_time = str(end_time - 12) + "pm"
+                elif end_time == 12:
+                    str_end_time = "12pm"
+                else:
+                    str_end_time = str(end_time) + "am"
+                booking_times.append([str_start_time, str_end_time])
+
         return render_template(
-            "receipt.html",
+            "receipt_screen.html",
             study_table_name=request.args["study_table_name"],
             location_name=request.args["location_name"],
-            times=request.args["times"],
+            booking_date=booking_date,
+            times=booking_times,
             booking_password=request.args["booking_password"]
         )
     else:

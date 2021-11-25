@@ -17,17 +17,18 @@ def handle_booking():
     booking_manager = BookingManager(mysql)
     # handle create booking
     if request.method == "POST":
-        email_address = request.form.get("email_address")
-        study_table_id = request.form.get("study_table_id")
-        study_table_name = request.form.get("study_table_name")
-        location_name = request.form.get("location_name")
+        data = request.get_json(silent=True)
+        email_address = session.get("email")
+        study_table_id = data.get("study_table_id")
+        study_table_name = data.get("study_table_name")
+        location_name = data.get("location_name")
 
         # code snippet inspiration from https://stackoverflow.com/questions/2257441/random-string-generation-with
         # -upper-case-letters-and-digits
         # The idea is to generate 4 random base36 digits resulting in (36 ^ 4) password possibilities.
         booking_password = "".join(secrets.choice(string.digits + string.ascii_uppercase) for _ in range(4))
 
-        times = request.form.get("times")
+        times = data.get("times")
         for start_time, end_time in times:
             booking = Booking(
                 booking_password,
@@ -50,14 +51,20 @@ def handle_booking():
             recipients=[email_address])
         mail.send(message)
 
+        response_data = {
+            "is_redirect": True,
+            "study_table_name":study_table_name,
+            "location_name": location_name,
+            "booking_password": booking_password
+        }
+
+        for times_index, (start_time, end_time) in times:
+            response_data["times" + times_index] = start_time+"until"+end_time
+
         # redirect to receipt screen
         return redirect(url_for(
-            ".receipt_screen",
-            is_redirect=True,
-            study_table_name=study_table_name,
-            location_name=location_name,
-            times=times,
-            booking_password=booking_password
+            "receipt_screen",
+            **response_data
         ))
 
     # handle remove booking
