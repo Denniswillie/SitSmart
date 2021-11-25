@@ -18,8 +18,6 @@ def handle_booking():
     # handle create booking
     if request.method == "POST":
         email_address = request.form.get("email_address")
-        start_time = request.form.get("start_time")
-        end_time = request.form.get("end_time")
         study_table_id = request.form.get("study_table_id")
         study_table_name = request.form.get("study_table_name")
         location_name = request.form.get("location_name")
@@ -29,23 +27,26 @@ def handle_booking():
         # The idea is to generate 4 random base36 digits resulting in (36 ^ 4) password possibilities.
         booking_password = "".join(secrets.choice(string.digits + string.ascii_uppercase) for _ in range(4))
 
-        booking = Booking(
-            booking_password,
-            study_table_id,
-            start_time,
-            end_time,
-        )
-        booking_manager.create_booking(booking)
-
-        # send confirmation email
-        message = Message(
-            'You have booked table {} in {}, from {} to {}. Your booking password is {}'.format(
-                study_table_name,
-                location_name,
+        times = request.form.get("times")
+        for start_time, end_time in times:
+            booking = Booking(
+                booking_password,
+                study_table_id,
                 start_time,
                 end_time,
-                booking_password
-            ),
+            )
+            booking_manager.create_booking(booking)
+
+        # send confirmation email
+        message_string = "You have booked table {} in {} on the following times:\n".format(
+            study_table_name,
+            location_name
+        )
+        for index, (start_time, end_time) in enumerate(times):
+            message_string += "{}. {} until {}\n".format(index + 1, start_time, end_time)
+        message_string += "Your booking password is {}".format(booking_password)
+        message = Message(
+            message_string,
             recipients=[email_address])
         mail.send(message)
 
@@ -55,8 +56,7 @@ def handle_booking():
             is_redirect=True,
             study_table_name=study_table_name,
             location_name=location_name,
-            start_time=start_time,
-            end_time=end_time,
+            times=times,
             booking_password=booking_password
         ))
 
