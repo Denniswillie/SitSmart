@@ -25,3 +25,11 @@ class Booking:
     @property
     def end_time(self):
         return self._end_time
+
+    def to_dict(self):
+        return {
+            "booking_id": self._booking_id,
+            "table_id": self._table_id,
+            "start_time": self._start_time,
+            "end_time": self._end_time
+        }
