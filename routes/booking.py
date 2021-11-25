@@ -120,3 +120,20 @@ def get_available_tables():
             else:
                 result[study_table_name]["availability"].append(False)
     return json.dumps(result)
+
+
+@booking_api.route("/tableBooking", methods=["GET"])
+def tableBooking():
+    tableId = request.form.get("tableId")
+    startTime = request.form.get("startTime")
+    endTime = request.form.get("endTime")
+    try:
+        booking_manager = BookingManager(mysql)
+        result = booking_manager.get_table_booking_next_hour(tableId, startTime, endTime)
+        return json.dumps(result.to_dict() if result is not None else None)
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": StatusCode.INTERNAL_ERR_CODE,
+            "message": err_msg
+        })
