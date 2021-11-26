@@ -17,47 +17,85 @@ def handle_booking():
     booking_manager = BookingManager(mysql)
     # handle create booking
     if request.method == "POST":
-        email_address = request.form.get("email_address")
-        start_time = request.form.get("start_time")
-        end_time = request.form.get("end_time")
-        study_table_id = request.form.get("study_table_id")
-        study_table_name = request.form.get("study_table_name")
-        location_name = request.form.get("location_name")
+        data = request.get_json(silent=True)
+        email_address = session.get("email")
+        location_name = data.get("location_name")
+        booking_date = data.get("booking_date")
 
         # code snippet inspiration from https://stackoverflow.com/questions/2257441/random-string-generation-with
         # -upper-case-letters-and-digits
         # The idea is to generate 4 random base36 digits resulting in (36 ^ 4) password possibilities.
         booking_password = "".join(secrets.choice(string.digits + string.ascii_uppercase) for _ in range(4))
 
-        booking = Booking(
-            booking_password,
-            study_table_id,
-            start_time,
-            end_time,
-        )
-        booking_manager.create_booking(booking)
+        bookings = data.get("bookings")
+        for study_table_id, booking_data in bookings.items():
+            for start_time, end_time in booking_data["times"]:
+                start_time_string = "{}:00:00".format(start_time) if start_time > 10 else "0{}:00:00".format(start_time)
+                end_time_string = "{}:00:00".format(end_time) if end_time > 10 else "0{}:00:00".format(end_time)
+                booking_start_time = booking_date + " " + start_time_string
+                booking_end_time = booking_data + " " + end_time_string
+                booking = Booking(
+                    booking_password=booking_password,
+                    start_time=booking_start_time,
+                    end_time=booking_end_time,
+                    table_id=study_table_id
+                )
+                booking_manager.create_booking(booking)
 
         # send confirmation email
+        message_string = "You have booked the following study tables in the {} on {}:\n".format(location_name, booking_date)
+        for study_table_id, booking_data in bookings.items():
+            message_string += (booking_data["studyTableName"] + "\n")
+            for index, (start_time, end_time) in enumerate(booking_data["times"]):
+                if start_time > 12:
+                    start_time_string = "{}pm".format(start_time - 12)
+                elif start_time == 12:
+                    start_time_string = "12pm"
+                else:
+                    start_time_string = "{}am".format(start_time)
+                if end_time > 12:
+                    end_time_string = "{}pm".format(end_time - 12)
+                elif end_time == 12:
+                    end_time_string = "12pm"
+                else:
+                    end_time_string = "{}am".format(end_time)
+
+                message_string += "{}. {} until {}\n".format(index + 1, start_time_string, end_time_string)
+        message_string += "Your booking password is {}".format(booking_password)
         message = Message(
-            'You have booked table {} in {}, from {} to {}. Your booking password is {}'.format(
-                study_table_name,
-                location_name,
-                start_time,
-                end_time,
-                booking_password
-            ),
+            message_string,
             recipients=[email_address])
         mail.send(message)
 
+        response_data = {
+            "is_redirect": True,
+            "location_name": location_name,
+            "booking_password": booking_password,
+            "booking_date": booking_date
+        }
+
+        counter = 0
+        for study_table_id, booking_data in bookings.items():
+            response_data["study_table_name_" + str(counter)] = booking_data["studyTableName"]
+            for times_index, (start_time, end_time) in enumerate(booking_data["times"]):
+                if start_time > 12:
+                    start_time_string = "{}pm".format(start_time - 12)
+                elif start_time == 12:
+                    start_time_string = "12pm"
+                else:
+                    start_time_string = "{}am".format(start_time)
+                if end_time > 12:
+                    end_time_string = "{}pm".format(end_time - 12)
+                elif end_time == 12:
+                    end_time_string = "12pm"
+                else:
+                    end_time_string = "{}am".format(end_time)
+                response_data["times-" + str(times_index) + "-" + booking_data["studyTableName"]] = start_time_string + "until" + end_time_string
+
         # redirect to receipt screen
         return redirect(url_for(
-            ".receipt_screen",
-            is_redirect=True,
-            study_table_name=study_table_name,
-            location_name=location_name,
-            start_time=start_time,
-            end_time=end_time,
-            booking_password=booking_password
+            "receipt_screen",
+            **response_data
         ))
 
     # handle remove booking
@@ -71,7 +109,7 @@ def handle_booking():
 
     # handle get booking screen
     elif request.method == "GET":
-        return render_template("booking_screen.html")
+        return render_template("booking.html")
 
     return json.dumps({
         "statusCode": StatusCode.INTERNAL_ERR_CODE,
