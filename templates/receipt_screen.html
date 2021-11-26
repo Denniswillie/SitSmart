@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title></title>
+    <link rel="stylesheet" href="../static/css/styles.css">
+  </head>
+  <body>
+    <h1 id="title">SIT💡SMART</h1>
+    <div id="booking_info">
+      <h3>Successfully Booked!</h3>
+      <div id="booking_info_children">
+        <ul style="list-style: none">
+          <li><h4>📍 {{ location_name }}</h4></li>
+          <li><h4>🗓 {{ booking_date }}</h4></li>
+          <li><div id="booking_times">
+            <div id="booking_times_icon">
+              ⏱
+            </div>
+            <div id="booking_times_values">
+              {% for study_table_name, times in bookings.items() %}
+              {% for start_time, end_time in times %}
+              {{ study_table_name }}: {{ start_time }}-{{ end_time }}
+              {% endfor %}
+              {% endfor %}
+            </div>
+          </div></li>
+        </ul>
+      </div>
+    </div>
+    <div id="map_img_div">
+      <img id="map_img" src="../static/img/map.png" />
+    </div>
+    <div id="booking_footer">
+      <h4 style="margin-bottom: 0">Check-in Code</h4>
+      <h3 style="margin-top: 5px">{{ booking_password }}</h3>
+      <h5>Input your code into the screen provided at your desk when you arrive</h5>
+      <h5>A receipt of your booking and code has been sent to: </h5>
+      <h5 style="color: blue">{{ email_address }}</h5>
+      <button id="return_button">Return</button>
+    </div>
+    <script>
+      document.getElementById("return_button").addEventListener("click", function() {
+        window.location.href = "/"
+      });
+    </script>
+  </body>
+</html>
