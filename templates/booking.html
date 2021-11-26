@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+   <meta name="viewport" content="width=device-width, initial-scale=1">
+   <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+   <link rel="stylesheet" href="../static/css/stylesheet2.css">
+</head>
+<body>
+<div class='topWrapper'>
+    <div class='dateTitleBox'>
+        <div class="center">
+            Date
+        </div>
+    </div>
+    <div class='dateBox'>
+        <select id="date_select_tag" onchange="handleDateSelectChange()">
+
+        </select>
+    </div>
+    <div class='optionsTitleBox'>
+        <div class="center">
+            Sort By Average
+        </div>
+    </div>
+    <div class='optionsBox'>
+        <div class="center">
+            <button class='optionButton' id="prefer_sound" text-align="center"></button>
+            <button class='optionButton' id="prefer_temperature" text-align="center"></button>
+            <button class='optionButton' id="prefer_co2" text-align="center"></button>
+        </div>
+    </div>
+    <div class='preferenceTitleBox'>
+        <div class="center">
+            Preference Level
+        </div>
+    </div>
+    <div class='preferenceBox'>
+        <div class="center">
+            <img src="../static/images/minNoise.png" alt="MinNoise" width="100" height="100">
+            <button class='buttonLined' text-align="inline" id="prefer_low"></button>
+            <button class='buttonLined' text-align="inline" id="prefer_normal"></button>
+            <button class='buttonLined' text-align="inline" id="prefer_high"></button>
+            <img src="../static/images/maxNoise.png" alt="MaxNoise" width="100" height="100">
+        </div>
+    </div>
+</div>
+
+<div class='middleWrapper'>
+    <div class='tableCellsBox'>
+
+        <table style="color: black" id="study_table_list">
+            <tr>
+                <td>
+
+        </td>
+        <td>
+            9am-10am
+        </td>
+        <td>
+            10am-11am
+        </td>
+        <td>
+            11am-12pm
+        </td>
+        <td>
+            12pm-1pm
+        </td>
+        <td>
+            1pm-2pm
+        </td>
+        <td>
+            2pm-3pm
+        </td>
+        <td>
+            3pm-4pm
+        </td>
+        <td>
+            4pm-5pm
+        </td>
+        <td>
+            5pm-6pm
+        </td>
+        <td>
+            6pm-7pm
+        </td>
+        <td>
+            7pm-8pm
+        </td>
+        <td>
+            8pm-9pm
+        </td>
+        </tr>
+
+        </table>
+    </div>
+</div>
+
+<div class='bottomWrapper'>
+    <div class='legendBox'>
+      <div class='legendRedCell'></div>
+    </div>
+    <div class='selectionsTitleBox'>Selected Bookings:</div>
+    <div class='selectionsBox'>
+        <ul id="selectedBookings">
+        </ul>
+    </div>
+    <div class='proceedBox'>
+        <button class="proceedButton" id="proceed_button" text-align="center"><b>Confirm</b></button>
+    </div>
+</div>
+</body>
+</html>
