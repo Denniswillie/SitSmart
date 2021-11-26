@@ -105,16 +105,18 @@
         </ul>
     </div>
     <div class='proceedBox'>
-        <button class="proceedButton" text-align="center" type="submit"><b>Confirm</b></button>
+        <button class="proceedButton" id="proceed_button" text-align="center"><b>Confirm</b></button>
     </div>
 </div>
-
 <script>
   var studyTables;
   var level = 0;
   var sortObjects = ["sound_level", "temperature_level", "co2_level"];
   var sortIndex = 0;
   var selectedBookings = {};
+  var locationId = -1;
+  var locationName = "";
+  var studyTableNameMemo = {};
   const ranges = [
     {
       0: [0, 100],
@@ -132,6 +134,33 @@
       2: [1001, 100000000]
     }
   ]
+
+  axios.get("/location_info")
+    .then((res) => res.data)
+    .then((res) => {
+      locationId = parseInt(res.location_id);
+      locationName = res.location_name;
+    })
+
+  document.getElementById("proceed_button").onclick = function() {
+    var temp = {};
+    for (const [studyTableId, startTimes] of Object.entries(selectedBookings)) {
+      if (startTimes.length > 0) {
+        temp[studyTableId] = {
+          times: [],
+          studyTableName: studyTableNameMemo[studyTableId]
+        }
+        for (var i = 0; i < startTimes.length; i++) {
+          temp[studyTableId].times.push([startTimes[i], startTimes[i] + 1])
+        }
+      }
+    }
+    axios.post("/booking", {
+      location_name: locationName,
+      booking_date: document.getElementById("date_select_tag").value,
+      bookings: temp
+    })
+  }
 
   document.getElementById("prefer_sound").onclick = function() {
     sortIndex = 0;
@@ -192,6 +221,7 @@
         temp.id = studyTableName + ": " + startHour + "-" + parseInt(startHour + 1)
         temp.innerHTML = studyTableName + ": " + getHumanClock(startHour) + "-" + getHumanClock(startHour + 1)
         selectedBookingsList.appendChild(temp)
+        studyTableNameMemo[studyTableId] = studyTableName
     } else {
         element.style.backgroundColor = "green"
         element.style.backgroundImage = "none"
