@@ -1,4 +1,4 @@
-from flask import Blueprint, request,Flask
+from flask import Blueprint, request, session
 from .enums import StatusCode
 import json
 from global_init import mysql
@@ -62,4 +62,14 @@ def remove_location():
         return json.dumps({
             "statusCode": StatusCode.INTERNAL_ERR_CODE,
             "message": err_msg
+        })
+
+
+@location_api.route("/location_info", methods=["GET"])
+def get_location_info():
+    if session.get("email"):
+        location_manager = LocationManager(mysql)
+        return json.dumps({
+            "location_id": session.get("location_id"),
+            "location_name": location_manager.get_location_name(session.get("location_id"))
         })

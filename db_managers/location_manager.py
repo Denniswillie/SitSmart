@@ -45,3 +45,11 @@ class LocationManager:
         locations = [Location(location_id=location_id, name=name) for location_id, name in cur.fetchall()]
         cur.close()
         return locations
+
+    def get_location_name(self, location_id):
+        cur = self._mysql.connection.cursor()
+        cur.execute("SELECT name from location where locationId = %s;", [location_id])
+        self._mysql.connection.commit()
+        result = cur.fetchone()
+        cur.close()
+        return result[0] if result is not None else None
