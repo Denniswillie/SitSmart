@@ -1,5 +1,5 @@
 body {
-  background-color: black;
+  background-color: grey;
 }
 
 h1 {
@@ -9,7 +9,7 @@ h1 {
 }
 
 h3 {
-  color: lightblue;
+  color: black;
   margin-left: 20px;
 }
 
@@ -24,17 +24,25 @@ h3 {
   margin-left: auto;
 }
 
-td {
-  color: lightblue;
-  margin-left: 20px;
-  font-family: Arial;
+
+
+
+.button {
+  padding: 10px 50px;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 25px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  border-style: solid;
 }
 
-select{
-  width:100%;
-}
-
-button {
+.proceedButton {
   padding: 10px 50px;
   border: none;
   color: white;
@@ -46,4 +54,8 @@ button {
   font-size: 25px;
   margin: 20px auto;
   display: block;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: chartreuse;
+  font-family: Segoe UI
 }
