@@ -1,0 +1,355 @@
+body {
+  background-color: grey;
+}
+
+h1 {
+  color: white;
+  margin-left: auto;
+  font-family: Arial;
+}
+
+h3 {
+  color: lightblue;
+  margin-left: 20px;
+}
+
+.centered-block {
+  margin: auto;
+
+  display: block;
+}
+
+.center {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+td {
+  color: lightblue;
+  margin-left: 20px;
+  font-family: Arial;
+}
+
+
+
+.button {
+  padding: 10px 50px;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 25px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  border-style: solid;
+}
+
+.proceedButton {
+  padding: 10px 50px;
+  border: none;
+  color: white;
+  background-color: green;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 25px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: chartreuse;
+  font-family: Segoe UI
+}
+
+.parent {
+  border: 1px solid black;
+  margin: 1rem;
+  padding: 2rem 2rem;
+  text-align: center;
+}
+.child {
+  display: inline-block;
+  border: 1px solid red;
+  padding: 1rem 1rem;
+  vertical-align: middle;
+}
+
+body {
+  background-color: grey;
+}
+
+h1 {
+  color: white;
+  margin-left: auto;
+  font-family: Arial;
+}
+
+h3 {
+  color: black;
+  margin-left: 20px;
+}
+
+.centered-block {
+  margin: auto;
+
+  display: block;
+}
+
+.center {
+  margin-right: auto;
+  margin-left: auto;
+}
+
+
+
+
+.button {
+  padding: 10px 50px;
+  border: none;
+  color: white;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 25px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  border-style: solid;
+}
+
+.proceedButton {
+  padding: 10px 50px;
+  border: none;
+  color: white;
+  background-color: green;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 25px;
+  margin: 20px auto;
+  display: block;
+  border-radius: 10px;
+  border-style: solid;
+  border-color: chartreuse;
+  font-family: Segoe UI
+}
+
+.topWrapper{
+  display:grid;
+  grid-auto-rows:minmax(100px, auto);
+  grid-template-rows: 40px 100px 40px;
+  justify-items:stretch;
+  align-items:stretch;
+}
+.topWrapper > div{
+  background:#eee;
+  padding:lem;
+}
+.topWrapper > div:nth-child(odd){
+  background:#ddd;
+}
+.middleWrapper{
+  display:grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-rows: 400px;
+  justify-items:stretch;
+  align-items:stretch;
+}
+.middleWrapper > div{
+  background:#eee;
+  padding:lem;
+}
+.middleWrapper > div:nth-child(odd){
+  background:#ddd;
+}
+.bottomWrapper{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  grid-auto-rows:minmax(100px, auto);
+  grid-template-rows: 40px 40px 100px;
+  justify-items:stretch;
+  align-items:stretch;
+}
+.bottomWrapper > div{
+  background:#eee;
+  padding:lem;
+}
+.bottomWrapper > div:nth-child(odd){
+  background:#ddd;
+}
+.dateTitleBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column:1;
+  grid-row:1;
+  font-size: 120%;
+  font-family: Segoe UI;
+  font-weight: bold;
+}
+.optionsTitleBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column:2;
+  grid-row:1;
+  font-size: 120%;
+  font-family: Segoe UI;
+  font-weight: bold;
+}
+.dateBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column: 1;
+  grid-row: 2;
+}
+.optionsBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column:2;
+  grid-row:2;
+}
+.preferenceTitleBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column:1/3;
+  grid-row:3;
+  font-size: 120%;
+  font-family: Segoe UI;
+  font-weight: bold;
+}
+.preferenceBox{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  grid-column:1/3;
+  grid-row:4;
+}
+.timesBox{
+  grid-column:1/11;
+  grid-row:2;
+  justify-content: center;
+  align-items: center;
+  justify-text: center;
+}
+
+.tableCellsBox{
+  grid-column:1/11;
+  grid-row:1;
+  overflow-x: auto;
+  overflow-y: auto;
+  background-color: black;
+}
+.legendBox{
+  grid-column:1/3;
+  grid-row:1;
+}
+.selectionsTitleBox{
+  grid-column:1/3;
+  grid-row:2;
+  font-size: 120%;
+  font-family: Segoe UI;
+  font-weight: bold;
+}
+.selectionsBox{
+  grid-column:1;
+  grid-row:3;
+}
+.proceedBox{
+  grid-column:2;
+  grid-row:3;
+}
+.buttonLined {
+display: inline-block;
+vertical-align: top;
+width: 80px;
+height: 80px;
+line-height: 30px;
+background: gray;
+margin: 0 4px;
+text-align: center;
+border-radius: 10px;
+border-color: black;
+}
+.optionButton {
+display: inline-block;
+vertical-align: top;
+width: 80px;
+height: 80px;
+line-height: 30px;
+background: white;
+margin: 0 4px;
+text-align: center;
+border-radius: 10px;
+border-color: black;
+}
+
+.center {
+display: flex;
+justify-content: center;
+align-items: center;
+}
+
+.legendRedCell {
+width: 30px;
+height: 30px;
+background: red;
+margin: 0 auto;
+}
+
+.legendGreenCell{
+width: 80px;
+height: 80px;
+background: green;
+}
+.dateDropdown{
+display: inline-block;
+vertical-align: top;
+width: 200px;
+height: 80px;
+line-height: 30px;
+background: gray;
+margin: 0 4px;
+text-align: center;
+border-radius: 10px;
+border-color: black;
+}
+
+select{
+  box-shadow:0 10px 25px rgba(0,0,0)
+  font-size: 1.5rem;
+  padding: 1em 1.5em;
+  background: white;
+  color: black;
+  border-radius: 10px;
+}
+
+.cell{
+display: inline-block;
+vertical-align: top;
+width: 80px;
+height: 80px;
+line-height: 30px;
+background: white;
+margin: 0 4px;
+text-align: center;
+border-radius: 10px;
+border-color: black;
+}
+
+.time{
+
+}
+
+.deskName{
+  width: 80px;
+}

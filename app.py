@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'sit_smart'
+app.config['MYSQL_DB'] = 'test'
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_POST'] = 587
@@ -91,7 +91,8 @@ def receipt_screen():
             location_name=request.args["location_name"],
             booking_date=booking_date,
             times=booking_times,
-            booking_password=request.args["booking_password"]
+            booking_password=request.args["booking_password"],
+            email_address=session.get("email")
         )
     else:
         return redirect("/register")

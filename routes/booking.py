@@ -78,7 +78,7 @@ def handle_booking():
 
     # handle get booking screen
     elif request.method == "GET":
-        return render_template("booking_screen.html")
+        return render_template("test.html")
 
     return json.dumps({
         "statusCode": StatusCode.INTERNAL_ERR_CODE,
