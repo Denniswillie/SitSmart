@@ -1,0 +1,18 @@
+[[source]]
+url = "https://pypi.org/simple"
+verify_ssl = true
+name = "pypi"
+
+[packages]
+flask = "*"
+gunicorn = "*"
+flask-mysqldb = "*"
+flask-session = "*"
+flask-cors = "*"
+flask-mail = "*"
+pubnub = ">=4.5.1"
+
+[dev-packages]
+
+[requires]
+python_version = "3.7"
