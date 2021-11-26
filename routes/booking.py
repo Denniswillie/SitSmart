@@ -24,8 +24,8 @@ def handle_booking():
 
         # code snippet inspiration from https://stackoverflow.com/questions/2257441/random-string-generation-with
         # -upper-case-letters-and-digits
-        # The idea is to generate 4 random base36 digits resulting in (36 ^ 4) password possibilities.
-        booking_password = "".join(secrets.choice(string.digits + string.ascii_uppercase) for _ in range(4))
+        # The idea is to generate 4 random base10 digits resulting in (10 ^ 4) password possibilities.
+        booking_password = "".join(secrets.choice(string.digits) for _ in range(4))
 
         bookings = data.get("bookings")
         for study_table_id, booking_data in bookings.items():
