@@ -108,5 +108,219 @@
         <button class="proceedButton" id="proceed_button" text-align="center"><b>Confirm</b></button>
     </div>
 </div>
+<script>
+  var studyTables;
+  var level = 0;
+  var sortObjects = ["sound_level", "temperature_level", "co2_level"];
+  var sortIndex = 0;
+  var selectedBookings = {};
+  var locationId = -1;
+  var locationName = "";
+  var studyTableNameMemo = {};
+  const ranges = [
+    {
+      0: [0, 100],
+      1: [101, 900],
+      2: [901, 10000000]
+    },
+    {
+      0: [0, 19],
+      1: [20, 25],
+      2: [26, 10000]
+    },
+    {
+      0: [0, 400],
+      1: [401, 1000],
+      2: [1001, 100000000]
+    }
+  ]
+
+  axios.get("/location/location_info")
+    .then((res) => res.data)
+    .then((res) => {
+      locationId = parseInt(res.location_id);
+      locationName = res.location_name;
+    })
+
+  document.getElementById("proceed_button").onclick = function() {
+    var temp = {};
+    for (const [studyTableId, startTimes] of Object.entries(selectedBookings)) {
+      if (startTimes.length > 0) {
+        temp[studyTableId] = {
+          times: [],
+          studyTableName: studyTableNameMemo[studyTableId]
+        }
+        for (var i = 0; i < startTimes.length; i++) {
+          temp[studyTableId].times.push([startTimes[i], startTimes[i] + 1])
+        }
+      }
+    }
+    axios.post("/booking/", {
+      location_name: locationName,
+      booking_date: document.getElementById("date_select_tag").value,
+      bookings: temp
+    })
+        .then(res => res.data)
+        .then(res => {
+            console.log(res)
+            window.location.href = "/receipt", "_self"
+        })
+  }
+
+  document.getElementById("prefer_sound").onclick = function() {
+    sortIndex = 0;
+    displayTable();
+  }
+
+  document.getElementById("prefer_temperature").onclick = function() {
+    sortIndex = 1;
+    displayTable();
+  }
+
+  document.getElementById("prefer_co2").onclick = function() {
+    sortIndex = 2;
+    displayTable();
+  }
+
+  document.getElementById("prefer_low").onclick = function() {
+    level = 0;
+    displayTable();
+  }
+
+  document.getElementById("prefer_normal").onclick = function() {
+    level = 1;
+    displayTable();
+  }
+
+  document.getElementById("prefer_high").onclick = function() {
+    level = 2;
+    displayTable();
+  }
+
+  function getHumanClock(timeInt) {
+    if (timeInt > 12) {
+        return parseInt(timeInt - 12) + "pm"
+    } else {
+        return timeInt+"am"
+    }
+  }
+
+  function haiya(event) {
+    var element = document.getElementById(event.target.id);
+    var elementId = event.target.id;
+    var x = elementId.split("-")
+    var studyTableId = parseInt(x[0])
+    var startHour = parseInt(x[1])
+    var studyTableName = x[2]
+    const selectedBookingsList = document.getElementById("selectedBookings");
+    if (element.style.backgroundColor === "green") {
+        element.style.backgroundColor = "white"
+        element.style.backgroundImage = "url('../static/img/check.jpg')"
+        element.style.backgroundSize = "contain"
+        if (studyTableId in selectedBookings) {
+            selectedBookings[studyTableId].push(startHour)
+        } else {
+            selectedBookings[studyTableId] = [startHour]
+        }
+        var temp = document.createElement("li")
+        temp.id = studyTableName + ": " + startHour + "-" + parseInt(startHour + 1)
+        temp.innerHTML = studyTableName + ": " + getHumanClock(startHour) + "-" + getHumanClock(startHour + 1)
+        selectedBookingsList.appendChild(temp)
+        studyTableNameMemo[studyTableId] = studyTableName
+    } else {
+        element.style.backgroundColor = "green"
+        element.style.backgroundImage = "none"
+        var index = selectedBookings[studyTableId].indexOf(startHour);
+        if (index !== -1) {
+          selectedBookings[studyTableId].splice(index, 1);
+        }
+        var temp = document.getElementById(studyTableName + ": " + startHour + "-" + parseInt(startHour + 1))
+        temp.parentNode.removeChild(temp)
+    }
+  }
+
+  // Display table based on the current preference settings
+  function displayTable() {
+    const studyTableList = document.getElementById("study_table_list")
+    while (studyTableList.childNodes.length > 2) {
+      studyTableList.removeChild(studyTableList.lastChild);
+    }
+    for (const [studyTableName, studyTableData] of Object.entries(studyTables)) {
+      var measurement_level = studyTableData.table_stats[sortObjects[sortIndex]];
+      if (measurement_level >= ranges[sortIndex][level][0] && measurement_level <= ranges[sortIndex][level][1]) {
+        var tr = document.createElement("tr");
+        start = 9;
+        end = 20;
+        var deskname_td = document.createElement("td");
+        var deskname_h2 = document.createElement("h2");
+        deskname_h2.className = "deskName";
+        deskname_h2.innerHTML = studyTableName;
+        deskname_td.appendChild(deskname_h2);
+        tr.appendChild(deskname_td);
+        studyTableList.appendChild(tr);
+        for (var i = start; i <= end; i++) {
+          var td = document.createElement("td");
+          var availability_button = document.createElement("button");
+          td.appendChild(availability_button);
+          tr.appendChild(td);
+          availability_button.className = "cell";
+          availability_button.style.textAlign = "center";
+          availability_button.id=studyTableData.study_table_id+"-"+i+"-"+studyTableName
+          if (studyTableData.availability[i] === true) {
+            if (studyTableData.study_table_id in selectedBookings && selectedBookings[studyTableData.study_table_id].includes(i)) {
+                availability_button.style.backgroundColor = "white";
+                 availability_button.style.backgroundImage = "url('../static/img/check.jpg')"
+                 availability_button.style.backgroundSize = "contain"
+            } else {
+                availability_button.style.backgroundColor = "green";
+            }
+
+            availability_button.addEventListener("click", haiya)
+          } else {
+            availability_button.style.backgroundColor = "red";
+          }
+        }
+
+      }
+    }
+  }
+
+  async function loadTablesData(dateString) {
+    console.log(dateString)
+    const res = await axios.post('/booking/available_tables', {
+        booking_date: dateString
+    });
+    studyTables = res.data;
+    console.log(studyTables)
+    displayTable();
+  }
+
+  function handleDateSelectChange() {
+    selectedBookings = {}
+    const selectedBookingsList = document.getElementById("selectedBookings");
+    while (selectedBookingsList.childNodes.length > 0) {
+      selectedBookingsList.removeChild(selectedBookingsList.lastChild);
+    }
+    var selectBox = document.getElementById("date_select_tag");
+    var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+    loadTablesData(selectedValue)
+  }
+
+  const today = new Date();
+  const dateSelectTag = document.getElementById("date_select_tag");
+  for (var i = 0; i < 14; i++) {
+    var opt = document.createElement('option');
+    if (i === 0) {
+      opt.value = today.toISOString().split("T")[0];
+      opt.innerHTML = today.toISOString().split("T")[0];
+    } else {
+      today.setDate(today.getDate() + 1);
+      opt.value = today.toISOString().split("T")[0];
+      opt.innerHTML = today.toISOString().split("T")[0];
+    }
+    dateSelectTag.appendChild(opt);
+  }
+  loadTablesData(new Date().toISOString().split("T")[0])
+  </script>
 </body>
 </html>
