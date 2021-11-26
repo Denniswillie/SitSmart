@@ -44,7 +44,7 @@ def index():
     # session.clear()
     if not session.get('email'):
         return redirect("/register")
-    return render_template("booking_screen.html")
+    return render_template("booking.html")
 
 
 @app.route("/register", methods=["POST", "GET"])
