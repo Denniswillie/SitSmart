@@ -39,7 +39,7 @@ pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 @app.route("/")
 def index():
-    #session.clear()
+    # session.clear()
     if not session.get('email'):
         return redirect("/register")
     return render_template("booking_screen.html")
@@ -63,14 +63,27 @@ def register():
 
 @app.route("/receipt")
 def receipt_screen():
-    if request.args["is_redirect"]:
+    if "is_redirect" in request.args and request.args["is_redirect"] is True:
+        bookings = {}
+        for key, value in request.args.items():
+            if key.startswith("study_table_name"):
+                bookings[request.args.get(key)] = []
+
+        for key, value in request.args.items():
+            if key.startswith("times"):
+                study_table_name = key.split("-")[-1]
+                start_time = request.args.get(key).split("until")[0]
+                end_time = request.args.get(key).split("until")[1]
+                bookings[study_table_name].append([start_time, end_time])
+
         return render_template(
-            "receipt.html",
+            "receipt_screen.html",
             study_table_name=request.args["study_table_name"],
             location_name=request.args["location_name"],
-            start_time=request.args["start_time"],
-            end_time=request.args["end_time"],
-            booking_password=request.args["booking_password"]
+            booking_date=request.args["booking_date"],
+            bookings=bookings,
+            booking_password=request.args["booking_password"],
+            email_address=session.get("email")
         )
     else:
         return redirect("/register")

@@ -6,3 +6,15 @@ function checkEmail(){
     else
         document.getElementById("confirmEmail").style.color = "black"
 }
+
+axios.post('/testing', {
+    bookings: {
+        1: {
+            times: [[1, 2]],
+            studyTableName: "table 1"
+        }
+    }
+  })
+  .then(function (response) {
+    console.log(response);
+  })
