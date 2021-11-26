@@ -35,6 +35,9 @@ body {
   width: 87%;
   float: right;
   text-align: left;
+  font-family: Segoe UI;
+  color: white;
+  font-weight: bold;
 }
 
 #map_img_div {

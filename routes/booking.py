@@ -66,7 +66,7 @@ def handle_booking():
         message = Message(
             message_string,
             recipients=[email_address])
-        mail.send(message)
+        # mail.send(message)
 
         session["bookings_confirmation"] = {
             "bookings": bookings,

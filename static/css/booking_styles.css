@@ -1,5 +1,7 @@
 body {
   background-color: grey;
+height:100%;
+width:100%;
 }
 
 h1 {
@@ -25,7 +27,7 @@ h3 {
 }
 
 td {
-  color: lightblue;
+  color: black;
   margin-left: 20px;
   font-family: Arial;
 }
@@ -79,17 +81,17 @@ td {
 }
 
 body {
-  background-color: grey;
+  background-color: black;
 }
 
-h1 {
+#title {
   color: white;
-  margin-left: auto;
-  font-family: Arial;
+  margin: auto;
+  text-align: center;
 }
 
 h3 {
-  color: black;
+  color: white;
   margin-left: 20px;
 }
 
@@ -137,7 +139,7 @@ h3 {
   border-radius: 10px;
   border-style: solid;
   border-color: chartreuse;
-  font-family: Segoe UI
+  font-family: Segoe UI;
 }
 
 .topWrapper{
@@ -146,27 +148,27 @@ h3 {
   grid-template-rows: 40px 100px 40px;
   justify-items:stretch;
   align-items:stretch;
+  background:black;
 }
 .topWrapper > div{
-  background:#eee;
   padding:lem;
 }
 .topWrapper > div:nth-child(odd){
-  background:#ddd;
+
 }
 .middleWrapper{
   display:grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: 400px;
   justify-items:stretch;
   align-items:stretch;
 }
 .middleWrapper > div{
-  background:#eee;
+  background:white;
   padding:lem;
 }
 .middleWrapper > div:nth-child(odd){
-  background:#ddd;
+
 }
 .bottomWrapper{
   display:grid;
@@ -177,11 +179,10 @@ h3 {
   align-items:stretch;
 }
 .bottomWrapper > div{
-  background:#eee;
   padding:lem;
 }
 .bottomWrapper > div:nth-child(odd){
-  background:#ddd;
+
 }
 .dateTitleBox{
   display: flex;
@@ -235,7 +236,7 @@ h3 {
   grid-row:4;
 }
 .timesBox{
-  grid-column:1/11;
+  grid-column:1;
   grid-row:2;
   justify-content: center;
   align-items: center;
@@ -243,7 +244,7 @@ h3 {
 }
 
 .tableCellsBox{
-  grid-column:1/11;
+  grid-column:1;
   grid-row:1;
   overflow-x: auto;
   overflow-y: auto;
@@ -259,15 +260,33 @@ h3 {
   font-size: 120%;
   font-family: Segoe UI;
   font-weight: bold;
+  color: black;
+  background-color:white;
+ border-color: black;
+ border-style: solid;
+ border-width: 4px;
 }
 .selectionsBox{
   grid-column:1;
   grid-row:3;
 }
+
 .proceedBox{
   grid-column:2;
   grid-row:3;
 }
+.legendText{
+display: inline-block;
+ font-weight: bold;
+ color:grey;
+}
+ul{
+ list-style:none;
+ font-family: Segoe UI;
+ font-weight: bold;
+ color:white;
+ }
+
 .buttonLined {
 display: inline-block;
 vertical-align: top;
@@ -297,20 +316,52 @@ border-color: black;
 display: flex;
 justify-content: center;
 align-items: center;
+color: white;
 }
 
 .legendRedCell {
-width: 30px;
-height: 30px;
-background: red;
-margin: 0 auto;
+ float: left;
+ background-color: red;
+ width: 30px;
+ height: 30px;
+ text-align: center;
+ border-radius: 5px;
+ border-color: black;
+ border-style: solid;
+ border-width: 2px;
 }
 
 .legendGreenCell{
-width: 80px;
-height: 80px;
-background: green;
+ float: left;
+ background-color: green;
+ width: 30px;
+ height: 30px;
+ text-align: center;
+ border-radius: 5px;
+ border-color: black;
+ border-style: solid;
+ border-width: 2px;
 }
+.legendWhiteCell{
+ float: left;
+ background-color: white;
+ width: 30px;
+ height: 30px;
+ text-align: center;
+ border-radius: 5px;
+ border-color: black;
+ border-style: solid;
+ border-width: 2px;
+}
+.legendBackground{
+ width: 100%;
+ background-color:white;
+ margin:auto;
+ border-color: grey;
+ border-style: solid;
+ border-width: 4px;
+ }
+
 .dateDropdown{
 display: inline-block;
 vertical-align: top;
@@ -348,10 +399,6 @@ border-color: black;
 
 .selected {
 background: white
-}
-
-.time{
-
 }
 
 .deskName{
