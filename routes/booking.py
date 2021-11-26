@@ -43,7 +43,8 @@ def handle_booking():
                 booking_manager.create_booking(booking)
 
         # send confirmation email
-        message_string = "You have booked the following study tables in the {} on {}:\n".format(location_name, booking_date)
+        message_string = "You have booked the following study tables in the {} on {}:\n".format(location_name,
+                                                                                                booking_date)
         for study_table_id, booking_data in bookings.items():
             message_string += (booking_data["studyTableName"] + "\n")
             for index, (start_time, end_time) in enumerate(booking_data["times"]):
@@ -90,7 +91,8 @@ def handle_booking():
                     end_time_string = "12pm"
                 else:
                     end_time_string = "{}am".format(end_time)
-                response_data["times-" + str(times_index) + "-" + booking_data["studyTableName"]] = start_time_string + "until" + end_time_string
+                response_data["times-" + str(times_index) + "-" + booking_data[
+                    "studyTableName"]] = start_time_string + "until" + end_time_string
 
         # redirect to receipt screen
         return redirect(url_for(
@@ -176,23 +178,15 @@ def tapBooking():
     end_time = request.form.get("end_time")
     study_table_id = request.form.get("study_table_id")
     password = 1234  # not important as we are tapping to claim it
-    try:
-        booking_manager = BookingManager(mysql)
-        booking = Booking(
-            password,
-            study_table_id,
-            start_time,
-            end_time,
-        )
-        if booking_manager.create_booking(booking):
-            return json.dumps({
-                "statusCode": StatusCode.SUCCESSFUL_CREATION_STATUS_CODE,
-                "message": "Successfully created a booking"
-            })
-
-    except Exception as e:
-        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
-        return json.dumps({
-            "statusCode": StatusCode.INTERNAL_ERR_CODE,
-            "message": err_msg
-        })
+    booking_manager = BookingManager(mysql)
+    booking = Booking(
+        password,
+        study_table_id,
+        start_time,
+        end_time,
+    )
+    booking_manager.create_booking(booking)
+    return json.dumps({
+        "statusCode": StatusCode.SUCCESSFUL_CREATION_STATUS_CODE,
+        "message": "Successfully created a booking"
+    })
