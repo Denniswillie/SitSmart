@@ -33,7 +33,7 @@ def handle_booking():
                 start_time_string = "{}:00:00".format(start_time) if start_time > 10 else "0{}:00:00".format(start_time)
                 end_time_string = "{}:00:00".format(end_time) if end_time > 10 else "0{}:00:00".format(end_time)
                 booking_start_time = booking_date + " " + start_time_string
-                booking_end_time = booking_data + " " + end_time_string
+                booking_end_time = booking_date + " " + end_time_string
                 booking = Booking(
                     booking_password=booking_password,
                     start_time=booking_start_time,
@@ -68,37 +68,20 @@ def handle_booking():
             recipients=[email_address])
         mail.send(message)
 
-        response_data = {
-            "is_redirect": True,
+        session["bookings_confirmation"] = {
+            "bookings": bookings,
             "location_name": location_name,
             "booking_password": booking_password,
             "booking_date": booking_date
         }
+        session.modified = True
 
-        counter = 0
-        for study_table_id, booking_data in bookings.items():
-            response_data["study_table_name_" + str(counter)] = booking_data["studyTableName"]
-            for times_index, (start_time, end_time) in enumerate(booking_data["times"]):
-                if start_time > 12:
-                    start_time_string = "{}pm".format(start_time - 12)
-                elif start_time == 12:
-                    start_time_string = "12pm"
-                else:
-                    start_time_string = "{}am".format(start_time)
-                if end_time > 12:
-                    end_time_string = "{}pm".format(end_time - 12)
-                elif end_time == 12:
-                    end_time_string = "12pm"
-                else:
-                    end_time_string = "{}am".format(end_time)
-                response_data["times-" + str(times_index) + "-" + booking_data[
-                    "studyTableName"]] = start_time_string + "until" + end_time_string
+        print(session["bookings_confirmation"])
 
         # redirect to receipt screen
-        return redirect(url_for(
-            "receipt_screen",
-            **response_data
-        ))
+        return json.dumps({
+            "success": True,
+        })
 
     # handle remove booking
     elif request.method == "DELETE":
@@ -119,10 +102,12 @@ def handle_booking():
     })
 
 
-@booking_api.route("/available_tables")
+@booking_api.route("/available_tables", methods=["POST"])
 def get_available_tables():
     # booking_date must be in the format "YYYY-MM-DD"
-    booking_date = str(request.form.get("booking_date"))
+    data = request.get_json(silent=True)
+    booking_date = str(data.get("booking_date"))
+    print(booking_date)
     location_id = session["location_id"]
     study_table_manager = StudyTableManager(mysql)
     study_tables_at_location = study_table_manager.get_study_tables_in_location(location_id)

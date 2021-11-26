@@ -135,7 +135,7 @@
     }
   ]
 
-  axios.get("/location_info")
+  axios.get("/location/location_info")
     .then((res) => res.data)
     .then((res) => {
       locationId = parseInt(res.location_id);
@@ -155,11 +155,16 @@
         }
       }
     }
-    axios.post("/booking", {
+    axios.post("/booking/", {
       location_name: locationName,
       booking_date: document.getElementById("date_select_tag").value,
       bookings: temp
     })
+        .then(res => res.data)
+        .then(res => {
+            console.log(res)
+            window.location.href = "/receipt", "_self"
+        })
   }
 
   document.getElementById("prefer_sound").onclick = function() {
@@ -281,10 +286,12 @@
   }
 
   async function loadTablesData(dateString) {
-    const res = await axios.get('/booking/available_tables', {
+    console.log(dateString)
+    const res = await axios.post('/booking/available_tables', {
         booking_date: dateString
     });
     studyTables = res.data;
+    console.log(studyTables)
     displayTable();
   }
 
@@ -313,7 +320,7 @@
     }
     dateSelectTag.appendChild(opt);
   }
-  loadTablesData(today.toISOString().split("T")[0])
+  loadTablesData(new Date().toISOString().split("T")[0])
   </script>
 </body>
 </html>

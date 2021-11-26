@@ -65,26 +65,39 @@ def register():
 
 @app.route("/receipt")
 def receipt_screen():
-    if "is_redirect" in request.args and request.args["is_redirect"] is True:
+    if "bookings_confirmation" in session:
         bookings = {}
-        for key, value in request.args.items():
-            if key.startswith("study_table_name"):
-                bookings[request.args.get(key)] = []
+        for study_table_id, booking_data in session["bookings_confirmation"]["bookings"].items():
+            study_table_name = booking_data["studyTableName"]
+            bookings[study_table_name] = []
+            for start_time, end_time in booking_data["times"]:
+                if start_time > 12:
+                    start_time_string = "{}pm".format(start_time - 12)
+                elif start_time == 12:
+                    start_time_string = "12pm"
+                else:
+                    start_time_string = "{}am".format(start_time)
+                if end_time > 12:
+                    end_time_string = "{}pm".format(end_time - 12)
+                elif end_time == 12:
+                    end_time_string = "12pm"
+                else:
+                    end_time_string = "{}am".format(end_time)
+                bookings[study_table_name].append([start_time_string, end_time_string])
 
-        for key, value in request.args.items():
-            if key.startswith("times"):
-                study_table_name = key.split("-")[-1]
-                start_time = request.args.get(key).split("until")[0]
-                end_time = request.args.get(key).split("until")[1]
-                bookings[study_table_name].append([start_time, end_time])
+        booking_confirmation = session["bookings_confirmation"]
+        location_name = booking_confirmation["location_name"]
+        booking_date = booking_confirmation["booking_date"]
+        booking_password = booking_confirmation["booking_password"]
+        del session["bookings_confirmation"]
+        session.modified = True
 
         return render_template(
             "receipt_screen.html",
-            study_table_name=request.args["study_table_name"],
-            location_name=request.args["location_name"],
-            booking_date=request.args["booking_date"],
+            location_name=location_name,
+            booking_date=booking_date,
             bookings=bookings,
-            booking_password=request.args["booking_password"],
+            booking_password=booking_password,
             email_address=session.get("email")
         )
     else:
