@@ -168,3 +168,31 @@ def tableBooking():
             "statusCode": StatusCode.INTERNAL_ERR_CODE,
             "message": err_msg
         })
+
+
+@booking_api.route("/tapBooking", methods=["POST"])
+def tapBooking():
+    start_time = request.form.get("start_time")
+    end_time = request.form.get("end_time")
+    study_table_id = request.form.get("study_table_id")
+    password = 1234  # not important as we are tapping to claim it
+    try:
+        booking_manager = BookingManager(mysql)
+        booking = Booking(
+            password,
+            study_table_id,
+            start_time,
+            end_time,
+        )
+        if booking_manager.create_booking(booking):
+            return json.dumps({
+                "statusCode": StatusCode.SUCCESSFUL_CREATION_STATUS_CODE,
+                "message": "Successfully created a booking"
+            })
+
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": StatusCode.INTERNAL_ERR_CODE,
+            "message": err_msg
+        })

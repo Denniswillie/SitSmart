@@ -37,7 +37,7 @@ def table_info():
         res = study_table_manager.get_table_info(mac_address)
         return json.dumps({
             "statusCode": StatusCode.OK_STATUS_CODE,
-            "result": res
+            "result": res.to_dict()
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"

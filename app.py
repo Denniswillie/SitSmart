@@ -4,6 +4,7 @@ import threading
 
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
+from flask_cors import CORS
 from routes import location_api, booking_api, studyTable_api
 from db_managers import LocationManager
 from global_init import mysql, mail
@@ -11,6 +12,7 @@ from pubnub.pnconfiguration import PNConfiguration
 from pubnub_handler import PubnubHandler
 
 app = Flask(__name__)
+cors = CORS(app)
 
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
