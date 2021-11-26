@@ -14,10 +14,10 @@ from pubnub_handler import PubnubHandler
 app = Flask(__name__)
 cors = CORS(app)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'sit_smart'
+app.config['MYSQL_HOST'] = 'us-cdbr-east-04.cleardb.com'
+app.config['MYSQL_USER'] = 'b64b251ec004bb'
+app.config['MYSQL_PASSWORD'] = '151814c3'
+app.config['MYSQL_DB'] = 'heroku_61619fb58469271'
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_POST'] = 587
@@ -112,4 +112,4 @@ if __name__ == "__main__":
     # Subscribe pubnub handler to channel
     pubnub_handler_subscribe_thread = threading.Thread(target=pubnub_handler.subscribe(CHANNEL))
     pubnub_handler_subscribe_thread.start()
-    app.run(debug=True, use_reloader=False)
+    app.run(use_reloader=False)
