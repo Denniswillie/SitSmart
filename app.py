@@ -15,7 +15,7 @@ app = Flask(__name__)
 app.config['MYSQL_HOST'] = 'localhost'
 app.config['MYSQL_USER'] = 'root'
 app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'test'
+app.config['MYSQL_DB'] = 'sit_smart'
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_POST'] = 587
@@ -64,33 +64,24 @@ def register():
 @app.route("/receipt")
 def receipt_screen():
     if "is_redirect" in request.args and request.args["is_redirect"] is True:
-        booking_times = []
-        booking_date = request.args.get("times0").split("until")[0].split(" ")[0]
+        bookings = {}
+        for key, value in request.args.items():
+            if key.startswith("study_table_name"):
+                bookings[request.args.get(key)] = []
+
         for key, value in request.args.items():
             if key.startswith("times"):
-                start_time, end_time = value.split("until")
-                start_time = int(start_time.split(" ")[1].split(":")[0])
-                if start_time > 12:
-                    str_start_time = str(start_time - 12) + "pm"
-                elif start_time == 12:
-                    str_start_time = "12pm"
-                else:
-                    str_start_time = str(start_time) + "am"
-                end_time = int(end_time.split(" ")[1].split(":")[0])
-                if end_time > 12:
-                    str_end_time = str(end_time - 12) + "pm"
-                elif end_time == 12:
-                    str_end_time = "12pm"
-                else:
-                    str_end_time = str(end_time) + "am"
-                booking_times.append([str_start_time, str_end_time])
+                study_table_name = key.split("-")[-1]
+                start_time = request.args.get(key).split("until")[0]
+                end_time = request.args.get(key).split("until")[1]
+                bookings[study_table_name].append([start_time, end_time])
 
         return render_template(
             "receipt_screen.html",
             study_table_name=request.args["study_table_name"],
             location_name=request.args["location_name"],
-            booking_date=booking_date,
-            times=booking_times,
+            booking_date=request.args["booking_date"],
+            bookings=bookings,
             booking_password=request.args["booking_password"],
             email_address=session.get("email")
         )

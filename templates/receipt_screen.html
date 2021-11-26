@@ -18,8 +18,10 @@
               ⏱
             </div>
             <div id="booking_times_values">
+              {% for study_table_name, times in bookings.items() %}
               {% for start_time, end_time in times %}
-              {{ study_table_name }}: {{ start_time.split(" ")[1] }}-{{ end_time.split(" ")[1] }}<br />
+              {{ study_table_name }}: {{ start_time }}-{{ end_time }}
+              {% endfor %}
               {% endfor %}
             </div>
           </div></li>

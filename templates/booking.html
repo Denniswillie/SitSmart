@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class='dateBox'>
-        <select id="date_select_tag">
+        <select id="date_select_tag" onchange="handleDateSelectChange()">
 
         </select>
     </div>
@@ -100,7 +100,10 @@
       <div class='legendRedCell'></div>
     </div>
     <div class='selectionsTitleBox'>Selected Bookings:</div>
-    <div class='selectionsBox'>SELECTED BOOKINGS GO HERE</div>
+    <div class='selectionsBox'>
+        <ul id="selectedBookings">
+        </ul>
+    </div>
     <div class='proceedBox'>
         <button class="proceedButton" text-align="center" type="submit"><b>Confirm</b></button>
     </div>
@@ -111,6 +114,7 @@
   var level = 0;
   var sortObjects = ["sound_level", "temperature_level", "co2_level"];
   var sortIndex = 0;
+  var selectedBookings = {};
   const ranges = [
     {
       0: [0, 100],
@@ -159,6 +163,47 @@
     displayTable();
   }
 
+  function getHumanClock(timeInt) {
+    if (timeInt > 12) {
+        return parseInt(timeInt - 12) + "pm"
+    } else {
+        return timeInt+"am"
+    }
+  }
+
+  function haiya(event) {
+    var element = document.getElementById(event.target.id);
+    var elementId = event.target.id;
+    var x = elementId.split("-")
+    var studyTableId = parseInt(x[0])
+    var startHour = parseInt(x[1])
+    var studyTableName = x[2]
+    const selectedBookingsList = document.getElementById("selectedBookings");
+    if (element.style.backgroundColor === "green") {
+        element.style.backgroundColor = "white"
+        element.style.backgroundImage = "url('../static/img/check.jpg')"
+        element.style.backgroundSize = "contain"
+        if (studyTableId in selectedBookings) {
+            selectedBookings[studyTableId].push(startHour)
+        } else {
+            selectedBookings[studyTableId] = [startHour]
+        }
+        var temp = document.createElement("li")
+        temp.id = studyTableName + ": " + startHour + "-" + parseInt(startHour + 1)
+        temp.innerHTML = studyTableName + ": " + getHumanClock(startHour) + "-" + getHumanClock(startHour + 1)
+        selectedBookingsList.appendChild(temp)
+    } else {
+        element.style.backgroundColor = "green"
+        element.style.backgroundImage = "none"
+        var index = selectedBookings[studyTableId].indexOf(startHour);
+        if (index !== -1) {
+          selectedBookings[studyTableId].splice(index, 1);
+        }
+        var temp = document.getElementById(studyTableName + ": " + startHour + "-" + parseInt(startHour + 1))
+        temp.parentNode.removeChild(temp)
+    }
+  }
+
   // Display table based on the current preference settings
   function displayTable() {
     const studyTableList = document.getElementById("study_table_list")
@@ -177,20 +222,30 @@
         deskname_h2.innerHTML = studyTableName;
         deskname_td.appendChild(deskname_h2);
         tr.appendChild(deskname_td);
+        studyTableList.appendChild(tr);
         for (var i = start; i <= end; i++) {
           var td = document.createElement("td");
           var availability_button = document.createElement("button");
+          td.appendChild(availability_button);
+          tr.appendChild(td);
           availability_button.className = "cell";
           availability_button.style.textAlign = "center";
+          availability_button.id=studyTableData.study_table_id+"-"+i+"-"+studyTableName
           if (studyTableData.availability[i] === true) {
-            availability_button.style.backgroundColor = "green";
+            if (studyTableData.study_table_id in selectedBookings && selectedBookings[studyTableData.study_table_id].includes(i)) {
+                availability_button.style.backgroundColor = "white";
+                 availability_button.style.backgroundImage = "url('../static/img/check.jpg')"
+                 availability_button.style.backgroundSize = "contain"
+            } else {
+                availability_button.style.backgroundColor = "green";
+            }
+
+            availability_button.addEventListener("click", haiya)
           } else {
             availability_button.style.backgroundColor = "red";
           }
-          td.appendChild(availability_button);
-          tr.appendChild(td);
         }
-        studyTableList.appendChild(tr);
+
       }
     }
   }
@@ -200,14 +255,18 @@
         booking_date: dateString
     });
     studyTables = res.data;
-    console.log(studyTables)
     displayTable();
   }
 
   function handleDateSelectChange() {
+    selectedBookings = {}
+    const selectedBookingsList = document.getElementById("selectedBookings");
+    while (selectedBookingsList.childNodes.length > 0) {
+      selectedBookingsList.removeChild(selectedBookingsList.lastChild);
+    }
     var selectBox = document.getElementById("date_select_tag");
     var selectedValue = selectBox.options[selectBox.selectedIndex].value;
-    console.log(selectedValue)
+    loadTablesData(selectedValue)
   }
 
   const today = new Date();
@@ -221,10 +280,6 @@
       today.setDate(today.getDate() + 1);
       opt.value = today.toISOString().split("T")[0];
       opt.innerHTML = today.toISOString().split("T")[0];
-    }
-    opt.onclick = function() {
-      console.log(today.toISOString());
-      loadTablesData(today.toISOString().split("T")[0])
     }
     dateSelectTag.appendChild(opt);
   }

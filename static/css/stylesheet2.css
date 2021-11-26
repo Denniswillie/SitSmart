@@ -346,6 +346,10 @@ border-radius: 10px;
 border-color: black;
 }
 
+.selected {
+background: white
+}
+
 .time{
 
 }
