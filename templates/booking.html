@@ -253,19 +253,30 @@
     var studyTableName = x[2]
     const selectedBookingsList = document.getElementById("selectedBookings");
     if (element.style.backgroundColor === "green") {
-        element.style.backgroundColor = "white"
-        element.style.backgroundImage = "url('../static/img/check.jpg')"
-        element.style.backgroundSize = "contain"
-        if (studyTableId in selectedBookings) {
-            selectedBookings[studyTableId].push(startHour)
-        } else {
-            selectedBookings[studyTableId] = [startHour]
+        var allowBook = true;
+        for (const [key, value] of Object.entries(selectedBookings)) {
+            if (value.includes(startHour) {
+                allowBook = false;
+            }
         }
-        var temp = document.createElement("li")
-        temp.id = studyTableName + ": " + startHour + "-" + parseInt(startHour + 1)
-        temp.innerHTML = studyTableName + ": " + getHumanClock(startHour) + "-" + getHumanClock(startHour + 1)
-        selectedBookingsList.appendChild(temp)
-        studyTableNameMemo[studyTableId] = studyTableName
+        if (allowBook === true) {
+            element.style.backgroundColor = "white"
+            element.style.backgroundImage = "url('../static/img/check.jpg')"
+            element.style.backgroundSize = "contain"
+            if (studyTableId in selectedBookings) {
+                selectedBookings[studyTableId].push(startHour)
+            } else {
+                selectedBookings[studyTableId] = [startHour]
+            }
+            var temp = document.createElement("li")
+            temp.id = studyTableName + ": " + startHour + "-" + parseInt(startHour + 1)
+            temp.innerHTML = studyTableName + ": " + getHumanClock(startHour) + "-" + getHumanClock(startHour + 1)
+            selectedBookingsList.appendChild(temp)
+            studyTableNameMemo[studyTableId] = studyTableName
+        } else {
+            alert("cannot book more than 1 desks at the same time slot")
+        }
+
     } else {
         element.style.backgroundColor = "green"
         element.style.backgroundImage = "none"
