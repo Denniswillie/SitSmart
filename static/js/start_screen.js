@@ -7,8 +7,7 @@ function checkEmail(){
         document.getElementById("confirmEmail").style.color = "black"
 }
 
-function handleSubmit(event) {
-    event.preventDefault()
+function handleSubmit() {
     var email = document.getElementById("email").value
     var confirmEmail = document.getElementById("confirmEmail").value
     var form = document.getElementById("startScreenForm")
