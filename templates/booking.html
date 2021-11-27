@@ -2,7 +2,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-   <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name=viewport content="width=device-width,  initial-scale=1, user-scalable=yes">
    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
    <link rel="stylesheet" href="../static/css/booking_styles.css">
 </head>
@@ -10,14 +10,10 @@
     <h1 id="title">SIT💡SMART</h1>
 <div class='topWrapper'>
     <div class='dateTitleBox'>
-        <div class="center">
-            Date
-        </div>
+        <div class="center">Date</div>
     </div>
     <div class='dateBox'>
-        <select id="date_select_tag" onchange="handleDateSelectChange()">
-
-        </select>
+        <select id="date_select_tag" onchange="handleDateSelectChange()"></select>
     </div>
     <div class='optionsTitleBox'>
         <div class="center">
@@ -26,9 +22,9 @@
     </div>
     <div class='optionsBox'>
         <div class="center">
-            <button class='optionButton' id="prefer_sound" text-align="center"><img src="../static/img/filterNoise.png" height ="50" width="50" /></button>
-            <button class='optionButton' id="prefer_temperature" text-align="center"><img src="../static/img/filterHeat.png" height ="50" width="50" /></button>
-            <button class='optionButton' id="prefer_co2" text-align="center"><img src="../static/img/filterAirQuality.png" height ="50" width="50" /></button>
+            <button class='optionButton' id="prefer_sound" text-align="center" style="border:5px solid chartreuse"><img src="../static/img/filterNoise.png" height ="50" width="50" /></button>
+            <button class='optionButton' id="prefer_temperature" text-align="center" style="border:5px solid black"><img src="../static/img/filterHeat.png" height ="50" width="50" /></button>
+            <button class='optionButton' id="prefer_co2" text-align="center" style="border:5px solid black"><img src="../static/img/filterAirQuality.png" height ="50" width="50" /></button>
         </div>
     </div>
     <div class='preferenceTitleBox'>
@@ -38,11 +34,11 @@
     </div>
     <div class='preferenceBox'>
         <div class="center">
-            <img src="../static/img/minNoise.png" alt="MinNoise" width="100" height="100">
-            <button class='buttonLined' text-align="inline" id="prefer_low"></button>
+            <img src="../static/img/minNoise.png" id="minImage" alt="MinNoise" width="70" height="70">
+            <button class='buttonLined' text-align="inline" id="prefer_low" style="background-color:#85C1E9"></button>
             <button class='buttonLined' text-align="inline" id="prefer_normal"></button>
             <button class='buttonLined' text-align="inline" id="prefer_high"></button>
-            <img src="../static/img/maxNoise.png" alt="MaxNoise" width="100" height="100">
+            <img src="../static/img/maxNoise.png" id="maxImage" alt="MaxNoise" width="70" height="70">
         </div>
     </div>
 </div>
@@ -51,48 +47,46 @@
     <div class='tableCellsBox'>
 
         <table style="color: black" id="study_table_list">
-            <tr>
-                <td>
-
-        </td>
-        <td>
-            9am-10am
-        </td>
-        <td>
-            10am-11am
-        </td>
-        <td>
-            11am-12pm
-        </td>
-        <td>
-            12pm-1pm
-        </td>
-        <td>
-            1pm-2pm
-        </td>
-        <td>
-            2pm-3pm
-        </td>
-        <td>
-            3pm-4pm
-        </td>
-        <td>
-            4pm-5pm
-        </td>
-        <td>
-            5pm-6pm
-        </td>
-        <td>
-            6pm-7pm
-        </td>
-        <td>
-            7pm-8pm
-        </td>
-        <td>
-            8pm-9pm
-        </td>
+        <tr>
+            <td>
+            </td>
+            <td>
+                9am-10am
+            </td>
+            <td>
+                10am-11am
+            </td>
+            <td>
+                11am-12pm
+            </td>
+            <td>
+                12pm-1pm
+            </td>
+            <td>
+                1pm-2pm
+            </td>
+            <td>
+                2pm-3pm
+            </td>
+            <td>
+                3pm-4pm
+            </td>
+            <td>
+                4pm-5pm
+            </td>
+            <td>
+                5pm-6pm
+            </td>
+            <td>
+                6pm-7pm
+            </td>
+            <td>
+                7pm-8pm
+            </td>
+            <td>
+                8pm-9pm
+            </td>
         </tr>
-
         </table>
     </div>
 </div>
@@ -100,21 +94,19 @@
 <div class='bottomWrapper'>
     <div class='legendBox'>
         <div class="legendBackground">
-         <div style="float: left; width: 200px'">
+            <div class="center">
               <div class="legendGreenCell"></div>
-             <p style="float: left;color: black;font-family: Segoe UI">=Available</p>
-         </div>
-         <div style="margin: auto; width: 200px;">
-             <div class="legendRedCell"></div>
-             <p style="float: left;color: black">=Taken</p>
-         </div>
-         <div style="float: right; width: 200px;">
-             <div class="legendWhiteCell"></div>
-             <p style="float: left;color: black">=Selected</p>
-         </div>
-         <br style="clear: left;" />
-        </div>
+             <p style="float: left;color: black;font-family: Segoe UI; padding-right: 10px;">=Available</p>
 
+             <div class="legendRedCell"></div>
+             <p style="float: left;color: black;font-family: Segoe UI; padding-right: 10px;">=Taken</p>
+
+
+             <div class="legendWhiteCell"></div>
+             <p style="float: left;color: black;font-family: Segoe UI; padding-right: 10px;">=Selected</p>
+            </div>
+         <br style="clear: left;" />
+    </div>
     </div>
     <div class='selectionsTitleBox'>Selected Bookings:</div>
     <div class='selectionsBox'>
@@ -187,31 +179,61 @@
   document.getElementById("prefer_sound").onclick = function() {
     sortIndex = 0;
     displayTable();
+
+    document.getElementById("prefer_sound").style.border = "5px solid chartreuse";
+    document.getElementById("prefer_temperature").style.border = "5px solid black";
+    document.getElementById("prefer_co2").style.border = "5px solid black";
+
+    document.getElementById("minImage").src = "../static/img/minNoise.png";
+    document.getElementById("maxImage").src = "../static/img/maxNoise.png";
   }
 
   document.getElementById("prefer_temperature").onclick = function() {
     sortIndex = 1;
     displayTable();
+
+    document.getElementById("prefer_sound").style.border = "5px solid black";
+    document.getElementById("prefer_temperature").style.border = "5px solid chartreuse";
+    document.getElementById("prefer_co2").style.border = "5px solid black";
+
+    document.getElementById("minImage").src = "../static/img/minHeat.png";
+    document.getElementById("maxImage").src = "../static/img/maxHeat.png";
   }
 
   document.getElementById("prefer_co2").onclick = function() {
     sortIndex = 2;
     displayTable();
+
+    document.getElementById("prefer_sound").style.border = "5px solid black";
+    document.getElementById("prefer_temperature").style.border = "5px solid black";
+    document.getElementById("prefer_co2").style.border = "5px solid chartreuse";
+
+    document.getElementById("minImage").src = "../static/img/minAirQuality.png";
+    document.getElementById("maxImage").src = "../static/img/maxAirQuality.png";
   }
 
   document.getElementById("prefer_low").onclick = function() {
     level = 0;
     displayTable();
+    document.getElementById("prefer_low").style.backgroundColor='#85C1E9'
+    document.getElementById("prefer_normal").style.backgroundColor='Grey'
+    document.getElementById("prefer_high").style.backgroundColor='Grey'
   }
 
   document.getElementById("prefer_normal").onclick = function() {
     level = 1;
     displayTable();
+    document.getElementById("prefer_low").style.backgroundColor='#85C1E9'
+    document.getElementById("prefer_normal").style.backgroundColor='#3498DB'
+    document.getElementById("prefer_high").style.backgroundColor='Grey'
   }
 
   document.getElementById("prefer_high").onclick = function() {
     level = 2;
     displayTable();
+    document.getElementById("prefer_low").style.backgroundColor='#85C1E9'
+    document.getElementById("prefer_normal").style.backgroundColor='#3498DB'
+    document.getElementById("prefer_high").style.backgroundColor='#2874A6'
   }
 
   function getHumanClock(timeInt) {
@@ -338,6 +360,8 @@
     dateSelectTag.appendChild(opt);
   }
   loadTablesData(new Date().toISOString().split("T")[0])
+
+
   </script>
 </body>
 </html>
