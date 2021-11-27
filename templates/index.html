@@ -2,7 +2,7 @@
 {% block body %}
 
 
-<form method="POST" action="/register" id="startScreenForm">
+<form method="POST" action="/register" onsubmit="return handleSubmit()">
     <table class="center">
       <tr>
           <td><b>Location</b></td>
@@ -27,7 +27,7 @@
           <td><input type="email" style="text-align:left" id="confirmEmail" oninput="checkEmail()" required></td>
       </tr>
       <tr>
-          <td><button onclick="handleSubmit()" text-align="center">GO</button></td>
+          <td><button type="submit" text-align="center">GO</button></td>
       </tr>
     </table>
 </form>

@@ -11,9 +11,10 @@ function handleSubmit() {
     var email = document.getElementById("email").value
     var confirmEmail = document.getElementById("confirmEmail").value
     var form = document.getElementById("startScreenForm")
-    if (email === confirmEmail) {
-        form.submit();
+    if (email === confirmEmail && email.value.length > 0 && confirmEmail.value.length > 0) {
+        return true;
     } else {
         alert("Confirmation email must be equal to the email.")
+        return false;
     }
 }
