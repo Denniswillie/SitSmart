@@ -125,6 +125,7 @@ def get_available_tables():
         }
 
     counter = 0
+    counter_2 = 1
     for start_hour in range(24):
         end_hour = start_hour + 1
         time_template = "{} {}:00:00"
@@ -143,6 +144,14 @@ def get_available_tables():
                     if counter == 10:
                         result[study_table_name]["availability"].append(False)
                     elif counter == 13:
+                        result[study_table_name]["availability"].append(False)
+                    else:
+                        result[study_table_name]["availability"].append(True)
+                elif study_table_name == "Desk 4":
+                    counter_2 += 1
+                    if counter_2 == 12:
+                        result[study_table_name]["availability"].append(False)
+                    elif counter_2 == 16:
                         result[study_table_name]["availability"].append(False)
                     else:
                         result[study_table_name]["availability"].append(True)
