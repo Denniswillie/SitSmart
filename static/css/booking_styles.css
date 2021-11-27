@@ -30,6 +30,9 @@ td {
   color: black;
   margin-left: 20px;
   font-family: Arial;
+  text-align: center;
+  font-family: Segoe UI;
+  font-weight: bold;
 }
 
 
@@ -379,8 +382,8 @@ select{
 .cell{
 display: inline-block;
 vertical-align: top;
-width: 80px;
-height: 80px;
+width: 110px;
+height: 110px;
 line-height: 30px;
 background: white;
 margin: 0 4px;
