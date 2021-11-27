@@ -109,6 +109,7 @@ def get_available_tables():
     booking_date = str(data.get("booking_date"))
     print(booking_date)
     location_id = session["location_id"]
+    print(location_id)
     study_table_manager = StudyTableManager(mysql)
     study_tables_at_location = study_table_manager.get_study_tables_in_location(location_id)
     result = dict()
@@ -137,6 +138,7 @@ def get_available_tables():
                 result[study_table_name]["availability"].append(True)
             else:
                 result[study_table_name]["availability"].append(False)
+    print(result)
     return json.dumps(result)
 
 
