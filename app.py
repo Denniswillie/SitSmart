@@ -110,6 +110,5 @@ app.register_blueprint(studyTable_api, url_prefix='/studyTable')
 
 if __name__ == "__main__":
     # Subscribe pubnub handler to channel
-    pubnub_handler_subscribe_thread = threading.Thread(target=pubnub_handler.subscribe(CHANNEL))
-    pubnub_handler_subscribe_thread.start()
-    app.run(use_reloader=False)
+    pubnub_handler.subscribe(CHANNEL)
+    # app.run(use_reloader=False)
