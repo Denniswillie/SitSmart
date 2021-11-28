@@ -17,6 +17,7 @@ class PubnubHandler:
     # This should be ran in a separate thread, otherwise it will block the main thread causing
     # other operations to be halted.
     def subscribe(self, channel):
+        print("subscribing..")
         class PubnubHandlerSubscribeCallback(SubscribeCallback):
             def __init__(self, app: Flask, mysql):
                 SubscribeCallback.__init__(self)

@@ -109,6 +109,5 @@ app.register_blueprint(booking_api, url_prefix='/booking')
 app.register_blueprint(studyTable_api, url_prefix='/studyTable')
 
 if __name__ == "__main__":
-    # Subscribe pubnub handler to channel
     pubnub_handler.subscribe(CHANNEL)
     # app.run(use_reloader=False)
