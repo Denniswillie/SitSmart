@@ -122,11 +122,13 @@ try:
 
 
     def get_table_info():
-        pubnub.publish().channel(CHANNEL).message({
+        message = {
             "sender": pubnub.uuid,
             "type": "GET_TABLE_INFO",
             "pi_mac_address": pi_mac_address,
-        }).sync()
+        }
+        print(message)
+        pubnub.publish().channel(CHANNEL).message(message).sync()
 
 
     def create_study_table_screen():
