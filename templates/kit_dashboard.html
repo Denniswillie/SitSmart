@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="../static/js/kit.js"></script>
+        <link rel="stylesheet" href="../static/css/kit_dashboard.css">
+    </head>
+    <body onload="countDown()">
+            <div class="parent">
+                <div class="title">
+                    <h1 class="titleText">SIT💡SMART</h1>
+                </div>
+                    <div class="detailBox">
+                    <div class="startTime" id="time">
+                            <div class="timeBox">
+                                <div class="timeText">
+                                    <h2>Current Time:</h2>
+                                </div>
+                                <div class="timeValue">
+                                    <h3 id="start">00:00</h3>
+                                </div>
+                            </div>
+                    </div>
+                    <div class="endTime" id="time">
+                            <div class="timeBox">
+                                <div class="timeText">
+                                    <h2>End Time:</h2>
+                                </div>
+                                <div class="timeValue">
+                                    <h3 id="end">00:00</h3>
+                                </div>
+                            </div>
+                    </div>
+                    </div>
+                    <div class="bottomBar">
+                        <input type="submit" value="Check Out" id="checkout" onclick= "removeBooking()"/>
+                    </div>
+            </div>
+    </body>
+</html>

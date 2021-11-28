@@ -1,0 +1,176 @@
+*{
+    margin:0;
+    padding:0;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    font-family: Segoe UI,Frutiger,Frutiger Linotype,Dejavu Sans,Helvetica Neue,Arial,sans-serif; 
+}
+
+.parent{
+    background:black;
+    height: 100%;
+    overflow: hidden;
+}
+
+.title{
+    width: 100%;
+    background-color: black;
+    height: 100px;
+    text-align: center;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.detailBoxHolder{
+    width: 100%;
+    height: 70vh;
+    position:relative;
+    background-color: white;
+    display: flex;
+    align-items: center;
+}
+
+.detailBox{
+    border: 3px solid rgb(255, 4, 4);
+    width: 30vw;
+    text-align: center;
+}
+
+.desk{
+    background-color: rgb(199, 23, 23);
+    color: white;
+    height: 5vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.availability{
+    background-color: rgb(221, 109, 109);
+    color:white;
+    height: 5vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.text{
+    background-color: white;
+    height: 20vh;
+    font-weight: bold;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 25px;
+}
+
+.time{
+    background-color: white;
+    height: 13vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.bottomBar{
+    height: 18%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#claim{
+    padding: 10px 50px;
+    border: none;
+    border: 5px solid chartreuse;
+    color: white;
+    background-color: green;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    cursor: pointer;
+    font-size: 25px;
+    margin: 20px auto;
+    display: block;
+    border-radius: 20px;
+    color:white;
+    font-weight: bold;
+}
+
+.numPadHolderDiv{
+    width: 40vw;
+    height: 100%;
+}
+
+.inputDiv{
+    width: 100%;
+    height: 20%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#passcodeField{
+    margin-top: 10px;
+    height: 80%;
+    width: 70%;
+    font-size: 100px;
+    text-align: center;
+    border:5px solid black;
+}
+
+#one{
+    grid-area: "one";
+}
+#two{
+    grid-area: "two";
+}
+#three{
+    grid-area: "three";
+}
+#four{
+    grid-area: "four";
+}
+#five{
+    grid-area: "five";
+}
+#six{
+    grid-area: "six";
+}
+#seven{
+    grid-area: "seven";
+}
+#eight{
+    grid-area: "eight";
+}
+#nine{
+    grid-area: "nine";
+}
+
+.numPadDiv{
+    width: 80%;
+    height: 80%;
+    display: grid;
+    grid-template-areas: 
+    'one two three'
+    'four five six'
+    'seven eight nine';
+    place-items: center;
+    margin:auto;
+}
+
+.numPadButton{
+    background-color: rgb(0, 214, 252);
+    height: 70%;
+    width: 70%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border:3px solid black;
+    font-size: 50px;
+}
