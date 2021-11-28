@@ -1,6 +1,7 @@
 from pubnub.callbacks import SubscribeCallback
 from pubnub.pubnub import PubNub
 from pubnub_handler.enums import MessageType
+from pubnub.enums import PNStatusCategory
 from pubnub_handler.utils import get_table_info, create_table, remove_table, save_table_stats, create_location, verify_location_id
 from flask import Flask
 
@@ -19,6 +20,7 @@ class PubnubHandler:
         class PubnubHandlerSubscribeCallback(SubscribeCallback):
             def __init__(self, app: Flask, mysql):
                 SubscribeCallback.__init__(self)
+                print("initiate pubnub instance")
                 self._app = app
                 self._mysql = mysql
 
@@ -26,7 +28,9 @@ class PubnubHandler:
                 pass
 
             def status(self, pubnub, event):
-                pass
+                if event.category == PNStatusCategory.PNConnectedCategory:
+                    print("[STATUS: PNConnectedCategory]")
+                    print("connected to channels: {}".format(event.affected_channels))
 
             def message(self, pubnub, event):
                 print("got message")
