@@ -33,8 +33,8 @@ Session(app)
 
 CHANNEL = "sitsmart_sensors_data_channel"
 pubnub_config = PNConfiguration()
-pubnub_config.publish_key = "pub-c-94051755-9540-4114-bbc2-58edb0260e91"
-pubnub_config.subscribe_key = "sub-c-fe5caef8-3a61-11ec-b2c1-a25c7fcd9558"
+pubnub_config.publish_key = "pub-c-9216e21f-73cf-4bfd-a909-b08f59eb9a22"
+pubnub_config.subscribe_key = "sub-c-12216cc6-5074-11ec-b60b-aa41d66f579f"
 pubnub_config.uuid = str(uuid.uuid4())
 pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 

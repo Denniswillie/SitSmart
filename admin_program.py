@@ -6,12 +6,14 @@ import uuid
 from pubnub.callbacks import SubscribeCallback
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
+from pubnub.enums import PNStatusCategory
+
 
 CHANNEL = "sitsmart_sensors_data_channel"
 
 pubnub_config = PNConfiguration()
-pubnub_config.publish_key = "pub-c-94051755-9540-4114-bbc2-58edb0260e91"
-pubnub_config.subscribe_key = "sub-c-fe5caef8-3a61-11ec-b2c1-a25c7fcd9558"
+pubnub_config.publish_key = "pub-c-9216e21f-73cf-4bfd-a909-b08f59eb9a22"
+pubnub_config.subscribe_key = "sub-c-12216cc6-5074-11ec-b60b-aa41d66f579f"
 pubnub_config.uuid = str(uuid.uuid4())
 
 pubnub = PubNub(pubnub_config)
@@ -23,6 +25,8 @@ try:
     def handle_event(msg):
         global location_id, study_table_id
         if msg["type"] == "VERIFY_LOCATION_ID":
+            print(msg["sender"])
+            print(pubnub.uuid)
             if msg["verified"]:
                 location_id = msg["location_id"]
                 get_table_info()
@@ -65,10 +69,13 @@ try:
 
     class MySubscribeCallback(SubscribeCallback):
         def presence(self, pubnub, event):
-            pass
+            print("[PRESENCE: {}]".format(event.event))
+            print("uuid: {}, channel: {}".format(event.uuid, event.channel))
 
         def status(self, pubnub, event):
-            pass
+            if event.category == PNStatusCategory.PNConnectedCategory:
+                print("[STATUS: PNConnectedCategory]")
+                print("connected to channels: {}".format(event.affected_channels))
 
         def message(self, pubnub, event):
             # Handle new message stored in message.message
