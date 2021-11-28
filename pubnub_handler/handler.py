@@ -29,6 +29,7 @@ class PubnubHandler:
                 pass
 
             def message(self, pubnub, event):
+                print("got message")
                 if event.message and type(event.message) == dict and "type" in event.message:
                     # Need to provide an app context in order to get the mysql connection cursor.
                     with self._app.app_context():
