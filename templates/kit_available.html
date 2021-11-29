@@ -5,7 +5,7 @@
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="../static/js/kit.js"></script>
     </head>
-    <body onload="updateNextHour()">
+    <body onload="checkHourly({{session.tableId}})">
         <div class="parent">
             <div class="title">
                 <h1 class="titleText">Sit💡Smart</h1>
@@ -13,13 +13,13 @@
             <div class="detailBoxHolder">
                 <div class="detailBox">
                     <div class="deskTitleBox">
-                        <h1 id="tableName">DK-000</h1>
+                        <h1 id="tableName">{{session.tableName}}</h1>
                     </div>
                     <div class="deskAvailabilityBox">
                         <h1>AVAILABLE</h1>
                     </div>
                     <div class="text">
-                        This desk is available until
+                        You can claim this desk until
                     </div>
                     <div class="time">
                         <h1 class="nextHour" id="nextHour">...</h1>

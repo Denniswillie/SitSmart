@@ -85,8 +85,9 @@ def handle_booking():
 
     # handle remove booking
     elif request.method == "DELETE":
-        booking_id = int(request.form.get("booking_id"))
+        booking_id = int(session.get('bookingId'))
         booking_manager.remove_booking(booking_id)
+        session.pop('bookingId')
         return json.dumps({
             "statusCode": StatusCode.OK_STATUS_CODE,
             "message": "booking has successfully been deleted"
@@ -142,14 +143,15 @@ def get_available_tables():
     return json.dumps(result)
 
 
-@booking_api.route("/tableBooking", methods=["GET"])
+@booking_api.route("/tableBooking", methods=["POST"])
 def tableBooking():
-    tableId = request.form.get("tableId")
+    tableId = request.form.get('tableId')
     startTime = request.form.get("startTime")
     endTime = request.form.get("endTime")
     try:
         booking_manager = BookingManager(mysql)
         result = booking_manager.get_table_booking_next_hour(tableId, startTime, endTime)
+        session['bookingId'] = result.booking_id
         return json.dumps(result.to_dict() if result is not None else None)
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
@@ -163,7 +165,7 @@ def tableBooking():
 def tapBooking():
     start_time = request.form.get("start_time")
     end_time = request.form.get("end_time")
-    study_table_id = request.form.get("study_table_id")
+    study_table_id = session.get('tableId')
     password = 1234  # not important as we are tapping to claim it
     booking_manager = BookingManager(mysql)
     booking = Booking(
@@ -172,8 +174,34 @@ def tapBooking():
         start_time,
         end_time,
     )
-    booking_manager.create_booking(booking)
+    bookingId = booking_manager.create_booking(booking)
+    session['bookingId'] = bookingId
     return json.dumps({
         "statusCode": StatusCode.SUCCESSFUL_CREATION_STATUS_CODE,
         "message": "Successfully created a booking"
     })
+
+
+@booking_api.route("/verify", methods=["POST"])
+def verifyBooking():
+    bookingId = session.get('bookingId')
+    bookingPassword = request.form.get("passcode")
+    try:
+        booking_manager = BookingManager(mysql)
+        res = booking_manager.verify_booking_passcode(bookingId, bookingPassword)
+        if res == 1:
+            return json.dumps({
+                "statusCode": StatusCode.OK_STATUS_CODE,
+                "result": True
+            })
+        else :
+            return json.dumps({
+                "statusCode": StatusCode.OK_STATUS_CODE,
+                "result": False
+            })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": StatusCode.INTERNAL_ERR_CODE,
+            "message": err_msg
+        })

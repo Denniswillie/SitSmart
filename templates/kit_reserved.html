@@ -2,96 +2,72 @@
 <html>
     <head>
         <link rel="stylesheet" href="../static/css/kit_reserved.css">
+        <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+        <script src="../static/js/kit.js"></script>
     </head>
     <body>
         <div class="parent">
             <div class="title">
                 <h1 class="titleText">SIT💡SMART</h1>
             </div>
-            <div class="detailBoxHolder">
-                <div class="detailBox">
-                    <div class="desk">
-                        <h1>DESK A</h1>
+            <form onsubmit="verifyBooking()">
+                <div class="detailBoxHolder">
+                    <div class="detailBox">
+                        <div class="desk">
+                            <h1>DESK A</h1>
+                        </div>
+                        <div class="availability">
+                            <h1>RESERVED</h1>
+                        </div>
+                        <div class="text">
+                            Reserved this spot?<br><br>
+                            Check in by entering the<br>
+                            unique pin code sent to<br>
+                            your email address
+                        </div>
                     </div>
-                    <div class="availability">
-                        <h1>RESERVED</h1>
-                    </div>
-                    <div class="text">
-                        Reserved this spot?<br><br>
-                        Check in by entering the<br>
-                        unique pin code sent to<br>
-                        your email address
+                    <div class="numPadHolderDiv">
+                        <div class="inputDiv">
+                            <input type="text" id="passcodeField" name="passcode"/>
+                        </div>
+                        <div class="numPadDiv">
+                            <div id="inputOne" class="numPadButton" onclick="clickNumPad('1')" style="cursor: pointer;">
+                                <h1>1</h1>
+                            </div>
+                            <div id="inputTwo" class="numPadButton" onclick="clickNumPad('2')" style="cursor: pointer;">
+                                <h1>2</h1>
+                            </div>
+                            <div id="inputThree" class="numPadButton" onclick="clickNumPad('3')" style="cursor: pointer;">
+                                <h1>3</h1>
+                            </div>
+                            <div id="inputFour" class="numPadButton" onclick="clickNumPad('4')" style="cursor: pointer;">
+                                <h1>4</h1>
+                            </div>
+                            <div id="inputFive" class="numPadButton" onclick="clickNumPad('5')" style="cursor: pointer;">
+                                <h1>5</h1>
+                            </div>
+                            <div id="inputSix" class="numPadButton" onclick="clickNumPad('6')" style="cursor: pointer;">
+                                <h1>6</h1>
+                            </div>
+                            <div id="inputSeven" class="numPadButton" onclick="clickNumPad('7')" style="cursor: pointer;">
+                                <h1>7</h1>
+                            </div>
+                            <div id="inputEight" class="numPadButton" onclick="clickNumPad('8')" style="cursor: pointer;">
+                                <h1>8</h1>
+                            </div>
+                            <div id="inputNine" class="numPadButton" onclick="clickNumPad('9')" style="cursor: pointer;">
+                                <h1>9</h1>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="numPadHolderDiv">
-                    <div class="inputDiv">
-                        <input type="text" id="passcodeField"/>
-                    </div>
-                    <div class="numPadDiv">
-                        <div id="inputOne" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>1</h1>
-                        </div>
-                        <div id="inputTwo" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>2</h1>
-                        </div>
-                        <div id="inputThree" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>3</h1>
-                        </div>
-                        <div id="inputFour" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>4</h1>
-                        </div>
-                        <div id="inputFive" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>5</h1>
-                        </div>
-                        <div id="inputSix" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>6</h1>
-                        </div>
-                        <div id="inputSeven" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>7</h1>
-                        </div>
-                        <div id="inputEight" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>8</h1>
-                        </div>
-                        <div id="inputNine" class="numPadButton" onclick="location.href='#';" style="cursor: pointer;">
-                            <h1>9</h1>
-                        </div>
+                <div class="bottomBar">
+                    <div>
+                        <input type="submit" value="Confirm" id="claim"/>
                     </div>
                 </div>
-            </div>
-            <div class="bottomBar">
-                <div>
-                    <input type="submit" value="Confirm" id="claim"/>
-                </div>
-            </div>
+            </form>
         </div>
     </body>
 </html>
-<script>
-    document.getElementById("inputOne").onclick = function() {
-        console.log("Button 1 clicked!")
-    }
-    document.getElementById("inputTwo").onclick = function() {
-        console.log("Button 2 clicked!")
-    }
-    document.getElementById("inputThree").onclick = function() {
-        console.log("Button 3 clicked!")
-    }
-    document.getElementById("inputFour").onclick = function() {
-        console.log("Button 4 clicked!")
-    }
-    document.getElementById("inputFive").onclick = function() {
-        console.log("Button 5 clicked!")
-    }
-    document.getElementById("inputSix").onclick = function() {
-        console.log("Button 6 clicked!")
-    }
-    document.getElementById("inputSeven").onclick = function() {
-        console.log("Button 7 clicked!")
-    }
-    document.getElementById("inputEight").onclick = function() {
-        console.log("Button 8 clicked!")
-    }
-    document.getElementById("inputNine").onclick = function() {
-        console.log("Button 9 clicked!")
-    }
-</script>
+

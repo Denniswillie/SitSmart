@@ -35,15 +35,14 @@ function formatTime(today,second)
 async function clickBook()
 {
     var today = new Date()
-    var start_time= formatDate(today)+" "+formatTime(today,false);
-    var end_time = formatDate(today)+" "+today.getHours()+1+":00:00";
+    var start_time= formatDate(today)+" "+today.getHours()+":00:00";
+    var end_time = formatDate(today)+" "+parseInt(today.getHours()+1)+":00:00";
     var formData = new FormData();
     formData.append('start_time',start_time)
     formData.append('end_time',end_time)
-    formData.append('study_table_id',8)
     await axios({
         method: "POST",
-        url: "http://127.0.0.1:5000/booking/tapBooking",
+        url: "/booking/tapBooking",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
     })
@@ -51,36 +50,27 @@ async function clickBook()
     .catch(err=>console.log(err))
     .then(res=>{
         if(res.statusCode===201)
-            window.location.href="kit_dashboard.html";
+            window.location.href="/tableKit/claimed";
     })
 }
 
 async function removeBooking()
 {
-    let formData = new FormData();
-    formData.append('booking_id',2);
-    await axios({
-        method: "DELETE",
-        url: "http://127.0.0.1:5000/booking/",
-        data: formData,
-        headers: { "Content-Type": "multipart/form-data" },
-    })
+    await axios.delete("/booking/")
     .then(res=>res.data)
     .catch(err=>console.log(err))
     .then(res=>{
         if(res)
         {
-            window.location.href = "kit_available.html";
+            window.location.href = "/tableKit/available";
         }
     })
 }
 
-async function updateNextHour()
+function updateNextHour()
 {
-    setInterval(function(){
         let endTime = new Date();
         document.getElementById("nextHour").innerHTML = formatHr(endTime.getHours()+1)+":00";
-    },1000);
 }
 
 function countDown()
@@ -116,40 +106,74 @@ async function enterDetail()
     .then(res=>res.data)
     .catch(err=>console.log(err))
     .then(res=>{
-        console.log(res)
         if(res.result.study_table_id!==null)
         {
-            window.location.href= "kit_available.html"
+            window.location.href= "/tableKit/available"
         }
     })
 }
 
 async function checkAvailable(tableId)
 {
-    let formData = new FormData();
+    let formdata = new FormData();
     let today = new Date();
     let startTime = formatDate(today)+" "+today.getHours()+":00:00";
-    let endTime = formatDate(today)+" "+today.getHours()+1+":00:00";
-    let table_id = 8;
-    formData.append('startTime',"2021-10-27 19:36:00");
-    formData.append('endTime','0000-00-00 00:00:00');
-    formData.append('tableId',table_id);
+    let endTime = formatDate(today)+" "+parseInt(today.getHours()+1)+":00:00";
+    formdata.append('startTime',startTime);
+    formdata.append('endTime',endTime);
+    formdata.append('tableId',tableId)
     await axios({
         method: "POST",
-        url: "http://127.0.0.1:5000/booking/tableBooking",
-        data: formData,
+        url: "/booking/tableBooking",
+        data: formdata,
         headers: { "Content-Type": "multipart/form-data" },
     })
     .then(res=>res.data)
     .catch(err=>console.log(err))
     .then(res=>{
-       console.log(res)     
+            if (res.booking_id != null)
+            {
+                window.location.href = "/tableKit/reserved"
+            }
     })
 }
 
 function checkHourly(tableId)
 {
+    today = new Date().getHours();
+    checkAvailable(tableId);
     setInterval(function(){
-        checkAvailable(tableId)
-    },3600000)
+        currHr = new Date().getHours();
+        if(currHr-today===1)
+            checkAvailable(tableId)
+            today = currHr
+        updateNextHour()
+    },1000)
+}
+
+function clickNumPad(num)
+{
+        document.getElementById("passcodeField").value += num;
+}
+
+async function verifyBooking()
+{
+        event.preventDefault();
+        let formdata = new FormData();
+        let passcode = document.getElementById("passcodeField").value;
+        formdata.append('passcode',passcode);
+        await axios({
+        method: "POST",
+        url: "/booking/verify",
+        data: formdata,
+        headers: { "Content-Type": "multipart/form-data" },
+      })
+      .then(res=>res.data)
+      .catch(err=>console.log(err))
+      .then(res=>{
+            if(res.result===true)
+            {
+                   window.location.href= "/tableKit/claimed";
+            }
+      })
 }

@@ -1,4 +1,4 @@
-from flask import Blueprint, request, redirect, render_template, session
+from flask import Blueprint, redirect, render_template, session
 import json
 
 tableKit = Blueprint('tableKit', __name__)
@@ -6,19 +6,26 @@ tableKit = Blueprint('tableKit', __name__)
 
 @tableKit.route("/setup")
 def setup():
-    return render_template("")
+    return render_template("kit_console.html")
 
 
-@tableKit.route("/dashboard")
+@tableKit.route("/available")
 def dashBoard():
-    return render_template("")
+    if session.get('tableId') is not None:
+        return render_template("kit_available.html")
+    else:
+        return redirect("/tableKit/setup")
 
 
 @tableKit.route("/claimed")
 def claimed():
-    return render_template("")
+    if session.get('bookingId') is not None:
+        return render_template("kit_dashboard.html")
+    return redirect("/tableKit/available")
 
 
 @tableKit.route("/reserved")
 def reserved():
-    return render_template("")
+    if session.get('bookingId') is not None:
+        return render_template("kit_reserved.html")
+    return redirect("/tableKit/available")
