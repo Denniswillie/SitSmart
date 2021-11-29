@@ -7,14 +7,14 @@ function checkEmail(){
         document.getElementById("confirmEmail").style.color = "black"
 }
 
-axios.post('/testing', {
-    bookings: {
-        1: {
-            times: [[1, 2]],
-            studyTableName: "table 1"
-        }
+function handleSubmit() {
+    var email = document.getElementById("email").value
+    var confirmEmail = document.getElementById("confirmEmail").value
+    var form = document.getElementById("startScreenForm")
+    if (email === confirmEmail && email.value.length > 0 && confirmEmail.value.length > 0) {
+        return true;
+    } else {
+        alert("Confirmation email must be equal to the email.")
+        return false;
     }
-  })
-  .then(function (response) {
-    console.log(response);
-  })
+}

@@ -8,7 +8,7 @@ class TableStatsManager:
 
     def save_table_stats(self, table_stats: TableStats):
         cur = self._mysql.connection.cursor()
-        cur.execute("insert into tableStats (studyTableId, recordedTime, temperatureLevel, soundLevel, co2Level) "
+        cur.execute("insert into TableStats (studyTableId, recordedTime, temperatureLevel, soundLevel, co2Level) "
                     "values (%s, %s, %s, %s, %s);", [
                         table_stats.table_id,
                         table_stats.time,

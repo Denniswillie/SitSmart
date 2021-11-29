@@ -2,7 +2,7 @@
 {% block body %}
 
 
-<form method="POST" action="/register">
+<form method="POST" action="/register" onsubmit="return handleSubmit()">
     <table class="center">
       <tr>
           <td><b>Location</b></td>
@@ -18,16 +18,16 @@
           <td><b>Email</b></td>
       </tr>
       <tr>
-          <td><input type="text" style="text-align:left" id="email" name="email"></td>
+          <td><input type="email" style="text-align:left" id="email" name="email" required></td>
       </tr>
       <tr>
           <td><b>Confirm Email</b></td>
       </tr>
       <tr>
-          <td><input type="text" style="text-align:left" id="confirmEmail" oninput="checkEmail()"></td>
+          <td><input type="email" style="text-align:left" id="confirmEmail" oninput="checkEmail()" required></td>
       </tr>
       <tr>
-          <td><button text-align="center" type="submit">GO</button></td>
+          <td><button type="submit" text-align="center">GO</button></td>
       </tr>
     </table>
 </form>

@@ -10,7 +10,7 @@ class StudyTableManager:
     def create_study_table(self, study_table: StudyTable) -> int:
         try:
             cur = self._mysql.connection.cursor()
-            cur.execute("INSERT INTO studyTable(studyTableName, locationId, piMacAddress) values (%s, %s, %s)", [
+            cur.execute("INSERT INTO StudyTable(studyTableName, locationId, piMacAddress) values (%s, %s, %s)", [
                 study_table.study_table_name,
                 study_table.location_id,
                 study_table.pi_mac_address
@@ -27,7 +27,7 @@ class StudyTableManager:
     def remove_study_table(self, study_table_id: int, pi_mac_address: str) -> bool:
         cur = self._mysql.connection.cursor()
         rows_affected = cur.execute(
-            "DELETE from studyTable WHERE studyTableId = %s and piMacAddress = %s;",
+            "DELETE from StudyTable WHERE studyTableId = %s and piMacAddress = %s;",
             [study_table_id, pi_mac_address]
         )
         self._mysql.connection.commit()
@@ -36,8 +36,8 @@ class StudyTableManager:
 
     def get_table_info(self, pi_mac_address: str) -> StudyTableInfo:
         cur = self._mysql.connection.cursor()
-        cur.execute("SELECT studyTable.studyTableId, studyTable.studyTableName, location.name from studyTable JOIN "
-                    "location ON studyTable.locationId = location.locationId WHERE piMacAddress = %s;", [pi_mac_address]
+        cur.execute("SELECT StudyTable.studyTableId, StudyTable.studyTableName, Location.name from StudyTable JOIN "
+                    "Location ON StudyTable.locationId = Location.locationId WHERE piMacAddress = %s;", [pi_mac_address]
                     )
         self._mysql.connection.commit()
         result = cur.fetchone()
@@ -50,10 +50,11 @@ class StudyTableManager:
 
     def get_available_tables(self, location_id: int, start_time: str, end_time: str) -> List[StudyTable]:
         cur = self._mysql.connection.cursor()
-        cur.execute("select studyTable.studyTableId, studyTable.studyTableName, studyTable.locationId, "
-                    "studyTable.piMacAddress from studyTable LEFT JOIN booking on studyTable.studyTableId = "
-                    "booking.studyTableId WHERE studyTable.locationId = %s group by studyTable.studyTableId having "
-                    "count(case when not (%s <= booking.startTime or booking.endTime <= %s) then 1 end) = 0;",
+        cur.execute("select StudyTable.studyTableId, StudyTable.studyTableName, StudyTable.locationId, "
+                    "StudyTable.piMacAddress from StudyTable LEFT JOIN Booking on StudyTable.studyTableId = "
+                    "Booking.studyTableId WHERE StudyTable.locationId = %s group by StudyTable.studyTableId having "
+                    "count(case when not (binary %s <= binary Booking.startTime or binary Booking.endTime <= binary %s)"
+                    " then 1 end) = 0;",
                     [location_id, end_time, start_time]
                     )
         self._mysql.connection.commit()
@@ -70,7 +71,7 @@ class StudyTableManager:
 
     def get_study_tables_in_location(self, location_id) -> List[AvailableStudyTableData]:
         cur = self._mysql.connection.cursor()
-        cur.execute("select * from studyTable where locationId = %s;", [location_id])
+        cur.execute("select * from StudyTable where locationId = %s;", [location_id])
         study_tables = []
         self._mysql.connection.commit()
         for study_table_id, study_table_name, study_table_location_id, mac_address, temp, sound, co2 in cur.fetchall():
