@@ -152,6 +152,9 @@
     })
 
   document.getElementById("proceed_button").onclick = function() {
+    if (Object.keys(selectedBookings).length === 0) {
+        alert("You must at least book 1 slot before proceeding")
+    } else {
     var temp = {};
     for (const [studyTableId, startTimes] of Object.entries(selectedBookings)) {
       if (startTimes.length > 0) {
@@ -174,6 +177,7 @@
             console.log(res)
             window.location.href = "/receipt", "_self"
         })
+        }
   }
 
   document.getElementById("prefer_sound").onclick = function() {
@@ -253,25 +257,39 @@
     var studyTableName = x[2]
     const selectedBookingsList = document.getElementById("selectedBookings");
     if (element.style.backgroundColor === "green") {
-        element.style.backgroundColor = "white"
-        element.style.backgroundImage = "url('../static/img/check.jpg')"
-        element.style.backgroundSize = "contain"
-        if (studyTableId in selectedBookings) {
-            selectedBookings[studyTableId].push(startHour)
-        } else {
-            selectedBookings[studyTableId] = [startHour]
+        var allowBook = true;
+        for (const [key, value] of Object.entries(selectedBookings)) {
+            if (value.includes(startHour)) {
+                allowBook = false;
+            }
         }
-        var temp = document.createElement("li")
-        temp.id = studyTableName + ": " + startHour + "-" + parseInt(startHour + 1)
-        temp.innerHTML = studyTableName + ": " + getHumanClock(startHour) + "-" + getHumanClock(startHour + 1)
-        selectedBookingsList.appendChild(temp)
-        studyTableNameMemo[studyTableId] = studyTableName
+        if (allowBook === true) {
+            element.style.backgroundColor = "white"
+            element.style.backgroundImage = "url('../static/img/check.jpg')"
+            element.style.backgroundSize = "contain"
+            if (studyTableId in selectedBookings) {
+                selectedBookings[studyTableId].push(startHour)
+            } else {
+                selectedBookings[studyTableId] = [startHour]
+            }
+            var temp = document.createElement("li")
+            temp.id = studyTableName + ": " + startHour + "-" + parseInt(startHour + 1)
+            temp.innerHTML = studyTableName + ": " + getHumanClock(startHour) + "-" + getHumanClock(startHour + 1)
+            selectedBookingsList.appendChild(temp)
+            studyTableNameMemo[studyTableId] = studyTableName
+        } else {
+            alert("cannot book more than 1 desks at the same time slot")
+        }
+
     } else {
         element.style.backgroundColor = "green"
         element.style.backgroundImage = "none"
         var index = selectedBookings[studyTableId].indexOf(startHour);
         if (index !== -1) {
           selectedBookings[studyTableId].splice(index, 1);
+          if (selectedBookings[studyTableId].length === 0) {
+            delete selectedBookings[studyTableId];
+          }
         }
         var temp = document.getElementById(studyTableName + ": " + startHour + "-" + parseInt(startHour + 1))
         temp.parentNode.removeChild(temp)

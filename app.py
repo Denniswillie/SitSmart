@@ -1,6 +1,7 @@
 import os
 import uuid
 import threading
+from dotenv import load_dotenv
 
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
@@ -11,13 +12,14 @@ from global_init import mysql, mail
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub_handler import PubnubHandler
 
+load_dotenv()
 app = Flask(__name__)
 cors = CORS(app)
 
-app.config['MYSQL_HOST'] = 'localhost'
-app.config['MYSQL_USER'] = 'root'
-app.config['MYSQL_PASSWORD'] = ''
-app.config['MYSQL_DB'] = 'sit_smart'
+app.config['MYSQL_HOST'] = os.getenv("MYSQL_HOST")
+app.config['MYSQL_USER'] = os.getenv("MYSQL_USER")
+app.config['MYSQL_PASSWORD'] = os.getenv("MYSQL_PASSWORD")
+app.config['MYSQL_DB'] = os.getenv("MYSQL_DB")
 app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
 app.config['MAIL_POST'] = 587
@@ -33,8 +35,8 @@ Session(app)
 
 CHANNEL = "sitsmart_sensors_data_channel"
 pubnub_config = PNConfiguration()
-pubnub_config.publish_key = "pub-c-94051755-9540-4114-bbc2-58edb0260e91"
-pubnub_config.subscribe_key = "sub-c-fe5caef8-3a61-11ec-b2c1-a25c7fcd9558"
+pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
+pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
 pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
@@ -107,6 +109,13 @@ def receipt_screen():
 app.register_blueprint(location_api, url_prefix='/location')
 app.register_blueprint(booking_api, url_prefix='/booking')
 app.register_blueprint(studyTable_api, url_prefix='/studyTable')
+
+
+# For gunicorn post work hook (to be called after app.run() is called
+def subscribe_pubnub():
+    pubnub_handler_subscribe_thread = threading.Thread(target=pubnub_handler.subscribe(CHANNEL))
+    pubnub_handler_subscribe_thread.start()
+
 
 if __name__ == "__main__":
     # Subscribe pubnub handler to channel
