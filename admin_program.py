@@ -1,4 +1,4 @@
-import sys
+from dotenv import load_dotenv
 import os
 from getmac import get_mac_address as gma
 import uuid
@@ -7,11 +7,13 @@ from pubnub.callbacks import SubscribeCallback
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 
+load_dotenv()
+
 CHANNEL = "sitsmart_sensors_data_channel"
 
 pubnub_config = PNConfiguration()
-pubnub_config.publish_key = "pub-c-94051755-9540-4114-bbc2-58edb0260e91"
-pubnub_config.subscribe_key = "sub-c-fe5caef8-3a61-11ec-b2c1-a25c7fcd9558"
+pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
+pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
 
 pubnub = PubNub(pubnub_config)
