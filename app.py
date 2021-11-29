@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 from flask import Flask, render_template, request, redirect, session
 from flask_session import Session
 from flask_cors import CORS
-from routes import location_api, booking_api, studyTable_api
+from routes import location_api, booking_api, studyTable_api, tableKit
 from db_managers import LocationManager
 from global_init import mysql, mail
 from pubnub.pnconfiguration import PNConfiguration
@@ -109,6 +109,7 @@ def receipt_screen():
 app.register_blueprint(location_api, url_prefix='/location')
 app.register_blueprint(booking_api, url_prefix='/booking')
 app.register_blueprint(studyTable_api, url_prefix='/studyTable')
+app.register_blueprint(tableKit, url_prefix='/tableKit')
 
 
 # For gunicorn post work hook (to be called after app.run() is called
