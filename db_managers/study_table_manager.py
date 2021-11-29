@@ -53,7 +53,8 @@ class StudyTableManager:
         cur.execute("select StudyTable.studyTableId, StudyTable.studyTableName, StudyTable.locationId, "
                     "StudyTable.piMacAddress from StudyTable LEFT JOIN Booking on StudyTable.studyTableId = "
                     "Booking.studyTableId WHERE StudyTable.locationId = %s group by StudyTable.studyTableId having "
-                    "count(case when not (%s <= Booking.startTime or Booking.endTime <= %s) then 1 end) = 0;",
+                    "count(case when not (binary %s <= binary Booking.startTime or binary Booking.endTime <= binary %s)"
+                    " then 1 end) = 0;",
                     [location_id, end_time, start_time]
                     )
         self._mysql.connection.commit()
