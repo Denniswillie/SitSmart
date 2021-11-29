@@ -110,6 +110,13 @@ app.register_blueprint(location_api, url_prefix='/location')
 app.register_blueprint(booking_api, url_prefix='/booking')
 app.register_blueprint(studyTable_api, url_prefix='/studyTable')
 
+
+# For gunicorn post work hook (to be called after app.run() is called
+def subscribe_pubnub():
+    pubnub_handler_subscribe_thread = threading.Thread(target=pubnub_handler.subscribe(CHANNEL))
+    pubnub_handler_subscribe_thread.start()
+
+
 if __name__ == "__main__":
     # Subscribe pubnub handler to channel
     pubnub_handler_subscribe_thread = threading.Thread(target=pubnub_handler.subscribe(CHANNEL))
