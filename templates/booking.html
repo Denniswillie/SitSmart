@@ -162,9 +162,17 @@
           times: [],
           studyTableName: studyTableNameMemo[studyTableId]
         }
+        startTimes.sort();
+        var currStartTime = 0;
         for (var i = 0; i < startTimes.length; i++) {
-          temp[studyTableId].times.push([startTimes[i], startTimes[i] + 1])
+          if (i === 0) {
+             currStartTime = startTimes[i];
+          } else if (startTimes[i] !== startTimes[i-1] + 1) {
+             temp[studyTableId].times.push([currStartTime, startTimes[i-1] + 1]);
+             currStartTime = startTimes[i];
+          }
         }
+        temp[studyTableId].times.push([currStartTime, startTimes[startTimes.length - 1] + 1])
       }
     }
     axios.post("/booking/", {
