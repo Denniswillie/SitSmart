@@ -73,14 +73,13 @@ function updateNextHour()
         document.getElementById("nextHour").innerHTML = formatHr(endTime.getHours()+1)+":00";
 }
 
-function countDown()
+function countDown(endTime)
 {
     let startTime = new Date();
-    let endTime = new Date();
     document.getElementById("start").innerHTML = formatTime(startTime,true);
     setInterval(function(){
         var currHr = new Date().getHours();
-        if(currHr-startTime.getHours()===1)
+        if(currHr===endTime)
         {
             clearInterval(countDown);
             document.getElementById('checkout').click();
