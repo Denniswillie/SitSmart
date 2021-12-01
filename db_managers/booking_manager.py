@@ -16,8 +16,11 @@ class BookingManager:
         cur.execute("insert into Booking (bookingPasswordHash, salt, studyTableId, startTime, endTime) values (SHA2("
                     "concat(%s, %s), 512), %s, %s, %s, %s);", [booking.booking_password, salt, salt,
                                                                booking.table_id, booking.start_time, booking.end_time])
+        cur.execute("SELECT LAST_INSERT_ID();")
         self._mysql.connection.commit()
+        last_id = cur.fetchone()[0]
         cur.close()
+        return last_id
 
     # return a boolean value indicating whether the booking passcode is verified or not.
     def verify_booking_passcode(self, booking_id: int, booking_password: str) -> bool:

@@ -1,4 +1,4 @@
-from flask import Blueprint, request
+from flask import Blueprint, request,session
 from global_init import mysql
 from .enums import StatusCode
 import json
@@ -35,6 +35,8 @@ def table_info():
     study_table_manager = StudyTableManager(mysql)
     try:
         res = study_table_manager.get_table_info(mac_address)
+        session['tableId'] = res.study_table_id
+        session['tableName'] = res.study_table_name
         return json.dumps({
             "statusCode": StatusCode.OK_STATUS_CODE,
             "result": res.to_dict()
