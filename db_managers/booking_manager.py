@@ -48,3 +48,6 @@ class BookingManager:
             start_time=result[2].strftime("%Y-%m-%d %H:%M:%S"),
             end_time=result[3].strftime("%Y-%m-%d %H:%M:%S"),
         ) if result is not None else result
+
+    def get_table_booking_next_hour_consecutive(self, study_table_id, start_time):
+        return []
