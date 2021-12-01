@@ -32,9 +32,38 @@ td {
 
 select{
   width:100%;
+  font-size:15px;
 }
 
-button {
+.google{
+    width:30px;
+    height:30px;
+    margin-left:10px;
+}
+.google > img{
+    height:100%;
+    width:100%;
+}
+
+#oauth{
+    font-size: 15px;
+    margin-top:10px;
+    outline:none;
+    border:none;
+    padding: 10px 20px;
+    display:flex;
+    justify-content: center;
+    align-items:center;
+    cursor:pointer;
+    border-radius: 5px;
+    font-weight:bold;
+}
+#oauth:hover,
+#oauth:active{
+    background:rgb(226, 224, 224);
+}
+
+#submit {
   padding: 10px 50px;
   border: none;
   color: white;

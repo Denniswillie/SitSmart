@@ -1,34 +1,25 @@
 {% extends "layout.html" %}
 {% block body %}
-
-
-<form method="POST" action="/register" onsubmit="return handleSubmit()">
     <table class="center">
       <tr>
           <td><b>Location</b></td>
       </tr>
       <tr>
           <td><select name="locations" id="locations" width="100">
+              <option selected value=null></option>
               {% for location in locations %}
               <option value={{location.location_id}} id="location_id">{{location.name}}</option>
               {% endfor %}
           </select></td>
       </tr>
-      <tr>
-          <td><b>Email</b></td>
-      </tr>
-      <tr>
-          <td><input type="email" style="text-align:left" id="email" name="email" required></td>
-      </tr>
-      <tr>
-          <td><b>Confirm Email</b></td>
-      </tr>
-      <tr>
-          <td><input type="email" style="text-align:left" id="confirmEmail" oninput="checkEmail()" required></td>
-      </tr>
-      <tr>
-          <td><button type="submit" text-align="center">GO</button></td>
+        <tr>
+          <td>
+              <button id="oauth" onclick="googleLogin()" type="button">
+              Login with google<div class="google">
+              <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/2048px-Google_%22G%22_Logo.svg.png">
+              </div>
+              </button>
+          </td>
       </tr>
     </table>
-</form>
 {% endblock %}

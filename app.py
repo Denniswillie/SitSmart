@@ -1,9 +1,10 @@
+import json
 import os
 import uuid
 import threading
 from dotenv import load_dotenv
 
-from flask import Flask, render_template, request, redirect, session
+from flask import Flask, render_template, request, redirect, session, url_for
 from flask_session import Session
 from flask_cors import CORS
 from routes import location_api, booking_api, studyTable_api, tableKit
@@ -11,10 +12,25 @@ from db_managers import LocationManager
 from global_init import mysql, mail
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub_handler import PubnubHandler
+from authlib.integrations.flask_client import OAuth
 
 load_dotenv()
 app = Flask(__name__)
 cors = CORS(app)
+oauth = OAuth(app)
+google = oauth.register(
+    name='google',
+    client_id=os.getenv("GOOGLE_CLIENT_ID"),
+    client_secret=os.getenv("GOOGLE_CLIENT_SECRET"),
+    access_token_url='https://accounts.google.com/o/oauth2/token',
+    access_token_params=None,
+    authorize_url='https://accounts.google.com/o/oauth2/auth',
+    authorize_params=None,
+    api_base_url='https://www.googleapis.com/oauth2/v1/',
+    userinfo_endpoint='https://openidconnect.googleapis.com/v1/userinfo',
+    # This is only needed if using openId to fetch user info
+    client_kwargs={'scope': 'openid email profile'},
+)
 
 app.config['MYSQL_HOST'] = os.getenv("MYSQL_HOST")
 app.config['MYSQL_USER'] = os.getenv("MYSQL_USER")
@@ -43,7 +59,6 @@ pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 @app.route("/")
 def index():
-    # session.clear()
     if not session.get('email'):
         return redirect("/register")
     return render_template("booking.html")
@@ -52,17 +67,39 @@ def index():
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
-        email_address = request.form.get("email")
         location_id = request.form.get("locations")
-        session["email"] = email_address
         session["location_id"] = location_id
-        return redirect("/booking")
+        return json.dumps({
+            "stored": True
+        })
     # handle GET request
     else:
         if session.get('email'):
             return redirect("/booking")
         location_manager = LocationManager(mysql)
         return render_template("index.html", locations=location_manager.get_available_locations())
+
+
+@app.route('/login')
+def login():
+    google = oauth.create_client('google')  # create the google oauth client
+    redirect_uri = url_for('authorize', _external=True)
+    return google.authorize_redirect(redirect_uri)
+
+
+@app.route('/authorize')
+def authorize():
+    google = oauth.create_client('google')  # create the google oauth client
+    token = google.authorize_access_token()  # Access token from google (needed to get user info)
+    resp = google.get('userinfo')  # userinfo contains stuff u specificed in the scrope
+    user_info = resp.json()
+    user = oauth.google.userinfo()  # uses openid endpoint to fetch user info
+    # Here you use the profile/user data that you got and query your database find/register the user
+    # and set ur own data in the session not the profile from google
+    print(user_info)
+    session['email'] = user_info['email']
+    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+    return redirect('/')
 
 
 @app.route("/receipt")
