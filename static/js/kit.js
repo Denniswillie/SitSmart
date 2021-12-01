@@ -78,7 +78,6 @@ function countDown()
     let startTime = new Date();
     let endTime = new Date();
     document.getElementById("start").innerHTML = formatTime(startTime,true);
-    document.getElementById("end").innerHTML = formatHr(endTime.getHours()+1)+":00";
     setInterval(function(){
         var currHr = new Date().getHours();
         if(currHr-startTime.getHours()===1)
@@ -108,7 +107,7 @@ async function enterDetail()
     .then(res=>{
         if(res.result.study_table_id!==null)
         {
-            window.location.href= "/tableKit/available"
+            window.location.href= "/tableKit/available";
         }
     })
 }
@@ -118,9 +117,7 @@ async function checkAvailable(tableId)
     let formdata = new FormData();
     let today = new Date();
     let startTime = formatDate(today)+" "+today.getHours()+":00:00";
-    let endTime = formatDate(today)+" "+parseInt(today.getHours()+1)+":00:00";
     formdata.append('startTime',startTime);
-    formdata.append('endTime',endTime);
     formdata.append('tableId',tableId)
     await axios({
         method: "POST",
@@ -176,4 +173,14 @@ async function verifyBooking()
                    window.location.href= "/tableKit/claimed";
             }
       })
+}
+function checkUserClaimed()
+{
+        setInterval(function(){
+                let currTime = new Date();
+                if(currTime.getMinutes()>=15)
+                {
+                    removeBooking();
+                }
+        },1000)
 }

@@ -88,6 +88,7 @@ def handle_booking():
         booking_id = int(session.get('bookingId'))
         booking_manager.remove_booking(booking_id)
         session.pop('bookingId')
+        session.pop('endTime')
         return json.dumps({
             "statusCode": StatusCode.OK_STATUS_CODE,
             "message": "booking has successfully been deleted"
@@ -152,6 +153,7 @@ def tableBooking():
         booking_manager = BookingManager(mysql)
         result = booking_manager.get_table_booking_next_hour(tableId, startTime, endTime)
         session['bookingId'] = result.booking_id
+        session['endTime'] = result.end_time
         return json.dumps(result.to_dict() if result is not None else None)
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
@@ -176,6 +178,7 @@ def tapBooking():
     )
     bookingId = booking_manager.create_booking(booking)
     session['bookingId'] = bookingId
+    session['endTime'] = end_time.split(" ")[1].split(":")[0]
     return json.dumps({
         "statusCode": StatusCode.SUCCESSFUL_CREATION_STATUS_CODE,
         "message": "Successfully created a booking"

@@ -4,7 +4,7 @@ import json
 tableKit = Blueprint('tableKit', __name__)
 
 
-@tableKit.route("/setup")
+@tableKit.route("/")
 def setup():
     return render_template("kit_console.html")
 
@@ -14,7 +14,7 @@ def dashBoard():
     if session.get('tableId') is not None:
         return render_template("kit_available.html")
     else:
-        return redirect("/tableKit/setup")
+        return redirect("/tableKit/")
 
 
 @tableKit.route("/claimed")
