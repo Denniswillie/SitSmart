@@ -8,42 +8,48 @@
   </head>
   <body>
     <h1 id="title">SIT💡SMART</h1>
-    <div id="booking_info">
-      <h3>Successfully Booked!</h3>
-      <div id="booking_info_children">
-        <ul style="list-style: none">
-          <li><h4>📍 {{ location_name }}</h4></li>
-          <li><h4>📅 {{ booking_date }}</h4></li>
-          <li><div id="booking_times">
-            <div id="booking_times_icon">
-              ⏱
-            </div>
-            <div id="booking_times_values">
-              {% for study_table_name, times in bookings.items() %}
-              {% for start_time, end_time in times %}
-              {{ study_table_name }}: {{ start_time }}-{{ end_time }}
-              {% endfor %}
-              {% endfor %}
-            </div>
-          </div></li>
-        </ul>
+    <div id="bookingSuccessfulDiv">
+      <img id="checkImage" src="../static/img/confirmed.png">
+      <div id="bookingSuccessful" style='vertical-align:middle; display:inline;'>
+        Booking Successful!
       </div>
     </div>
-    <div id="map_img_div">
-      <img id="map_img" src="../static/img/map.png" />
-    </div>
-    <div id="booking_footer">
-      <h4 style="margin-bottom: 0">Check-in Code</h4>
-      <h3 style="margin-top: 5px">{{ booking_password }}</h3>
-      <h5>Input your code into the screen provided at your desk when you arrive</h5>
-      <h5>A receipt of your booking and code has been sent to: </h5>
-      <h5 style="color: blue">{{ email_address }}</h5>
-      <button id="return_button">Return</button>
+
+    <div id="bookingInfo">
+      <h4 id="checkInCodeTitle">Check-In Code:</h4>
+      <h3 id="checkInCode">{{ booking_password }}</h3>
+      <h5>Input this code into the screen provided <br>at your desks at their start time</h5>
+      <div id="bookingInfoChildren">
+        <table class="center" style="margin-bottom: 3em;">
+          <tr>
+            <td><b>Location:</b></td>
+            <td>{{ location_name }}</td>
+          </tr>
+          <tr>
+            <td><b>Date:</b></td>
+            <td>{{ booking_date }}</td>
+          </tr>
+          <tr>
+            <td style="vertical-align: top;"><b>Booked:</b></td>
+            <td style="vertical-align: top;">
+              <div id="bookingTimesValues">
+                {% for study_table_name, times in bookings.items() %}
+                {% for start_time, end_time in times %}
+                {{ study_table_name }}: {{ start_time }}-{{ end_time }}<br/>
+                {% endfor %}
+                {% endfor %}
+              </div>
+            </td>
+          </tr>
+      </table>
+
+      <button id="returnButton">Return</button>
     </div>
     <script>
-      document.getElementById("return_button").addEventListener("click", function() {
+      document.getElementById("returnButton").addEventListener("click", function() {
         window.location.href = "/"
       });
     </script>
+    </div>
   </body>
 </html>

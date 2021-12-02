@@ -48,7 +48,7 @@ create table Booking (
     studyTableId int not null,
     startTime DATETIME,
     endTime DATETIME,
-    sitSmartUserId int not null,
+    sitSmartUserId int ,
     PRIMARY KEY (bookingId),
     FOREIGN KEY (studyTableId) REFERENCES StudyTable(studyTableId),
     FOREIGN KEY (sitSmartUserId) REFERENCES SitSmartUser(sitSmartUserId)
