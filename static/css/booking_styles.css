@@ -126,11 +126,11 @@ h3 {
 
 .topWrapper{
   display:grid;
-  grid-auto-rows:minmax(100px, 100vh);
+  grid-auto-rows:minmax(100px, 100%);
   grid-template-rows: 40px 100px 30px 100px;
   justify-items:stretch;
   align-items:stretch;
-  max-width: auto;
+  max-width: 100%;
   height: auto;
   background:black;
   flex-wrap: wrap;
@@ -173,7 +173,7 @@ h3 {
   align-items: center;
   grid-column:1;
   grid-row:1;
-  font-size: 120%;
+  font-size: 100%;
   font-family: Segoe UI;
   font-weight: bold;
   align-self: flex-end;
@@ -196,6 +196,7 @@ h3 {
   grid-column: 1;
   grid-row: 2;
 }
+
 .optionsBox{
   display: flex;
   justify-content: center;
@@ -285,16 +286,16 @@ border-radius: 10px;
 border-color: black;
 }
 .optionButton {
-display: inline-block;
-vertical-align: top;
-width: 80%;
-height: 80%;
-line-height: 30px;
-background: white;
-margin: 0 4px;
-text-align: center;
-border-radius: 10px;
-border-color: black;
+    display: inline-block;
+    vertical-align: top;
+    width: 80%;
+    height: 80%;
+    line-height: 30px;
+    background: white;
+    margin: 0 0px;
+    text-align: center;
+    border-radius: 10px;
+    border-color: black;
 }
 
 .center {
@@ -347,14 +348,14 @@ color: white;
 
 select{
   box-shadow:0 10px 25px rgba(0,0,0)
-  font-size: 40px;
   padding: 1em 1.5em;
   background: white;
   color: black;
   border-radius: 10px;
-  height: 80px;
-  width: 200px;
-  font-size: 20px;
+  height: 70px;
+  width: 160px;
+  font-size: 120%;
+  text-align-last:center;
 }
 
 .cell{
