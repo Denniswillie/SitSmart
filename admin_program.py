@@ -17,6 +17,10 @@ pubnub_config = PNConfiguration()
 pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
 pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
+pubnub_config.ssl = True
+
+res = requests.post("http://sitsmart.tk/pubnub_cipher_key")
+pubnub_config.cipher_key = json.loads(res.text)["cipher_key"]
 
 pubnub = PubNub(pubnub_config)
 location_id = None

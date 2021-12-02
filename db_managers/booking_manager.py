@@ -39,24 +39,10 @@ class BookingManager:
         self._mysql.connection.commit()
         cur.close()
 
-    def get_table_booking_next_hour(self, study_table_id, start_time, end_time):
-        cur = self._mysql.connection.cursor()
-        cur.execute("select bookingId, studyTableId, startTime, endTime from Booking where studyTableId = %s and "
-                    "startTime <= %s and %s <= endTime", [study_table_id, start_time, end_time])
-        self._mysql.connection.commit()
-        result = cur.fetchone()
-        cur.close()
-        return Booking(
-            booking_id=result[0],
-            table_id=result[1],
-            start_time=result[2].strftime("%Y-%m-%d %H:%M:%S"),
-            end_time=result[3].strftime("%Y-%m-%d %H:%M:%S"),
-        ) if result is not None else result
-
     def get_table_booking_next_hour_consecutive(self, study_table_id, start_time):
         cur = self._mysql.connection.cursor()
         cur.execute("select bookingId, studyTableId, startTime, endTime, sitSmartUserId from Booking where "
-                    "studyTableId = %s and startTime = %s;", [study_table_id, start_time])
+                    "studyTableId = %s and binary startTime = binary %s;", [study_table_id, start_time])
         self._mysql.connection.commit()
         result = cur.fetchone()
         if result is None:
