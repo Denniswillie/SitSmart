@@ -58,8 +58,6 @@ pubnub_config.uuid = str(uuid.uuid4())
 pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 
-
-
 @app.route("/")
 def index():
     if not session.get('email'):
@@ -72,7 +70,6 @@ def register():
     if request.method == "POST":
         location_id = request.form.get("location_id")
         session["location_id"] = location_id
-        print("this is the location_id: ",  location_id)
         return json.dumps({
             "stored": True
         })
