@@ -62,7 +62,7 @@ class BookingManager:
         while True:
             start_time += timedelta(hours=1)
             cur.execute("select bookingId, studyTableId, startTime, endTime, sitSmartUserId from Booking where "
-                        "studyTableId = %s and startTime = %s;",
+                        "studyTableId = %s and binary startTime = binary %s;",
                         [study_table_id, start_time.strftime("%Y-%m-%d %H:%M:%S")]
                         )
             self._mysql.connection.commit()
