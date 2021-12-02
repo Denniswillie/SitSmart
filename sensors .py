@@ -10,15 +10,18 @@ from getmac import get_mac_address as gma
 import RPi.GPIO as GPIO
 import requests
 import json
+import os
+from dotenv import load_dotenv
 
 from pubnub.callbacks import SubscribeCallback
 from pubnub.pubnub import PubNub
 from pubnub.pnconfiguration import PNConfiguration
+load_dotenv()
 pubnub_channel = "sitsmart_sensors_data_channel"
 
 pubnub_config = PNConfiguration()
-pubnub_config.publish_key = "pub-c-94051755-9540-4114-bbc2-58edb0260e91"
-pubnub_config.subscribe_key = "sub-c-fe5caef8-3a61-11ec-b2c1-a25c7fcd9558"
+pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
+pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
 
 pubnub = PubNub(pubnub_config)
@@ -49,7 +52,7 @@ elapsed_sec = 0
 averageSound = 0
 totalSoundSample = 0
 
-response = requests.post("https://dudukpintar.tk/studyTable/getInfo", data={
+response = requests.post("https://sitsmart.tk/studyTable/getInfo", data={
 	"mac_address": gma()
 })
 response_dict = json.loads(response)
@@ -73,14 +76,30 @@ lastTime = time.time()
 while True:
     currTime = time.time()
     if currTime - lastTime > 3600:
-        pubnub.publish().channel(pubnub_channel).message({
-        	"study_table_id": study_table_id,
-        	"recorded_time": recorded_time,
-        	"temperature_level": sensor.temperature,
-        	"co2_level": sgp30.eCO2,
-        	"sound_level": averageSound
-        }).pn_async(publish_callback)
+        while True:
+            published = False
+            try:
+                pubnub.publish().channel(pubnub_channel).message({
+                	"study_table_id": study_table_id,
+                	"recorded_time": recorded_time,
+                	"temperature_level": sensor.temperature,
+                	"co2_level": sgp30.eCO2,
+                	"sound_level": averageSound
+                }).sync()
+                published = True
+            except Exception as e:
+                if int(e._status_code) == 403:
+                    # token is either expired or has not set a token
+                    res = requests.post("https://sitsmart.tk/pubnub_token", data={"client_uuid": pubnub.uuid})
+                    token = json.loads(res.text)["token"]
+                    pubnub.set_token(token)
+                else:
+                    raise Exception(e)
+            if published:
+                break
+
         averageSound = totalSoundSample = 0
+        lastTime = currTime
 
     milis_current = time.time() * 1000
     milis_elapsed = milis_current - milis_last if milis_last is not None else 0

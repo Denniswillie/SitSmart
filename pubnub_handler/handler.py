@@ -12,6 +12,10 @@ class PubnubHandler:
         self._pubnub = PubNub(config)
         self._app = app
 
+    @property
+    def pubnub(self):
+        return self._pubnub
+
     # Subscribing the pubnub client to the channel.
     # This should be ran in a separate thread, otherwise it will block the main thread causing
     # other operations to be halted.
