@@ -19,9 +19,6 @@ pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
 pubnub_config.ssl = True
 
-res = requests.post("http://sitsmart.tk/pubnub_cipher_key")
-pubnub_config.cipher_key = json.loads(res.text)["cipher_key"]
-
 pubnub = PubNub(pubnub_config)
 location_id = None
 study_table_id = None
