@@ -326,10 +326,10 @@
           availability_button.id=studyTableData.study_table_id+"-"+i+"-"+studyTableName
 
           var hour;
-          if (start < 10) {
-            hour = "0" + start;
+          if (i < 10) {
+            hour = "0" + i;
           } else {
-            hour = start;
+            hour = i;
           }
           const currDateTime = new Date(Date.parse(document.getElementById("date_select_tag").value + " " + hour + ":00:00"));
 

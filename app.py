@@ -70,8 +70,9 @@ def index():
 @app.route("/register", methods=["POST", "GET"])
 def register():
     if request.method == "POST":
-        location_id = request.form.get("locations")
+        location_id = request.form.get("location_id")
         session["location_id"] = location_id
+        print("this is the location_id: ",  location_id)
         return json.dumps({
             "stored": True
         })
