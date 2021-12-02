@@ -86,9 +86,16 @@ def handle_booking():
 
     # handle remove booking
     elif request.method == "DELETE":
-        booking_id = int(session.get('bookingId'))
-        booking_manager.remove_booking(booking_id)
-        session.pop('bookingId')
+        isCheckout = request.form.get('isCheckout')
+        if isCheckout:
+            for id in session['bookingId']:
+                booking_id = int(id)
+                booking_manager.remove_booking(booking_id)
+            session.pop('bookingId')
+        else:
+            booking_id = session['bookingId'][0]
+            booking_manager.remove_booking(booking_id)
+            session['bookingId'].pop(0)
         session.pop('endTime')
         return json.dumps({
             "statusCode": StatusCode.OK_STATUS_CODE,
@@ -110,9 +117,7 @@ def get_available_tables():
     # booking_date must be in the format "YYYY-MM-DD"
     data = request.get_json(silent=True)
     booking_date = str(data.get("booking_date"))
-    print(booking_date)
     location_id = session["location_id"]
-    print(location_id)
     study_table_manager = StudyTableManager(mysql)
     study_tables_at_location = study_table_manager.get_study_tables_in_location(location_id)
     result = dict()
@@ -141,7 +146,6 @@ def get_available_tables():
                 result[study_table_name]["availability"].append(True)
             else:
                 result[study_table_name]["availability"].append(False)
-    print(result)
     return json.dumps(result)
 
 
@@ -149,13 +153,20 @@ def get_available_tables():
 def tableBooking():
     tableId = request.form.get('tableId')
     startTime = request.form.get("startTime")
-    endTime = request.form.get("endTime")
+    print(startTime)
     try:
         booking_manager = BookingManager(mysql)
-        result = booking_manager.get_table_booking_next_hour(tableId, startTime, endTime)
-        session['bookingId'] = result.booking_id
-        session['endTime'] = result.end_time
-        return json.dumps(result.to_dict() if result is not None else None)
+        bookings = booking_manager.get_table_booking_next_hour_consecutive(tableId, startTime)
+        result = []
+        print(len(bookings))
+        if len(bookings) > 0:
+            for x in bookings:
+                result.append(x.to_dict())
+            session['endTime'] = bookings[len(bookings) - 1].end_time.split(" ")[1].split(":")[0]
+            session['bookingId'] = []
+            for book in bookings:
+                session['bookingId'].append(book.booking_id)
+        return json.dumps(result if len(result) > 0 else None)
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
         return json.dumps({
@@ -178,7 +189,8 @@ def tapBooking():
         end_time,
     )
     bookingId = booking_manager.create_booking(booking)
-    session['bookingId'] = bookingId
+    session['bookingId'] = []
+    session['bookingId'].append(bookingId)
     session['endTime'] = end_time.split(" ")[1].split(":")[0]
     return json.dumps({
         "statusCode": StatusCode.SUCCESSFUL_CREATION_STATUS_CODE,
@@ -188,7 +200,7 @@ def tapBooking():
 
 @booking_api.route("/verify", methods=["POST"])
 def verifyBooking():
-    bookingId = session.get('bookingId')
+    bookingId = session.get('bookingId')[0]
     bookingPassword = request.form.get("passcode")
     try:
         booking_manager = BookingManager(mysql)
@@ -198,7 +210,7 @@ def verifyBooking():
                 "statusCode": StatusCode.OK_STATUS_CODE,
                 "result": True
             })
-        else :
+        else:
             return json.dumps({
                 "statusCode": StatusCode.OK_STATUS_CODE,
                 "result": False
