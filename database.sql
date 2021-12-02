@@ -1,4 +1,5 @@
 drop table if exists Booking;
+drop table if exists SitSmartUser;
 drop table if exists TableStats;
 drop table if exists StudyTable;
 drop table if exists Location;
@@ -8,6 +9,12 @@ create table Location (
     locationId int not null AUTO_INCREMENT,
     name varchar(50),
     PRIMARY KEY (locationId)
+);
+
+create table SitSmartUser (
+    sitSmartUserId int not null AUTO_INCREMENT,
+    email varchar(255) not null,
+    PRIMARY KEY (sitSmartUserId)
 );
 
 create table StudyTable (
@@ -41,8 +48,10 @@ create table Booking (
     studyTableId int not null,
     startTime DATETIME,
     endTime DATETIME,
+    sitSmartUserId int not null,
     PRIMARY KEY (bookingId),
-    FOREIGN KEY (studyTableId) REFERENCES StudyTable(studyTableId)
+    FOREIGN KEY (studyTableId) REFERENCES StudyTable(studyTableId),
+    FOREIGN KEY (sitSmartUserId) REFERENCES SitSmartUser(sitSmartUserId)
 );
 
 alter table Booking modify bookingPasswordHash varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;

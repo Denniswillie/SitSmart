@@ -1,10 +1,11 @@
 class Booking:
-    def __init__(self, booking_password=None, table_id=None, start_time=None, end_time=None, booking_id=None):
+    def __init__(self, booking_password=None, table_id=None, start_time=None, end_time=None, booking_id=None, sit_smart_user_id=None):
         self._booking_id = booking_id
         self._booking_password = booking_password
         self._table_id = table_id
         self._start_time = start_time
         self._end_time = end_time
+        self._sit_smart_user_id = sit_smart_user_id
 
     @property
     def booking_id(self):
@@ -26,10 +27,15 @@ class Booking:
     def end_time(self):
         return self._end_time
 
+    @property
+    def sit_smart_user_id(self):
+        return self._sit_smart_user_id
+
     def to_dict(self):
         return {
             "booking_id": self._booking_id,
             "table_id": self._table_id,
             "start_time": self._start_time,
-            "end_time": self._end_time
+            "end_time": self._end_time,
+            "sit_smart_user_id": self._sit_smart_user_id
         }

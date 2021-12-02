@@ -38,7 +38,8 @@ def handle_booking():
                     booking_password=booking_password,
                     start_time=booking_start_time,
                     end_time=booking_end_time,
-                    table_id=study_table_id
+                    table_id=study_table_id,
+                    sit_smart_user_id=session.get("sit_smart_user_id")
                 )
                 booking_manager.create_booking(booking)
 

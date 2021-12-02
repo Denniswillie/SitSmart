@@ -163,16 +163,9 @@
           studyTableName: studyTableNameMemo[studyTableId]
         }
         startTimes.sort();
-        var currStartTime = 0;
         for (var i = 0; i < startTimes.length; i++) {
-          if (i === 0) {
-             currStartTime = startTimes[i];
-          } else if (startTimes[i] !== startTimes[i-1] + 1) {
-             temp[studyTableId].times.push([currStartTime, startTimes[i-1] + 1]);
-             currStartTime = startTimes[i];
-          }
+          temp[studyTableId].times.push([startTimes[i], startTimes[i] + 1])
         }
-        temp[studyTableId].times.push([currStartTime, startTimes[startTimes.length - 1] + 1])
       }
     }
     axios.post("/booking/", {
@@ -331,7 +324,18 @@
           availability_button.className = "cell";
           availability_button.style.textAlign = "center";
           availability_button.id=studyTableData.study_table_id+"-"+i+"-"+studyTableName
-          if (studyTableData.availability[i] === true) {
+
+          var hour;
+          if (i < 10) {
+            hour = "0" + i;
+          } else {
+            hour = i;
+          }
+          const currDateTime = new Date(Date.parse(document.getElementById("date_select_tag").value + " " + hour + ":00:00"));
+
+          if (studyTableData.availability[i] === false || currDateTime < new Date()) {
+            availability_button.style.backgroundColor = "red";
+          } else {
             if (studyTableData.study_table_id in selectedBookings && selectedBookings[studyTableData.study_table_id].includes(i)) {
                 availability_button.style.backgroundColor = "white";
                  availability_button.style.backgroundImage = "url('../static/img/check.jpg')"
@@ -341,8 +345,6 @@
             }
 
             availability_button.addEventListener("click", haiya)
-          } else {
-            availability_button.style.backgroundColor = "red";
           }
         }
 
