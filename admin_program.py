@@ -2,6 +2,8 @@ from dotenv import load_dotenv
 import os
 from getmac import get_mac_address as gma
 import uuid
+import requests
+import json
 
 from pubnub.callbacks import SubscribeCallback
 from pubnub.pnconfiguration import PNConfiguration
@@ -19,6 +21,10 @@ pubnub_config.uuid = str(uuid.uuid4())
 pubnub = PubNub(pubnub_config)
 location_id = None
 study_table_id = None
+
+res = requests.post("https://sitsmart.tk/pubnub_token", data={"client_uuid": pubnub.uuid})
+token = json.loads(res.text)["token"]
+pubnub.set_token(token)
 
 
 try:
