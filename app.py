@@ -21,6 +21,7 @@ load_dotenv()
 app = Flask(__name__)
 cors = CORS(app)
 oauth = OAuth(app)
+# got to learn google oauth from https://github.com/Vuka951/tutorial-code/blob/master/flask-google-oauth2/app.py
 google = oauth.register(
     name='google',
     client_id=os.getenv("GOOGLE_CLIENT_ID"),

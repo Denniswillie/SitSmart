@@ -17,6 +17,7 @@ from dotenv import load_dotenv
 from pubnub.callbacks import SubscribeCallback
 from pubnub.pubnub import PubNub
 from pubnub.pnconfiguration import PNConfiguration
+
 load_dotenv()
 pubnub_channel = "sitsmart_sensors_data_channel"
 
@@ -42,8 +43,10 @@ for proc in psutil.process_iter():
     if proc.name() == 'libgpiod_pulsein' or proc.name() == 'libgpiod_pulsei':
         proc.kill()
 
+# learned how to setup DHT11 (temperature sensor) here https://learn.adafruit.com/dht-humidity-sensing-on-raspberry-pi-with-gdocs-logging/python-setup
 sensor = adafruit_dht.DHT11(board.D23)
 
+# learned to setup SGP30 (Co2 sensor) here https://learn.adafruit.com/adafruit-sgp30-gas-tvoc-eco2-mox-sensor/circuitpython-wiring-test
 i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
 
 # Create library object on our I2C port
@@ -58,14 +61,15 @@ averageSound = 0
 totalSoundSample = 0
 
 response = requests.post("https://sitsmart.tk/studyTable/getInfo", data={
-	"mac_address": gma()
+    "mac_address": gma()
 })
 response_dict = json.loads(response)
 study_table_id = None
 if response_dict["statusCode"] == 400:
-	raise Exception("Caused by internal server error.")
+    raise Exception("Caused by internal server error.")
 elif response_dict["result"]["study_table_id"] == None:
-	raise Exception("The study table has not been registered yet.")
+    raise Exception("The study table has not been registered yet.")
+
 
 def publish_callback(envelope, status):
     # Check whether request successfully completed or not
@@ -85,11 +89,11 @@ while True:
             published = False
             try:
                 pubnub.publish().channel(pubnub_channel).message({
-                	"study_table_id": study_table_id,
-                	"recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
-                	"temperature_level": sensor.temperature,
-                	"co2_level": sgp30.eCO2,
-                	"sound_level": averageSound
+                    "study_table_id": study_table_id,
+                    "recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
+                    "temperature_level": sensor.temperature,
+                    "co2_level": sgp30.eCO2,
+                    "sound_level": averageSound
                 }).sync()
                 published = True
             except Exception as e:
@@ -105,7 +109,7 @@ while True:
 
         averageSound = totalSoundSample = 0
         lastTime = currTime
-
+    # got to learn how to get the sensor value from https://www.youtube.com/watch?v=PYkzJQhFNlA
     milis_current = time.time() * 1000
     milis_elapsed = milis_current - milis_last if milis_last is not None else 0
     if milis_last is None:
