@@ -3,61 +3,115 @@ body {
   font-family: Segoe UI;
 }
 
+div {
+    vertical-align: top;
+}
+
 #title {
   color: white;
   margin: auto;
   text-align: center;
 }
 
-#booking_info {
+#bookingSuccessfulDiv {
   color: white;
   text-align: center;
+  margin-top: 3em;
 }
 
-#booking_info_children {
+#bookingInfoChildren {
   margin: auto;
   text-align: left;
   width: 12em;
 }
 
-#booking_times {
+#bookingTimes {
    width: 100%;
    margin: 0;
    overflow: auto;
 }
 
-#booking_times_icon {
+#checkInCode {
+   font-size: 500%;
+   font-weight: bold;
+   margin:0;
+   display: block;
+}
+
+#checkInCodeTitle {
+  margin-top: 2em;
+  margin-bottom: 0%;
+   font-size: 120%;
+   font-weight: bold;
+   margin-bottom: 0
+   display: block;
+}
+
+#bookingTimesIcon {
   width: 13%;
   float: left;
 }
 
-#booking_times_values {
+h4{
+  margin:0;
+}
+
+h5{
+  margin-top: 0%;
+  margin-bottom: 3em;
+}
+
+#bookingTimesValues {
   width: 87%;
-  float: right;
+  float: left;
   text-align: left;
   font-family: Segoe UI;
   color: white;
-  font-weight: bold;
+  margin:0;
+  white-space: nowrap;
 }
 
-#map_img_div {
+#checkImageDiv {
   text-align: center;
 }
 
-#booking_footer {
+#checkImage {
+  width:5vh;
+  height:5vh;
+  vertical-align:middle;
+}
+
+#bookingSuccessful {
+  font-size: 20px;
+  font-weight: bold;
+  vertical-align:middle;
+}
+
+#bookingInfo {
   color: white;
   text-align: center;
 }
 
-#return_button {
-  background-color: #00ff44;
-  margin: auto;
+#returnButton {
+  padding: 10px 50px;
+  border: none;
+  color: white;
+  background-color: green;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  cursor: pointer;
+  font-size: 25px;
+  margin: 20px auto;
+  display: block;
   border-radius: 10px;
-  height: 40px;
-  width: 90px;
-  font-size: 18px;
-  font-weight: bold;
   border-style: solid;
-  border-color: green;
-  border-width: 3px;
+  border-color: chartreuse;
+  font-family: Segoe UI;
+  font-weight: bold;
+}
+
+table.center {
+  margin-right:auto;
+  margin-left:auto;
 }
