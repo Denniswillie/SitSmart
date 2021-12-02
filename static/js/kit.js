@@ -103,7 +103,7 @@ async function enterDetail()
     formData.append('mac_address',mac)
     await axios({
         method: "POST",
-        url: "http://127.0.0.1:5000/studyTable/getInfo",
+        url: "/studyTable/getInfo",
         data: formData,
         headers: { "Content-Type": "multipart/form-data" },
     })
