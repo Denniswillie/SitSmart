@@ -1,6 +1,7 @@
 from flask_mysqldb import MySQL
 from entities import Booking
 import uuid
+from datetime import datetime, timedelta
 
 
 class BookingManager:
@@ -13,9 +14,9 @@ class BookingManager:
         # generate uuid for salt
         salt = str(uuid.uuid4())
 
-        cur.execute("insert into Booking (bookingPasswordHash, salt, studyTableId, startTime, endTime) values (SHA2("
-                    "concat(%s, %s), 512), %s, %s, %s, %s);", [booking.booking_password, salt, salt,
-                                                               booking.table_id, booking.start_time, booking.end_time])
+        cur.execute("insert into Booking (bookingPasswordHash, salt, studyTableId, startTime, endTime, sitSmartUserId) values (SHA2("
+                    "concat(%s, %s), 512), %s, %s, %s, %s, %s);", [booking.booking_password, salt, salt,
+                                                               booking.table_id, booking.start_time, booking.end_time, booking.sit_smart_user_id])
         cur.execute("SELECT LAST_INSERT_ID();")
         self._mysql.connection.commit()
         last_id = cur.fetchone()[0]
@@ -53,4 +54,41 @@ class BookingManager:
         ) if result is not None else result
 
     def get_table_booking_next_hour_consecutive(self, study_table_id, start_time):
-        return []
+        cur = self._mysql.connection.cursor()
+        cur.execute("select bookingId, studyTableId, startTime, endTime, sitSmartUserId from Booking where "
+                    "studyTableId = %s and startTime = %s;", [study_table_id, start_time])
+        self._mysql.connection.commit()
+        result = cur.fetchone()
+        if result is None:
+            cur.close()
+            return []
+        bookings = []
+        sit_smart_user_id = result[-1]
+        bookings.append(Booking(
+            booking_id=result[0],
+            table_id=result[1],
+            start_time=result[2].strftime("%Y-%m-%d %H:%M:%S"),
+            end_time=result[3].strftime("%Y-%m-%d %H:%M:%S")
+        ))
+
+        start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
+        while True:
+            start_time += timedelta(hours=1)
+            cur.execute("select bookingId, studyTableId, startTime, endTime, sitSmartUserId from Booking where "
+                        "studyTableId = %s and startTime = %s;",
+                        [study_table_id, start_time.strftime("%Y-%m-%d %H:%M:%S")]
+                        )
+            self._mysql.connection.commit()
+            result = cur.fetchone()
+            if result is None or int(result[-1]) != int(sit_smart_user_id):
+                break
+            bookings.append(Booking(
+                booking_id=result[0],
+                table_id=result[1],
+                start_time=result[2].strftime("%Y-%m-%d %H:%M:%S"),
+                end_time=result[3].strftime("%Y-%m-%d %H:%M:%S"),
+                sit_smart_user_id=result[4]
+            ))
+        cur.close()
+
+        return bookings
