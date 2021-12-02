@@ -5,6 +5,8 @@ import threading
 from dotenv import load_dotenv
 
 from flask import Flask, render_template, request, redirect, session, url_for
+from pubnub.models.consumer.v3.channel import Channel
+
 from flask_session import Session
 from flask_cors import CORS
 from routes import location_api, booking_api, studyTable_api, tableKit
@@ -54,6 +56,7 @@ CHANNEL = "sitsmart_sensors_data_channel"
 pubnub_config = PNConfiguration()
 pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
 pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
+pubnub_config.secret_key = os.getenv("PUBNUB_SECRET_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
 pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
@@ -63,6 +66,15 @@ def index():
     if not session.get('email'):
         return redirect("/register")
     return render_template("booking.html")
+
+
+@app.route("/pubnub_token", methods=["POST"])
+def pubnub_token():
+    if request.method == "POST":
+        client_uuid = request.form.get("client_uuid")
+        envelope = pubnub_handler.pubnub.grant_token().channels([Channel.id(CHANNEL).read().write()]).ttl(60).authorized_uuid(client_uuid).sync()
+        return json.dumps(envelope.result.__dict__)
+    return None
 
 
 @app.route("/register", methods=["POST", "GET"])
