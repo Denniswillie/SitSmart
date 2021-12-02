@@ -60,7 +60,6 @@ pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
 pubnub_config.secret_key = os.getenv("PUBNUB_SECRET_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
 pubnub_config.ssl = True
-pubnub_config.cipher_key = os.getenv("PUBNUB_CIPHER_KEY")
 pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 
@@ -77,15 +76,6 @@ def pubnub_token():
         client_uuid = request.form.get("client_uuid")
         envelope = pubnub_handler.pubnub.grant_token().channels([Channel.id(CHANNEL).read().write()]).ttl(60).authorized_uuid(client_uuid).sync()
         return json.dumps(envelope.result.__dict__)
-    return None
-
-
-@app.route("/pubnub_cipher_key", methods=["POST"])
-def pubnub_cipher_key():
-    if request.method == "POST":
-        return json.dumps({
-            "cipher_key": os.getenv("PUBNUB_CIPHER_KEY")
-        })
     return None
 
 
