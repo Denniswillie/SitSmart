@@ -68,7 +68,8 @@ class BookingManager:
             booking_id=result[0],
             table_id=result[1],
             start_time=result[2].strftime("%Y-%m-%d %H:%M:%S"),
-            end_time=result[3].strftime("%Y-%m-%d %H:%M:%S")
+            end_time=result[3].strftime("%Y-%m-%d %H:%M:%S"),
+            sit_smart_user_id=result[4]
         ))
 
         start_time = datetime.strptime(start_time, '%Y-%m-%d %H:%M:%S')
