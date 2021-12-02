@@ -8,11 +8,12 @@ from flask import Flask, render_template, request, redirect, session, url_for
 from flask_session import Session
 from flask_cors import CORS
 from routes import location_api, booking_api, studyTable_api, tableKit
-from db_managers import LocationManager
+from db_managers import LocationManager, SitSmartUserManager
 from global_init import mysql, mail
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub_handler import PubnubHandler
 from authlib.integrations.flask_client import OAuth
+from entities import SitSmartUser
 
 load_dotenv()
 app = Flask(__name__)
@@ -57,6 +58,8 @@ pubnub_config.uuid = str(uuid.uuid4())
 pubnub_handler = PubnubHandler(mysql, pubnub_config, app)
 
 
+
+
 @app.route("/")
 def index():
     if not session.get('email'):
@@ -98,7 +101,13 @@ def authorize():
     # and set ur own data in the session not the profile from google
     print(user_info)
     session['email'] = user_info['email']
-    session.permanent = True  # make the session permanant so it keeps existing after broweser gets closed
+
+    sit_smart_user_manager = SitSmartUserManager(mysql)
+    sit_smart_user = SitSmartUser(email=user_info["email"])
+    sit_smart_user_id = sit_smart_user_manager.create_user_if_not_exists(sit_smart_user)
+    session['sit_smart_user_id'] = sit_smart_user_id
+    session.permanent = True
+
     return redirect('/')
 
 
@@ -109,7 +118,19 @@ def receipt_screen():
         for study_table_id, booking_data in session["bookings_confirmation"]["bookings"].items():
             study_table_name = booking_data["studyTableName"]
             bookings[study_table_name] = []
-            for start_time, end_time in booking_data["times"]:
+
+            # pre-process booking times (group adjacent booking times into one booking)
+            pre_processed_times = []
+            curr_start_time = 0
+            for i, (start_time, end_time) in enumerate(booking_data["times"]):
+                if i == 0:
+                    curr_start_time = start_time
+                elif start_time != booking_data["times"][i - 1][1]:
+                    pre_processed_times.append([curr_start_time, booking_data["times"][i - 1][1]])
+                    curr_start_time = start_time
+            pre_processed_times.append([curr_start_time, booking_data["times"][-1][1]])
+
+            for start_time, end_time in pre_processed_times:
                 if start_time > 12:
                     start_time_string = "{}pm".format(start_time - 12)
                 elif start_time == 12:
