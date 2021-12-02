@@ -2,9 +2,12 @@
     <head>
         <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
         <script src="../static/js/kit.js"></script>
+        <link rel="stylesheet" href="../static/css/kit_console.css">
     </head>
     <body>
-        <div>
+        <div class="infoBox">
+            <h3 class="title">Desk Configuration</h3>
+            <h4 class="description">Complete the setup of this Desk Kit by inputing its unique <br>MAC address below</h4>
             <form onsubmit="enterDetail()">
                 <input type="text" placeholder="mac_address" name = "mac_address" id="mac"/>
                 <input type="submit" value="SUBMIT"/>
