@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 import requests
 import json
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 
 from pubnub.callbacks import SubscribeCallback
@@ -23,6 +24,10 @@ pubnub_config = PNConfiguration()
 pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
 pubnub_config.subscribe_key = os.getenv("PUBNUB_SUBSCRIBE_KEY")
 pubnub_config.uuid = str(uuid.uuid4())
+pubnub_config.ssl = True
+
+res = requests.post("https://sitsmart.tk/pubnub_cipher_key")
+pubnub_config.cipher_key = json.loads(res.text)["cipher_key"]
 
 pubnub = PubNub(pubnub_config)
 
@@ -81,7 +86,7 @@ while True:
             try:
                 pubnub.publish().channel(pubnub_channel).message({
                 	"study_table_id": study_table_id,
-                	"recorded_time": recorded_time,
+                	"recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
                 	"temperature_level": sensor.temperature,
                 	"co2_level": sgp30.eCO2,
                 	"sound_level": averageSound
