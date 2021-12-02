@@ -5,7 +5,7 @@ function formatHr(hour){
 
 function formatDate(today)
 {
-    var mon = today.getMonth();
+    var mon = today.getMonth()+1;
     var day = today.getDate();
     if(mon<10)
         mon = '0'+mon;
@@ -54,9 +54,16 @@ async function clickBook()
     })
 }
 
-async function removeBooking()
+async function removeBooking(isCheckout)
 {
-    await axios.delete("/booking/")
+    let formdata = new FormData();
+    formdata.append('isCheckout',isCheckout);
+    await axios({
+        method: "DELETE",
+        url: "/booking/",
+        data: formdata,
+        headers: { "Content-Type": "multipart/form-data" },
+    })
     .then(res=>res.data)
     .catch(err=>console.log(err))
     .then(res=>{
@@ -82,7 +89,7 @@ function countDown(endTime)
         if(currHr===endTime)
         {
             clearInterval(countDown);
-            document.getElementById('checkout').click();
+            window.location.href = "/tableKit/available"
         }
       },1000); 
 }
@@ -127,7 +134,7 @@ async function checkAvailable(tableId)
     .then(res=>res.data)
     .catch(err=>console.log(err))
     .then(res=>{
-            if (res.booking_id != null)
+            if (res!==null)
             {
                 window.location.href = "/tableKit/reserved"
             }
@@ -179,7 +186,7 @@ function checkUserClaimed()
                 let currTime = new Date();
                 if(currTime.getMinutes()>=15)
                 {
-                    removeBooking();
+                    removeBooking(false);
                 }
         },1000)
 }

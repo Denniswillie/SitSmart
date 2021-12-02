@@ -17,7 +17,7 @@ def create_location():
         location_id = location_manager.create_location(location)
         return json.dumps({
             "statusCode": StatusCode.SUCCESSFUL_CREATION_STATUS_CODE,
-            "message": "Your new table ID is " + str(location_id)
+            "message": "Your new location ID is " + str(location_id)
         })
     except Exception as e:
         err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
