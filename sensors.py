@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 import requests
 import json
 import os
+from datetime import datetime
 from dotenv import load_dotenv
 
 from pubnub.callbacks import SubscribeCallback
@@ -85,7 +86,7 @@ while True:
             try:
                 pubnub.publish().channel(pubnub_channel).message({
                 	"study_table_id": study_table_id,
-                	"recorded_time": recorded_time,
+                	"recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
                 	"temperature_level": sensor.temperature,
                 	"co2_level": sgp30.eCO2,
                 	"sound_level": averageSound
