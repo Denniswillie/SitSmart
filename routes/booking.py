@@ -45,10 +45,10 @@ def handle_booking():
                 booking_manager.create_booking(booking)
 
         # send confirmation email
-        message_string = "You have booked the following study tables in the {} on {}:\n".format(location_name,
+        message_string = "You have booked the following study tables in the {} on {}:\r\n".format(location_name,
                                                                                                 booking_date)
         for study_table_id, booking_data in bookings.items():
-            message_string += (booking_data["studyTableName"] + "\n")
+            message_string += (booking_data["studyTableName"] + "\r\n")
             for index, (start_time, end_time) in enumerate(booking_data["times"]):
                 if start_time > 12:
                     start_time_string = "{}pm".format(start_time - 12)
@@ -63,12 +63,13 @@ def handle_booking():
                 else:
                     end_time_string = "{}am".format(end_time)
 
-                message_string += "{}. {} until {}\n".format(index + 1, start_time_string, end_time_string)
+                message_string += "{}. {} until {}\r\n".format(index + 1, start_time_string, end_time_string)
         message_string += "Your booking password is {}".format(booking_password)
         message = Message(
-            message_string,
+            "Booking Confirmation",
             recipients=[email_address])
-        # mail.send(message)
+        message.body = message_string
+        mail.send(message)
 
         session["bookings_confirmation"] = {
             "bookings": bookings,
