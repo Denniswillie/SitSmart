@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 import requests
 import json
 import os
+import uuid
 from datetime import datetime
 from dotenv import load_dotenv
 
@@ -60,8 +61,11 @@ totalSoundSample = 0
 response = requests.post("https://sitsmart.tk/studyTable/getInfo", data={
     "mac_address": gma()
 })
-response_dict = json.loads(response)
-study_table_id = None
+response_dict = json.loads(response.text)
+if response_dict["result"]["study_table_id"] is None:
+    print("The study table is not registered, you need to register it first through the admin console program")
+    os._exit(0)
+study_table_id = int(response_dict["result"]["study_table_id"])
 if response_dict["statusCode"] == 400:
     raise Exception("Caused by internal server error.")
 elif response_dict["result"]["study_table_id"] == None:
@@ -86,6 +90,8 @@ while True:
             published = False
             try:
                 pubnub.publish().channel(pubnub_channel).message({
+                    "sender": pubnub.uuid,
+                    "type": "SAVE_TABLE_STATS",
                     "study_table_id": study_table_id,
                     "recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
                     "temperature_level": sensor.temperature,
