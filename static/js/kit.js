@@ -1,3 +1,4 @@
+//Developed by Kevin with contributions by Jeremy
 function formatHr(hour){
     hour = hour<10?'0'+hour:hour;
     return hour;
