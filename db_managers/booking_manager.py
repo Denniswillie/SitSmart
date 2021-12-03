@@ -41,12 +41,28 @@ class BookingManager:
 
     # Returns all the booking of a user in a location on a particular day.
     def get_booking_by_user_at(self, sit_smart_user_id, location_id, date):
-        start_time = date + ""
+        start_time = date + " 00:00:00"
+        end_time = date + " 23:59:00"
         cur = self._mysql.connection.cursor()
-        cur.execute("select Booking.bookingId, StudyTable.studyTableId, startTime, endTime, sitSmartUserId from StudyTable join Booking on StudyTable.studyTableId = Booking.studyTableId where "
-                    "locationId = %s and sitSmartUserId = %s and %s <= binary startTime and binary endTime <= %s",
-                    [location_id, sit_smart_user_id]
+        cur.execute("select Booking.bookingId, StudyTable.studyTableId, startTime, endTime, sitSmartUserId from "
+                    "StudyTable join Booking on StudyTable.studyTableId = Booking.studyTableId where "
+                    "locationId = %s and sitSmartUserId = %s and binary %s <= binary startTime and binary endTime <= "
+                    "binary %s",
+                    [location_id, sit_smart_user_id, start_time, end_time]
                     )
+        self._mysql.connection.commit()
+        result = cur.fetchall()
+        cur.close()
+        bookings = []
+        for booking_id, study_table_id, start_time, end_time, _ in result:
+            bookings.append(Booking(
+                booking_id=booking_id,
+                sit_smart_user_id=sit_smart_user_id,
+                end_time=end_time.strftime("%Y-%m-%d %H:%M:%S"),
+                start_time=start_time.strftime("%Y-%m-%d %H:%M:%S"),
+                table_id=study_table_id
+            ).to_dict())
+        return bookings
 
     def get_table_booking_next_hour_consecutive(self, study_table_id, start_time):
         cur = self._mysql.connection.cursor()
