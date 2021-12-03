@@ -11,6 +11,7 @@ import RPi.GPIO as GPIO
 import requests
 import json
 import os
+import uuid
 from datetime import datetime
 from dotenv import load_dotenv
 
