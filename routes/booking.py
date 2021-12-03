@@ -147,7 +147,17 @@ def get_available_tables():
                 result[study_table_name]["availability"].append(True)
             else:
                 result[study_table_name]["availability"].append(False)
-    return json.dumps(result)
+
+    booking_manager = BookingManager(mysql)
+    bookings_by_user_at_that_day = booking_manager.get_booking_by_user_at(
+        sit_smart_user_id=session["sit_smart_user_id"],
+        location_id=location_id,
+        date=booking_date
+    )
+    return json.dumps({
+        "studyTableData": result,
+        "bookingsByUser": bookings_by_user_at_that_day
+    })
 
 
 @booking_api.route("/tableBooking", methods=["POST"])
