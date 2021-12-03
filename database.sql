@@ -61,12 +61,12 @@ CREATE EVENT setAverageTableStats
 ON SCHEDULE EVERY 1 DAY
 STARTS '2021-11-25 00:00:00'
 DO
-update studyTable s join (
+update StudyTable s join (
     select
         studyTableId,
         avg(temperatureLevel) as avg_temperature,
         avg(soundLevel) as avg_sound,
         avg(co2Level) as avg_co2
-    from tableStats where DATEDIFF(NOW() , recordedTime) <= 7 group by studyTableId
+    from TableStats where DATEDIFF(NOW() , recordedTime) <= 7 group by studyTableId
 ) x on s.studyTableId = x.studyTableId
 set s.avg_temperature = x.avg_temperature, s.avg_co2 = x.avg_co2, s.avg_sound = x.avg_sound;
