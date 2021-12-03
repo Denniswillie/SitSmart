@@ -124,6 +124,7 @@
   var locationId = -1;
   var locationName = "";
   var studyTableNameMemo = {};
+  var startTimesByUserPreviousBookings = new Set();
   const ranges = [
     {
       0: [0, 100],
@@ -255,8 +256,12 @@
     var startHour = parseInt(x[1])
     var studyTableName = x[2]
     const selectedBookingsList = document.getElementById("selectedBookings");
+    console.log(startHour)
     if (element.style.backgroundColor === "green") {
         var allowBook = true;
+        if (startTimesByUserPreviousBookings.has(startHour)) {
+            allowBook = false;
+        }
         for (const [key, value] of Object.entries(selectedBookings)) {
             if (value.includes(startHour)) {
                 allowBook = false;
@@ -355,8 +360,12 @@
     const res = await axios.post('/booking/available_tables', {
         booking_date: dateString
     });
-    studyTables = res.data;
-    console.log(studyTables)
+    const data = res.data;
+    studyTables = data.studyTableData;
+    startTimesByUserPreviousBookings = new Set();
+    for (var i = 0; i < data.bookingsByUser.length; i++) {
+        startTimesByUserPreviousBookings.add(parseInt(data.bookingsByUser[i].start_time.split(" ")[1].split(":")[0]))
+    }
     displayTable();
   }
 
