@@ -24,8 +24,9 @@ def handle_booking():
 
         # code snippet inspiration from https://stackoverflow.com/questions/2257441/random-string-generation-with
         # -upper-case-letters-and-digits
-        # The idea is to generate 4 random base10 digits resulting in (10 ^ 4) password possibilities.
-        booking_password = "".join(secrets.choice(string.digits) for _ in range(4))
+        # The idea is to generate 4 random 1-9 digits resulting in (9 ^ 4) password possibilities.
+        # The digits are 1-9 to adjust with the UI (only has keypad from 1-9)
+        booking_password = "".join(secrets.choice(string.digits[1:]) for _ in range(4))
 
         bookings = data.get("bookings")
         for study_table_id, booking_data in bookings.items():
@@ -44,10 +45,10 @@ def handle_booking():
                 booking_manager.create_booking(booking)
 
         # send confirmation email
-        message_string = "You have booked the following study tables in the {} on {}:\n".format(location_name,
+        message_string = "You have booked the following study tables in the {} on {}:\r\n".format(location_name,
                                                                                                 booking_date)
         for study_table_id, booking_data in bookings.items():
-            message_string += (booking_data["studyTableName"] + "\n")
+            message_string += (booking_data["studyTableName"] + "\r\n")
             for index, (start_time, end_time) in enumerate(booking_data["times"]):
                 if start_time > 12:
                     start_time_string = "{}pm".format(start_time - 12)
@@ -62,12 +63,13 @@ def handle_booking():
                 else:
                     end_time_string = "{}am".format(end_time)
 
-                message_string += "{}. {} until {}\n".format(index + 1, start_time_string, end_time_string)
+                message_string += "{}. {} until {}\r\n".format(index + 1, start_time_string, end_time_string)
         message_string += "Your booking password is {}".format(booking_password)
         message = Message(
-            message_string,
+            "Booking Confirmation",
             recipients=[email_address])
-        # mail.send(message)
+        message.body = message_string
+        mail.send(message)
 
         session["bookings_confirmation"] = {
             "bookings": bookings,
@@ -146,7 +148,17 @@ def get_available_tables():
                 result[study_table_name]["availability"].append(True)
             else:
                 result[study_table_name]["availability"].append(False)
-    return json.dumps(result)
+
+    booking_manager = BookingManager(mysql)
+    bookings_by_user_at_that_day = booking_manager.get_booking_by_user_at(
+        sit_smart_user_id=session["sit_smart_user_id"],
+        location_id=location_id,
+        date=booking_date
+    )
+    return json.dumps({
+        "studyTableData": result,
+        "bookingsByUser": bookings_by_user_at_that_day
+    })
 
 
 @booking_api.route("/tableBooking", methods=["POST"])
