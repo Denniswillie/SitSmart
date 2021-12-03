@@ -26,6 +26,10 @@ class StudyTableManager:
 
     def remove_study_table(self, study_table_id: int, pi_mac_address: str) -> bool:
         cur = self._mysql.connection.cursor()
+        cur.execute("DELETE from Booking where studyTableId = %s;", [study_table_id])
+        self._mysql.connection.commit()
+        cur.execute("DELETE from TableStats where studyTableId = %s;", [study_table_id])
+        self._mysql.connection.commit()
         rows_affected = cur.execute(
             "DELETE from StudyTable WHERE studyTableId = %s and piMacAddress = %s;",
             [study_table_id, pi_mac_address]
