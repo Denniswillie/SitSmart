@@ -9,6 +9,8 @@ from pubnub.callbacks import SubscribeCallback
 from pubnub.pnconfiguration import PNConfiguration
 from pubnub.pubnub import PubNub
 
+# Pair programming Dennis-Ethan
+
 load_dotenv()
 
 CHANNEL = "sitsmart_sensors_data_channel"
