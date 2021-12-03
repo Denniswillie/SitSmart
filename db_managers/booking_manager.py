@@ -39,6 +39,15 @@ class BookingManager:
         self._mysql.connection.commit()
         cur.close()
 
+    # Returns all the booking of a user in a location on a particular day.
+    def get_booking_by_user_at(self, sit_smart_user_id, location_id, date):
+        start_time = date + ""
+        cur = self._mysql.connection.cursor()
+        cur.execute("select Booking.bookingId, StudyTable.studyTableId, startTime, endTime, sitSmartUserId from StudyTable join Booking on StudyTable.studyTableId = Booking.studyTableId where "
+                    "locationId = %s and sitSmartUserId = %s and %s <= binary startTime and binary endTime <= %s",
+                    [location_id, sit_smart_user_id]
+                    )
+
     def get_table_booking_next_hour_consecutive(self, study_table_id, start_time):
         cur = self._mysql.connection.cursor()
         cur.execute("select bookingId, studyTableId, startTime, endTime, sitSmartUserId from Booking where "
