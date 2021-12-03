@@ -88,7 +88,7 @@ def handle_booking():
     # handle remove booking
     elif request.method == "DELETE":
         isCheckout = request.form.get('isCheckout')
-        if isCheckout:
+        if isCheckout is True:
             for id in session['bookingId']:
                 booking_id = int(id)
                 booking_manager.remove_booking(booking_id)
@@ -164,12 +164,10 @@ def get_available_tables():
 def tableBooking():
     tableId = request.form.get('tableId')
     startTime = request.form.get("startTime")
-    print(startTime)
     try:
         booking_manager = BookingManager(mysql)
         bookings = booking_manager.get_table_booking_next_hour_consecutive(tableId, startTime)
         result = []
-        print(len(bookings))
         if len(bookings) > 0:
             for x in bookings:
                 result.append(x.to_dict())
