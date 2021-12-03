@@ -156,6 +156,7 @@ try:
     def study_table_operation_screen():
         global study_table_id
         print("Welcome to your study table dashboard.")
+        print("Here is your mac_address", pi_mac_address)
         print("Choose the operation you wish to do with your table:")
         print("1. Remove study table")
         print("2. Quit program")
