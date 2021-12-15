@@ -46,7 +46,7 @@ def handle_booking():
 
         # send confirmation email
         message_string = "You have booked the following study tables in the {} on {}:\r\n".format(location_name,
-                                                                                                booking_date)
+                                                                                                  booking_date)
         for study_table_id, booking_data in bookings.items():
             message_string += (booking_data["studyTableName"] + "\r\n")
             for index, (start_time, end_time) in enumerate(booking_data["times"]):
@@ -89,7 +89,7 @@ def handle_booking():
     # handle remove booking
     elif request.method == "DELETE":
         isCheckout = request.form.get('isCheckout')
-        if isCheckout is True:
+        if isCheckout == "true":
             for id in session['bookingId']:
                 booking_id = int(id)
                 booking_manager.remove_booking(booking_id)
