@@ -69,7 +69,7 @@ def handle_booking():
             "Booking Confirmation",
             recipients=[email_address])
         message.body = message_string
-        mail.send(message)
+        # mail.send(message)
 
         session["bookings_confirmation"] = {
             "bookings": bookings,
