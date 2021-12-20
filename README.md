@@ -26,22 +26,28 @@ For the publisher-subscriber component, we're using PubNub.
 
 ## Running on local machine
 ### Server and Database (Backend)
-1. `git clone https://github.com/Denniswillie/SitSmart.git <folderName>`
-2. `cd <folderName>`
-3. Create Python virtual environment and load pip dependencies:
+1. open terminal
+2. `git clone https://github.com/Denniswillie/SitSmart.git <folderName>`
+3. `cd <folderName>`
+4. Create Python virtual environment and load pip dependencies:
      - `python -m venv venv` (if `python` doesn't automatically refer to python 3, use `python3` instead, same for all usages of `python` below.)
      - `python -m pip install --upgrade pip`
      - `pip install flask flask-cors flask-session flask-mysqldb authlib python-dotenv pubnub flask-mail`
-4. Turn on `Apache` and `MySql` on xampp control panel.
-5. Create a database for the project on a local MySQL server. (below is a guide if you're using terminal)
+5. Turn on `Apache` and `MySql` on xampp control panel.
+6. Create a database for the project on a local MySQL server. (below is a guide if you're using terminal)
      - `mysql -u root` if you haven't set a password, otherwise, `mysql -u root -p`. It will prompt you to enter a password.
-     - `CREATE DATABASE <your_database_name>`
-     - `use <your_database_name`
+     - `CREATE DATABASE <your_database_name>;`
+     - `use <your_database_name>;`
      - copy the content of `database.sql` (the whole file) and paste it in the mysql console, press enter.
      - `exit`
-6. Setup PubNub account, turn on access manager
-7. [Setup Google Client ID and client secret](https://www.balbooa.com/gridbox-documentation/how-to-get-google-client-id-and-client-secret)
-8. Create a file called `.env` like below: (replace all occurrences of `<...>` with the appropriate values)
+7. Setup PubNub account, turn on access manager. Below is a short guide on how to set it up:
+     - Create a PubNub account if you haven't.
+     - Once logged in, click `Apps` on side navigation bar
+     - Click `Create New App` and then enter the name of the new app
+     - Click the newly created app
+     - In the Configuration panel, turn on access manager.
+8. [Setup Google Client ID and client secret](https://www.balbooa.com/gridbox-documentation/how-to-get-google-client-id-and-client-secret)
+9. Create a file called `.env` like below: (replace all occurrences of `<...>` with the appropriate values)
 ```
 MYSQL_HOST=<mysql_host_name>
 MYSQL_USER=<mysql_user>
@@ -72,8 +78,9 @@ _3. The server is running (i.e. ready to receive PubNub messages sent by `sensor
 If all the steps above has already been completed, let's get into the "meat" of this section.
 1. Wire the components as shown in the diagram below.
 ![Fritzing Diagram](https://i.ibb.co/DY9N5Cz/unknown.png)
-2. `git clone https://github.com/Denniswillie/SitSmart.git <folderName>` (we will need `sensors.py` and `admin_program.py`)
-3. 
+2. Open terminal on Raspberry Pi
+3. `git clone https://github.com/Denniswillie/SitSmart.git <folderName>` (we will need `sensors.py` and `admin_program.py`)
+4. [Enable I2C](https://www.raspberrypi-spy.co.uk/2014/11/enabling-the-i2c-interface-on-the-raspberry-pi/)
 
 ## Developers
 This project was developed by [Dennis](https://github.com/Denniswillie), [Ethan](https://github.com/EthanSia), [Jeremy](https://github.com/lonerly666), and [Kevin](https://github.com/kevmcenroe).
