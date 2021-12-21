@@ -14,6 +14,7 @@ from pubnub.pubnub import PubNub
 load_dotenv()
 
 CHANNEL = "sitsmart_sensors_data_channel"
+base_url = os.getenv("BASE_URL")
 
 pubnub_config = PNConfiguration()
 pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
@@ -25,7 +26,7 @@ pubnub = PubNub(pubnub_config)
 location_id = None
 study_table_id = None
 
-res = requests.post("https://sitsmart.tk/pubnub_token", data={"client_uuid": pubnub.uuid})
+res = requests.post("{}/pubnub_token".format(base_url), data={"client_uuid": pubnub.uuid})
 token = json.loads(res.text)["token"]
 pubnub.set_token(token)
 

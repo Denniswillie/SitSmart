@@ -57,8 +57,9 @@ elapsed_sec = 0
 
 averageSound = 0
 totalSoundSample = 0
+base_url = os.getenv("BASE_URL")
 
-response = requests.post("https://sitsmart.tk/studyTable/getInfo", data={
+response = requests.post("{}/studyTable/getInfo".format(base_url), data={
     "mac_address": gma()
 })
 response_dict = json.loads(response.text)
