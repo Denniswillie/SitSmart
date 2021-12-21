@@ -248,6 +248,10 @@
     }
   }
 
+  function isApple() {
+    return navigator.userAgent.match(/(iPhone|iPod|iPad)/) != null;
+  }
+
   function haiya(event) {
     var element = document.getElementById(event.target.id);
     var elementId = event.target.id;
@@ -334,7 +338,14 @@
           } else {
             hour = i;
           }
-          const currDateTime = new Date(Date.parse(document.getElementById("date_select_tag").value + " " + hour + ":00:00"));
+          var currDateTime;
+          if (isApple()) {
+            const temporary = document.getElementById("date_select_tag").value.split("-");
+            const dateStringg = temporary[1] + "/" + temporary[2] + "/" + temporary[0];
+            currDateTime = new Date(Date.parse(dateStringg + " " + hour + ":00:00"));
+          } else {
+            currDateTime = new Date(Date.parse(document.getElementById("date_select_tag").value + " " + hour + ":00:00"));
+          }
 
           if (studyTableData.availability[i] === false || currDateTime < new Date()) {
             availability_button.style.backgroundColor = "red";
