@@ -92,10 +92,17 @@ BASE_URL=http://127.0.0.1:5000
 7. Setting up location and/or study table using the admin console program:
      - `python admin_program.py`
      - follow the prompts to create a location and/or study table
+     - by this time, if you open the booking website (`http://127.0.0.1:5000`), you should be able to see the location that you have created in the options. When you continue to the booking screen, you should be able to see the study table that you have just created.
 8. `python sensors.py` to run `sensors.py`. Please be aware that this program by default sends the data every 1 hour. If you want to modify the frequency, change the following line. After it sends the data, you should be able to see new `TableStats` table entries in the database:
 ```
 if currTime - lastTime > 3600:  #Change 3600 to whatever frequency you want. Note that 3600 stands for 3600 seconds (1 hour)
 ```
+
+### Table monitor website
+Since the server runs locally, we need to open the website on the browser on the computer where the server is running.
+1. In the browser, go to [table kit console](http://127.0.0.1:5000/tableKit).
+2. In the page, you will need to enter your Raspberry Pi's mac address (the Raspberry Pi that you used to setup the study table and location using `admin_program.py`).
+3. After you enter the mac address, it there's already a booking in the current hour period (e.g. 15:00-16:00 and for example now is between 15:00 - 15:15), the screen will display a passcode typer where you can type your booking passcode. Please note that if after 15 minutes since the start time, nobody has entered the passcode, the passcode prompt will be removed and the study table is available for "tap to claim" 
 
 ## Developers
 This project was developed by [Dennis](https://github.com/Denniswillie), [Ethan](https://github.com/EthanSia), [Jeremy](https://github.com/lonerly666), and [Kevin](https://github.com/kevmcenroe).
