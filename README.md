@@ -20,11 +20,12 @@ AWS EC2 instance (with Nginx as the web server and MySQL as the database server)
 ### DNS
 AWS Route 53
 ### Email Service
-Amazon SES
+Amazon SES. Currently, Our Amazon SES is not working since it's still not permitted for production access (i.e. every destination email address should be registered and verified first in our internal Amazon SES console, which is not really feasible in production).
 ### PubSub
 For the publisher-subscriber component, we're using PubNub. 
 
 ## Running on local machine
+**Please follow the sections IN-ORDER, otherwise some components will complain if a pre-requisite component is not yet initialized**
 ### Server and Database (Backend)
 1. open terminal
 2. `git clone https://github.com/Denniswillie/SitSmart.git <folderName>`
@@ -80,7 +81,21 @@ If all the steps above has already been completed, let's get into the "meat" of 
 ![Fritzing Diagram](https://i.ibb.co/DY9N5Cz/unknown.png)
 2. Open terminal on Raspberry Pi
 3. `git clone https://github.com/Denniswillie/SitSmart.git <folderName>` (we will need `sensors.py` and `admin_program.py`)
-4. [Enable I2C](https://www.raspberrypi-spy.co.uk/2014/11/enabling-the-i2c-interface-on-the-raspberry-pi/)
+4. [Enable I2C](https://www.raspberrypi-spy.co.uk/2014/11/enabling-the-i2c-interface-on-the-raspberry-pi/). If you're having trouble with I2C not being connected after setting it up, refer to [this link](https://stackoverflow.com/questions/42904712/i2c-not-detecting-issues-in-hardware-or-any-other).
+5. create `.env` file which looks like below (replace all occurrences of `<...>` with the appropriate values)
+```
+PUBNUB_PUBLISH_KEY=<pubnub_publish_key>
+PUBNUB_SUBSCRIBE_KEY=<pubnub_subscribe_key>
+BASE_URL=http://127.0.0.1:5000
+```
+6. `pip install pubnub python-dotenv adafruit-circuitpython-sgp30 adafruit-circuitpython-dht`
+7. Setting up location and/or study table using the admin console program:
+     - `python admin_program.py`
+     - follow the prompts to create a location and/or study table
+8. `python sensors.py` to run `sensors.py`. Please be aware that this program by default sends the data every 1 hour. If you want to modify the frequency, change the following line. After it sends the data, you should be able to see new `TableStats` table entries in the database:
+```
+if currTime - lastTime > 3600:  #Change 3600 to whatever frequency you want. Note that 3600 stands for 3600 seconds (1 hour)
+```
 
 ## Developers
 This project was developed by [Dennis](https://github.com/Denniswillie), [Ethan](https://github.com/EthanSia), [Jeremy](https://github.com/lonerly666), and [Kevin](https://github.com/kevmcenroe).
