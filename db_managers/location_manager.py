@@ -53,3 +53,12 @@ class LocationManager:
         result = cur.fetchone()
         cur.close()
         return result[0] if result is not None else None
+
+    def login_location(self, location_id, location_password) -> bool:
+        cur = self._mysql.connection.cursor()
+        cur.execute("select if(count(*) = 1, 1, 0) as isVerified from Location where locationId = %s and "
+                    "locationPasswordHash = SHA2(concat(%s, salt), 512);", [location_id, location_password])
+        self._mysql.connection.commit()
+        result = cur.fetchone()
+        cur.close()
+        return result[0] == 1
