@@ -93,6 +93,7 @@ BASE_URL=http://127.0.0.1:5000
      - `python admin_program.py`
      - follow the prompts to create a location and/or study table
      - by this time, if you open the booking website (`http://127.0.0.1:5000`), you should be able to see the location that you have created in the options. When you continue to the booking screen, you should be able to see the study table that you have just created.
+     - note: when you create a new table, there's no sensors data yet, hence, the desk will have the lowest levels for all parameters (audio, noise, temperature)
 8. `python sensors.py` to run `sensors.py`. Please be aware that this program by default sends the data every 1 hour. If you want to modify the frequency, change the following line. After it sends the data, you should be able to see new `TableStats` table entries in the database:
 ```
 if currTime - lastTime > 3600:  #Change 3600 to whatever frequency you want. Note that 3600 stands for 3600 seconds (1 hour)
