@@ -83,6 +83,7 @@ def publish_callback(envelope, status):
         # Request can be resent using: [status retry];
 
 
+
 lastTime = time.time()
 while True:
     currTime = time.time()

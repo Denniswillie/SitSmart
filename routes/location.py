@@ -73,3 +73,22 @@ def get_location_info():
             "location_id": session.get("location_id"),
             "location_name": location_manager.get_location_name(session.get("location_id"))
         })
+
+
+@location_api.route("/login", methods=["POST"])
+def location_login():
+    password = request.form.get("password")
+    locationId = request.form.get("location_id")
+    location_manager = LocationManager(mysql)
+    try:
+        res = location_manager.login_location(locationId, password)
+        return json.dumps({
+            "statusCode": StatusCode.OK_STATUS_CODE,
+            "verified": res
+        })
+    except Exception as e:
+        err_msg = str(e) if len(str(e)) > 0 else "an unexpected error has occurred"
+        return json.dumps({
+            "statusCode": StatusCode.INTERNAL_ERR_CODE,
+            "message": err_msg
+        })
