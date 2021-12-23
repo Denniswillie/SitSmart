@@ -73,9 +73,16 @@ def index():
 @app.route("/pubnub_token", methods=["POST"])
 def pubnub_token():
     if request.method == "POST":
-        client_uuid = request.form.get("client_uuid")
-        envelope = pubnub_handler.pubnub.grant_token().channels([Channel.id(CHANNEL).read().write()]).ttl(60).authorized_uuid(client_uuid).sync()
-        return json.dumps(envelope.result.__dict__)
+        # check credentials
+        location_id = request.form.get("location_id")
+        password = request.form.get("password")
+        location_manager = LocationManager(mysql)
+
+        # credentials correct
+        if location_manager.login_location(location_id, password):
+            client_uuid = request.form.get("client_uuid")
+            envelope = pubnub_handler.pubnub.grant_token().channels([Channel.id(CHANNEL).read().write()]).ttl(60).authorized_uuid(client_uuid).sync()
+            return json.dumps(envelope.result.__dict__)
     return None
 
 
