@@ -50,9 +50,6 @@ i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
 # Create library object on our I2C port
 sgp30 = adafruit_sgp30.Adafruit_SGP30(i2c)
 
-sgp30.iaq_init()
-sgp30.set_iaq_baseline(0x8973, 0x8AAE)
-
 elapsed_sec = 0
 
 averageSound = 0
@@ -83,47 +80,61 @@ def publish_callback(envelope, status):
         # Request can be resent using: [status retry];
 
 
-lastTime = time.time()
 while True:
-    currTime = time.time()
-    if currTime - lastTime > 3600:
-        while True:
-            published = False
-            try:
-                pubnub.publish().channel(pubnub_channel).message({
-                    "sender": pubnub.uuid,
-                    "type": "SAVE_TABLE_STATS",
-                    "study_table_id": study_table_id,
-                    "recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
-                    "temperature_level": sensor.temperature,
-                    "co2_level": sgp30.eCO2,
-                    "sound_level": averageSound
-                }).sync()
-                published = True
-            except Exception as e:
-                if int(e._status_code) == 403:
-                    # token is either expired or has not set a token
-                    res = requests.post("https://sitsmart.tk/pubnub_token", data={"client_uuid": pubnub.uuid})
-                    token = json.loads(res.text)["token"]
-                    pubnub.set_token(token)
-                else:
-                    raise Exception(e)
-            if published:
-                break
+    location_id = int(input("Please enter a valid location ID: "))
+    password = input("Please enter your password: ")
+    res = json.loads(requests.post('{}/location/login'.format(base_url), data={"password": password, "location_id": location_id}).text)
+    if res['statusCode'] == 200:
+        if res['valid']:
+            lastTime = time.time()
+            while True:
+                currTime = time.time()
+                if currTime - lastTime > 3600:
+                    eCO2, TVOC = sgp30.iaq_measure()
+                    avgCo2 = eCO2
+                    while True:
+                        published = False
+                        try:
+                            pubnub.publish().channel(pubnub_channel).message({
+                                "sender": pubnub.uuid,
+                                "type": "SAVE_TABLE_STATS",
+                                "study_table_id": study_table_id,
+                                "recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
+                                "temperature_level": sensor.temperature,
+                                "co2_level": avgCo2,
+                                "sound_level": averageSound
+                            }).sync()
+                            published = True
+                        except Exception as e:
+                            if int(e._status_code) == 403:
+                                # token is either expired or has not set a token
+                                res = requests.post("{}/pubnub_token".format(base_url),
+                                                    data={"client_uuid": pubnub.uuid, "password": password,
+                                                          "location_id": location_id})
+                                token = json.loads(res.text)["token"]
+                                pubnub.set_token(token)
+                            else:
+                                raise Exception(e)
+                        if published:
+                            break
 
-        averageSound = totalSoundSample = 0
-        lastTime = currTime
-    # got to learn how to get the sensor value from https://www.youtube.com/watch?v=PYkzJQhFNlA
-    milis_current = time.time() * 1000
-    milis_elapsed = milis_current - milis_last if milis_last is not None else 0
-    if milis_last is None:
-        milis_last = milis_current
-    if not GPIO.input(channel):
-        counter += 1
-    if milis_elapsed > 10:
-        print(counter)
-        averageSound = ((averageSound * totalSoundSample) + counter) / (totalSoundSample + 1)
-        totalSoundSample += 1
-        print(averageSound)
-        counter = 0
-        milis_last = milis_current
+                    averageSound = totalSoundSample = 0
+                    lastTime = currTime
+                # got to learn how to get the sensor value from https://www.youtube.com/watch?v=PYkzJQhFNlA
+                milis_current = time.time() * 1000
+                milis_elapsed = milis_current - milis_last if milis_last is not None else 0
+                if milis_last is None:
+                    milis_last = milis_current
+                if not GPIO.input(channel):
+                    counter += 1
+                if milis_elapsed > 10:
+                    print(counter)
+                    averageSound = ((averageSound * totalSoundSample) + counter) / (totalSoundSample + 1)
+                    totalSoundSample += 1
+                    print(averageSound)
+                    counter = 0
+                    milis_last = milis_current
+        else:
+            print("Wrong password")
+    else:
+        print("Something went wrong with the server")

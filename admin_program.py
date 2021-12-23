@@ -12,9 +12,27 @@ from pubnub.pubnub import PubNub
 # Pair programming Dennis-Ethan
 
 load_dotenv()
+base_url = os.getenv("BASE_URL")
+
+location_id = None
+location_password = None
+logged_in = False
+while not logged_in:
+    print("Please enter your location credentials.")
+    location_id = input("Enter your location id: ")
+    location_password = input("Enter your location password: ")
+    res = json.loads(requests.post("{}/location/login".format(base_url), data={
+        "location_id": location_id, "password": location_password
+    }).text)
+    if res["statusCode"] == 200:
+        if res["verified"]:
+            logged_in = True
+        else:
+            print("Wrong credentials.")
+    else:
+        raise Exception("Error occurred from the HTTP request, status code: ", res["statusCode"])
 
 CHANNEL = "sitsmart_sensors_data_channel"
-base_url = os.getenv("BASE_URL")
 
 pubnub_config = PNConfiguration()
 pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
@@ -23,10 +41,13 @@ pubnub_config.uuid = str(uuid.uuid4())
 pubnub_config.ssl = True
 
 pubnub = PubNub(pubnub_config)
-location_id = None
 study_table_id = None
 
-res = requests.post("{}/pubnub_token".format(base_url), data={"client_uuid": pubnub.uuid})
+res = requests.post("{}/pubnub_token".format(base_url), data={
+    "client_uuid": pubnub.uuid,
+    "location_id": location_id,
+    "password": location_password
+})
 token = json.loads(res.text)["token"]
 pubnub.set_token(token)
 
@@ -34,17 +55,7 @@ pubnub.set_token(token)
 try:
     def handle_event(msg):
         global location_id, study_table_id
-        if msg["type"] == "VERIFY_LOCATION_ID":
-            if msg["verified"]:
-                location_id = msg["location_id"]
-                get_table_info()
-            else:
-                print("Entered location_id is not verified.")
-                location_screen()
-        elif msg["type"] == "CREATE_LOCATION":
-            location_id = msg["location_id"]
-            get_table_info()
-        elif msg["type"] == "GET_TABLE_INFO":
+        if msg["type"] == "GET_TABLE_INFO":
             # study table is not registered
             study_table_id = msg["study_table_info"]["study_table_id"]
             if not study_table_id:
@@ -96,35 +107,6 @@ try:
     pubnub.subscribe().channels(CHANNEL).execute()
 
     pi_mac_address = gma()
-
-
-    def location_screen():
-        while True:
-            print("Welcome to the SitSmart admin dashboard!")
-            print("Please choose one of the options:")
-            print("1. I have a location id")
-            print("2. I don't have a location id, will need to create a location")
-            input_num = int(input("Please enter number here: "))
-            if input_num == 1:
-                # Not save it as the location_id since it still needs to be verified
-                temp_location_id = int(input("Please enter the location id: "))
-                pubnub.publish().channel(CHANNEL).message({
-                    "type": "VERIFY_LOCATION_ID",
-                    "location_id": temp_location_id,
-                    "sender": pubnub.uuid
-                }).sync()
-                break
-            elif input_num == 2:
-                location_name = input("Please enter the location name: ")
-                pubnub.publish().channel(CHANNEL).message({
-                    "type": "CREATE_LOCATION",
-                    "location_name": location_name,
-                    "sender": pubnub.uuid
-                }).sync()
-                break
-            else:
-                print("Option does not exist, are you blind?")
-
 
     def get_table_info():
         pubnub.publish().channel(CHANNEL).message({
@@ -178,7 +160,7 @@ try:
             print("Chosen number does not exist, please enter a valid number!")
 
 
-    location_screen()
+    get_table_info()
 
     # Ask the location id from the user. If the user doesn't have a location id, the user can create a location
     # by entering the location name. This location name will then be sent to the server through pubnub. The server

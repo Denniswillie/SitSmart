@@ -7,6 +7,8 @@ drop event if exists setAverageTableStats;
 
 create table Location (
     locationId int not null AUTO_INCREMENT,
+    locationPasswordHash varchar(128) NOT NULL,
+    salt varchar(40) not null,
     name varchar(50),
     PRIMARY KEY (locationId)
 );
@@ -55,6 +57,7 @@ create table Booking (
 );
 
 alter table Booking modify bookingPasswordHash varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+alter table Location modify locationPasswordHash varchar(128) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 SET GLOBAL event_scheduler = ON;
 CREATE EVENT setAverageTableStats
