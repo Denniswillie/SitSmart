@@ -12,9 +12,27 @@ from pubnub.pubnub import PubNub
 # Pair programming Dennis-Ethan
 
 load_dotenv()
+base_url = os.getenv("BASE_URL")
+
+location_id = None
+location_password = None
+logged_in = False
+while not logged_in:
+    print("Please enter your location credentials.")
+    location_id = input("Enter your location id: ")
+    location_password = input("Enter your location password: ")
+    res = json.loads(requests.post("{}/location/login".format(base_url), data={
+        "location_id": location_id, "password": location_password
+    }).text)
+    if res["statusCode"] == 200:
+        if res["verified"]:
+            logged_in = True
+        else:
+            print("Wrong credentials.")
+    else:
+        raise Exception("Error occurred from the HTTP request, status code: ", res["statusCode"])
 
 CHANNEL = "sitsmart_sensors_data_channel"
-base_url = os.getenv("BASE_URL")
 
 pubnub_config = PNConfiguration()
 pubnub_config.publish_key = os.getenv("PUBNUB_PUBLISH_KEY")
@@ -26,7 +44,11 @@ pubnub = PubNub(pubnub_config)
 location_id = None
 study_table_id = None
 
-res = requests.post("{}/pubnub_token".format(base_url), data={"client_uuid": pubnub.uuid})
+res = requests.post("{}/pubnub_token".format(base_url), data={
+    "client_uuid": pubnub.uuid,
+    "location_id": location_id,
+    "password": location_password
+})
 token = json.loads(res.text)["token"]
 pubnub.set_token(token)
 
