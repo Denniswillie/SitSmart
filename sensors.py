@@ -50,9 +50,6 @@ i2c = busio.I2C(board.SCL, board.SDA, frequency=100000)
 # Create library object on our I2C port
 sgp30 = adafruit_sgp30.Adafruit_SGP30(i2c)
 
-sgp30.iaq_init()
-sgp30.set_iaq_baseline(0x8973, 0x8AAE)
-
 elapsed_sec = 0
 
 averageSound = 0
@@ -93,6 +90,8 @@ while True:
             while True:
                 currTime = time.time()
                 if currTime - lastTime > 3600:
+                    eCO2, TVOC = sgp30.iaq_measure()
+                    avgCo2 = eCO2
                     while True:
                         published = False
                         try:
@@ -102,7 +101,7 @@ while True:
                                 "study_table_id": study_table_id,
                                 "recorded_time": datetime.fromtimestamp(currTime).strftime("%Y-%m-%d %H:%M:%S"),
                                 "temperature_level": sensor.temperature,
-                                "co2_level": sgp30.eCO2,
+                                "co2_level": avgCo2,
                                 "sound_level": averageSound
                             }).sync()
                             published = True
